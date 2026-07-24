@@ -1,5 +1,10 @@
 import L from 'leaflet'
 import type { Basemap } from '../types'
+import {
+  disableHistoricalImagery,
+  enableHistoricalImagery,
+  initHistoricalImagery,
+} from './historicalImagery'
 
 const BASIN_CENTER: [number, number] = [43.78, -113.65]
 const BASIN_ZOOM = 9
@@ -7,8 +12,8 @@ const BASIN_ZOOM = 9
 /**
  * Pane layout (z-order is handled here ONCE, via panes — no bringToFront juggling).
  * Everything is SVG, so only the shapes themselves capture clicks: a well/gage
- * dot wins the click on the dot, and a click just beside it falls through to
- * the POU polygon underneath.
+ * dot wins the click on the dot, and a click just beside it falls through to the
+ * POU polygon underneath.
  *   overlayPane      400  (default vector overlays: boundary, canals, reaches…)
  *   pouPane          450  base POU polygons
  *   wellPane         470  wells (clickable above POU)
@@ -32,29 +37,40 @@ export function createMap(): L.Map {
 }
 
 export class BasemapControl {
-  private current: L.TileLayer | null = null
+  private osmLayer: L.TileLayer | null = null
   private labels: L.TileLayer | null = null
   private map: L.Map
+  private type: Basemap = 'satellite'
 
   constructor(map: L.Map) {
     this.map = map
+    initHistoricalImagery(map)
+  }
+
+  getType(): Basemap {
+    return this.type
   }
 
   set(type: Basemap) {
-    if (this.current) this.map.removeLayer(this.current)
-    if (this.labels) { this.map.removeLayer(this.labels); this.labels = null }
+    this.type = type
+    if (this.osmLayer) {
+      this.map.removeLayer(this.osmLayer)
+      this.osmLayer = null
+    }
+    if (this.labels) {
+      this.map.removeLayer(this.labels)
+      this.labels = null
+    }
 
     const attribution = '© Basin 34 Transparency (IDWR + USGS public data)'
     if (type === 'osm') {
-      this.current = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      disableHistoricalImagery()
+      this.osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors | ' + attribution,
         maxZoom: 18,
-      })
+      }).addTo(this.map)
     } else {
-      this.current = L.tileLayer(
-        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-        { attribution: 'Tiles © Esri — Esri, USDA, USGS et al. | ' + attribution, maxZoom: 18 },
-      )
+      void enableHistoricalImagery()
       if (type === 'hybrid') {
         this.labels = L.tileLayer(
           'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
@@ -62,10 +78,11 @@ export class BasemapControl {
         ).addTo(this.map)
       }
     }
-    this.current.addTo(this.map)
 
     document.querySelectorAll<HTMLButtonElement>('.basemap-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.basemap === type)
     })
+    const era = document.getElementById('imagery-era')
+    if (era) era.hidden = type === 'osm'
   }
 }

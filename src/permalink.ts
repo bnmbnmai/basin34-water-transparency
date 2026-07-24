@@ -1,4 +1,11 @@
 import type L from 'leaflet'
+import {
+  getImageryState,
+  setImageryMode,
+  setLandsatYear,
+  setWaybackYear,
+  type ImageryMode,
+} from './map/historicalImagery'
 import { defaultState, state } from './state'
 import type { Basemap, FlowEra, HighlightMode, PodColorMode } from './types'
 
@@ -13,6 +20,9 @@ export interface RestoredView {
   view: { lat: number; lng: number; zoom: number } | null
   /** Guided story step index (0-based), when present in the hash. */
   storyStep: number | null
+  imageryMode: ImageryMode | null
+  landsatYear: number | null
+  waybackYear: number | null
 }
 
 /** Short hash key → boolean state accessor. */
@@ -55,6 +65,14 @@ export function encodeHash(basemap: Basemap, map: L.Map): string {
     if (b.get() !== b.def) p.set(key, b.get() ? '1' : '0')
   }
   if (basemap !== 'satellite') p.set('b', basemap)
+
+  const img = getImageryState()
+  if (img.mode !== 'current') {
+    p.set('im', img.mode)
+    if (img.mode === 'landsat') p.set('iy', String(img.landsatYear))
+    if (img.mode === 'wayback' && img.waybackDate) p.set('iy', img.waybackDate.slice(0, 4))
+  }
+
   const c = map.getCenter()
   p.set('v', `${map.getZoom()}/${c.lat.toFixed(4)}/${c.lng.toFixed(4)}`)
 
@@ -63,7 +81,14 @@ export function encodeHash(basemap: Basemap, map: L.Map): string {
 
 /** Mutates `state` from the current location hash; returns map view/basemap to restore. */
 export function applyHashToState(): RestoredView {
-  const out: RestoredView = { basemap: null, view: null, storyStep: null }
+  const out: RestoredView = {
+    basemap: null,
+    view: null,
+    storyStep: null,
+    imageryMode: null,
+    landsatYear: null,
+    waybackYear: null,
+  }
   const raw = location.hash.replace(/^#/, '')
   if (!raw) return out
   const p = new URLSearchParams(raw)
@@ -96,12 +121,27 @@ export function applyHashToState(): RestoredView {
 
   const b = p.get('b')
   if (b === 'osm' || b === 'satellite' || b === 'hybrid') out.basemap = b
+  const im = p.get('im')
+  if (im === 'current' || im === 'landsat' || im === 'wayback') out.imageryMode = im
+  const iy = parseInt(p.get('iy') || '', 10)
+  if (isFinite(iy)) {
+    if (out.imageryMode === 'wayback') out.waybackYear = iy
+    else out.landsatYear = iy
+  }
   const v = p.get('v')
   if (v) {
     const [zoom, lat, lng] = v.split('/').map(Number)
     if (isFinite(zoom) && isFinite(lat) && isFinite(lng)) out.view = { lat, lng, zoom }
   }
   return out
+}
+
+/** Apply restored imagery era after basemap is ready (async Wayback catalog). */
+export async function restoreImageryFromHash(restored: RestoredView): Promise<void> {
+  if (restored.landsatYear != null) setLandsatYear(restored.landsatYear)
+  if (restored.imageryMode) await setImageryMode(restored.imageryMode)
+  // Year after mode so Wayback catalog is loaded before matching a release.
+  if (restored.waybackYear != null) setWaybackYear(restored.waybackYear)
 }
 
 let pending: number | null = null

@@ -1052,6 +1052,28 @@ main {
   border-color: var(--accent-dark);
 }
 
+.imagery-era {
+  margin: 0 0 0.55rem;
+}
+.imagery-controls {
+  margin-top: 0.25rem;
+}
+.imagery-year-field {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text);
+}
+.imagery-year-field input[type='range'] {
+  width: 100%;
+  margin-top: 2px;
+}
+.imagery-hint {
+  font-size: 0.62rem;
+  line-height: 1.25;
+  color: var(--text-muted);
+  margin: 0.2rem 0 0;
+}
+
 /* Owner search results */
 .owner-result {
   padding: 2px 4px;

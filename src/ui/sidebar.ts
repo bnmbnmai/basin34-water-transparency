@@ -1,4 +1,14 @@
 import type { DataStore } from '../data'
+import {
+  getImageryState,
+  getLandsatYearRange,
+  getWaybackYearOptions,
+  onImageryChange,
+  setImageryMode,
+  setLandsatYear,
+  setWaybackYear,
+  type ImageryMode,
+} from '../map/historicalImagery'
 import { state } from '../state'
 import type { Basemap, FlowEra, HighlightMode } from '../types'
 import { MODE_HINTS } from './legend'
@@ -18,6 +28,8 @@ export interface SidebarCallbacks {
   showConjunctive?: () => void
   onSheetChange?: () => void
   setOwnerHighlight?: (owner: string | null) => void
+  /** Called when Landsat/Wayback era changes (for permalink). */
+  onImageryChange?: () => void
 }
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T | null
@@ -207,12 +219,15 @@ export function wireSidebar(cb: SidebarCallbacks) {
 
   document.querySelectorAll<HTMLButtonElement>('.basemap-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll<HTMLButtonElement>('.basemap-btn').forEach(b => {
+      if (btn.classList.contains('imagery-mode')) return
+      document.querySelectorAll<HTMLButtonElement>('#basemap-switcher .basemap-btn').forEach(b => {
         b.classList.toggle('active', b.dataset.basemap === btn.dataset.basemap)
       })
       cb.setBasemap(btn.dataset.basemap as Basemap)
     })
   })
+
+  wireImageryControls(cb)
 
   $('reset-all')?.addEventListener('click', cb.resetAll)
 
@@ -239,6 +254,69 @@ export function wireSidebar(cb: SidebarCallbacks) {
   })
 
   updateModeHint()
+}
+
+export function syncImageryControls(): void {
+  const s = getImageryState()
+  const years = getWaybackYearOptions().map(o => o.year)
+
+  document.querySelectorAll<HTMLButtonElement>('.imagery-mode').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.imagery === s.mode)
+  })
+  const landsatBox = $('imagery-landsat-controls')
+  const waybackBox = $('imagery-wayback-controls')
+  if (landsatBox) landsatBox.hidden = s.mode !== 'landsat'
+  if (waybackBox) waybackBox.hidden = s.mode !== 'wayback'
+
+  const landsatRange = input('landsat-year')
+  const landsatLabel = $('landsat-year-label')
+  if (landsatRange) landsatRange.value = String(s.landsatYear)
+  if (landsatLabel) landsatLabel.textContent = String(s.landsatYear)
+
+  const waybackRange = input('wayback-year')
+  const waybackLabel = $('wayback-year-label')
+  const waybackHint = $('wayback-date-hint')
+  if (years.length && waybackRange) {
+    waybackRange.min = String(years[0])
+    waybackRange.max = String(years[years.length - 1])
+    const y = s.waybackDate ? Number(s.waybackDate.slice(0, 4)) : years[years.length - 1]
+    waybackRange.value = String(y)
+    if (waybackLabel) waybackLabel.textContent = String(y)
+  }
+  if (waybackHint && s.waybackDate) {
+    waybackHint.textContent = `Esri Wayback ${s.waybackDate} (publish date). High-res where World Imagery had coverage.`
+  }
+}
+
+function wireImageryControls(cb: SidebarCallbacks) {
+  const { min: lsMin, max: lsMax } = getLandsatYearRange()
+  const landsatRange = input('landsat-year')
+  if (landsatRange) {
+    landsatRange.min = String(lsMin)
+    landsatRange.max = String(lsMax)
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.imagery-mode').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const next = btn.dataset.imagery as ImageryMode | undefined
+      if (!next) return
+      void setImageryMode(next).then(() => {
+        syncImageryControls()
+        cb.onImageryChange?.()
+      })
+    })
+  })
+  landsatRange?.addEventListener('input', () => {
+    setLandsatYear(Number(landsatRange.value))
+    syncImageryControls()
+    cb.onImageryChange?.()
+  })
+  input('wayback-year')?.addEventListener('input', ev => {
+    setWaybackYear(Number((ev.currentTarget as HTMLInputElement).value))
+    syncImageryControls()
+    cb.onImageryChange?.()
+  })
+  onImageryChange(() => syncImageryControls())
 }
 
 /** Fill the "Data as of" chip from public/data/manifest.json */

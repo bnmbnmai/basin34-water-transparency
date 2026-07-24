@@ -5,7 +5,7 @@ import './style.css'
 import L from 'leaflet'
 
 import { loadDataStoreLight, enrichDataStoreWithPou, pouGeomKey, type DataStore } from './data'
-import { applyHashToState, schedulePermalinkUpdate, setStoryStepForHash } from './permalink'
+import { applyHashToState, restoreImageryFromHash, schedulePermalinkUpdate, setStoryStepForHash } from './permalink'
 import { preferLiteMap } from './perf'
 import { state, resetState } from './state'
 import type { Basemap, GeoFeature, PodRecord } from './types'
@@ -16,7 +16,7 @@ import { PouLayer } from './map/pouLayer'
 import { DiversionLayer } from './map/diversionLayer'
 import { loadStaticLayers, type StaticLayers } from './map/staticLayers'
 import { renderShell } from './ui/shell'
-import { wireSidebar, populateReachSelect, syncSidebarToState, syncReachSelect, loadDataAsOf } from './ui/sidebar'
+import { wireSidebar, populateReachSelect, syncSidebarToState, syncReachSelect, loadDataAsOf, syncImageryControls } from './ui/sidebar'
 import { updateLegend } from './ui/legend'
 import { setupTimeline, type TimelineControl } from './ui/timeline'
 import { setupOwnerSearch, clearOwnerSearchUI } from './ui/ownerSearch'
@@ -196,6 +196,7 @@ async function bootstrap() {
     currentBasemap = restored.basemap
     basemap.set(restored.basemap)
   }
+  void restoreImageryFromHash(restored).then(() => syncImageryControls())
   if (restored.view && restored.storyStep == null) {
     map.setView([restored.view.lat, restored.view.lng], restored.view.zoom)
   }
@@ -274,8 +275,10 @@ async function bootstrap() {
     setBasemap: b => {
       currentBasemap = b
       basemap.set(b)
+      syncImageryControls()
       updatePermalink()
     },
+    onImageryChange: () => updatePermalink(),
     setFlowEra: era => staticLayers.setFlowEra(era),
     // Map emphasis — primary receipts open via Insight buttons only.
     // Conflict is Advanced-only and its ranked list is the point of that lens.

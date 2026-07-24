@@ -59,6 +59,27 @@ export function renderShell() {
             <button type="button" class="basemap-btn active" data-basemap="satellite">Satellite</button>
             <button type="button" class="basemap-btn" data-basemap="hybrid">Hybrid</button>
           </div>
+          <div id="imagery-era" class="imagery-era">
+            <div class="flex gap-1 mb-1 flex-wrap" role="group" aria-label="Satellite era">
+              <button type="button" class="basemap-btn imagery-mode active" data-imagery="current">Current</button>
+              <button type="button" class="basemap-btn imagery-mode" data-imagery="landsat">Landsat</button>
+              <button type="button" class="basemap-btn imagery-mode" data-imagery="wayback">Archive</button>
+            </div>
+            <div id="imagery-landsat-controls" class="imagery-controls" hidden>
+              <label class="imagery-year-field">
+                <span>Year <strong id="landsat-year-label">2000</strong></span>
+                <input type="range" id="landsat-year" min="1984" max="2026" step="1" value="2000" />
+              </label>
+              <p class="imagery-hint">~30&nbsp;m Landsat summer mosaic (1984+). Good for crop patterns over decades.</p>
+            </div>
+            <div id="imagery-wayback-controls" class="imagery-controls" hidden>
+              <label class="imagery-year-field">
+                <span>Archive year <strong id="wayback-year-label">—</strong></span>
+                <input type="range" id="wayback-year" min="2014" max="2026" step="1" value="2024" />
+              </label>
+              <p class="imagery-hint" id="wayback-date-hint">High-res Esri World Imagery snapshots since ~2014.</p>
+            </div>
+          </div>
 
           <h2>Layers</h2>
           <div class="layer-item"><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="layer-pods" checked /> <span>PODs / water rights ★</span></label></div>
