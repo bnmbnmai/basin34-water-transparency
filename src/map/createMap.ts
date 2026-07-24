@@ -79,7 +79,7 @@ export class BasemapControl {
       }
     }
 
-    document.querySelectorAll<HTMLButtonElement>('.basemap-btn').forEach(b => {
+    document.querySelectorAll<HTMLButtonElement>('#basemap-switcher .basemap-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.basemap === type)
     })
     const era = document.getElementById('imagery-era')
