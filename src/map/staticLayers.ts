@@ -1,11 +1,16 @@
 import L from 'leaflet'
 import type { FlowEra, GeoFeature } from '../types'
+import { fetchJsonCached } from '../fetchCache'
 
 export interface StaticLayers {
   groups: Record<string, L.LayerGroup>
   setFlowEra: (era: FlowEra) => void
   /** Load canals + NWI riparian after first paint (no-op if already loaded). */
   loadHeavy: () => Promise<void>
+  /** Canals / pipelines only (Guide transfers / hydro toggle). */
+  loadCanals: () => Promise<void>
+  /** NWI riparian only (riparian toggle). */
+  loadRiparian: () => Promise<void>
 }
 
 function flowExtentStyle(era: string): L.PathOptions {
@@ -48,15 +53,6 @@ function sinksStyle(era: FlowEra): L.PathOptions {
     : { color: '#a16207', weight: 1, opacity: 0.45, fillColor: '#a8a29e', fillOpacity: 0.12, dashArray: '3,3' }
 }
 
-async function fetchJson(url: string): Promise<any | null> {
-  try {
-    const res = await fetch(url)
-    return res.ok ? await res.json() : null
-  } catch {
-    return null
-  }
-}
-
 export async function loadStaticLayers(
   map: L.Map,
   reaches: GeoFeature[],
@@ -74,11 +70,11 @@ export async function loadStaticLayers(
 
   // Critical path: skip canals + riparian until after first interactive paint
   const [boundary, gages, flowExtent, mainstem, sinks] = await Promise.all([
-    fetchJson('/data/basin-boundary.geojson'),
-    fetchJson('/data/gages.geojson'),
-    fetchJson('/data/flow-extent-indicators.geojson'),
-    fetchJson('/data/nhd-mainstem.geojson'),
-    fetchJson('/data/nhd-sinks.geojson'),
+    fetchJsonCached('/data/basin-boundary.geojson'),
+    fetchJsonCached('/data/gages.geojson'),
+    fetchJsonCached('/data/flow-extent-indicators.geojson'),
+    fetchJsonCached('/data/nhd-mainstem.geojson'),
+    fetchJsonCached('/data/nhd-sinks.geojson'),
   ])
 
   if (boundary) {
@@ -88,53 +84,58 @@ export async function loadStaticLayers(
   }
 
   let riparianLayer: L.GeoJSON | null = null
-  let heavyLoaded = false
+  let canalsLoaded = false
+  let riparianLoaded = false
+  let currentEra: FlowEra = 'historical'
+
+  const loadCanals = async () => {
+    if (canalsLoaded) return
+    canalsLoaded = true
+    const canals = await fetchJsonCached('/data/nhd-canals-pipelines.geojson')
+    if (!canals) return
+    const isPipe = (f: any) => (f?.properties?.fcode ?? 0) >= 42800
+    add('hydro', L.geoJSON(canals, {
+      style: (f: any) =>
+        isPipe(f)
+          ? { color: '#64748b', weight: 2, opacity: 0.8, dashArray: '2,5' }
+          : { color: '#0ea5e9', weight: 2, opacity: 0.7, dashArray: '6,3' },
+      onEachFeature: (feature, lyr) => {
+        const p = feature.properties || {}
+        const kind = isPipe(feature) ? 'Pipeline' : 'Canal / ditch'
+        if (p.gnis_name) {
+          lyr.bindTooltip(`${p.gnis_name} (${kind.toLowerCase()})`, { sticky: true })
+        }
+        lyr.bindPopup(
+          `<strong>${p.gnis_name || `Unnamed ${kind.toLowerCase()}`}</strong><br>` +
+          `${kind}${p.lengthkm ? ` · ${Number(p.lengthkm).toFixed(1)} km segment` : ''}<br>` +
+          `<small>USGS National Hydrography Dataset (high resolution). Geometry only — authorized rates come from the Diversions layer.</small>`,
+        )
+        lyr.on('click', () => callbacks.onFeatureClick(feature as GeoFeature, 'hydro'))
+      },
+    }))
+  }
+
+  const loadRiparian = async () => {
+    if (riparianLoaded) return
+    riparianLoaded = true
+    const riparian = await fetchJsonCached('/data/nwi-riparian.geojson')
+    if (!riparian) return
+    add('riparian', riparianLayer = L.geoJSON(riparian, {
+      style: f => riparianStyle(f, currentEra),
+      onEachFeature: (feature, lyr) => {
+        const p = feature.properties || {}
+        const kind = (p.ATTRIBUTE || '').includes('FO') ? 'forested' : 'scrub-shrub'
+        lyr.bindTooltip(
+          `Riparian (${kind})${p.ACRES ? ` · ${Number(p.ACRES).toFixed(1)} ac` : ''} — FWS NWI` +
+          `<br><small>NWI riparian was not mapped along the lower channel (Arco → sinks).</small>`,
+          { sticky: true },
+        )
+      },
+    }))
+  }
 
   const loadHeavy = async () => {
-    if (heavyLoaded) return
-    heavyLoaded = true
-    const [canals, riparian] = await Promise.all([
-      fetchJson('/data/nhd-canals-pipelines.geojson'),
-      fetchJson('/data/nwi-riparian.geojson'),
-    ])
-
-    if (riparian) {
-      add('riparian', riparianLayer = L.geoJSON(riparian, {
-        style: f => riparianStyle(f, 'historical'),
-        onEachFeature: (feature, lyr) => {
-          const p = feature.properties || {}
-          const kind = (p.ATTRIBUTE || '').includes('FO') ? 'forested' : 'scrub-shrub'
-          lyr.bindTooltip(
-            `Riparian (${kind})${p.ACRES ? ` · ${Number(p.ACRES).toFixed(1)} ac` : ''} — FWS NWI` +
-            `<br><small>NWI riparian was not mapped along the lower channel (Arco → sinks).</small>`,
-            { sticky: true },
-          )
-        },
-      }))
-    }
-
-    if (canals) {
-      const isPipe = (f: any) => (f?.properties?.fcode ?? 0) >= 42800
-      add('hydro', L.geoJSON(canals, {
-        style: (f: any) =>
-          isPipe(f)
-            ? { color: '#64748b', weight: 2, opacity: 0.8, dashArray: '2,5' }
-            : { color: '#0ea5e9', weight: 2, opacity: 0.7, dashArray: '6,3' },
-        onEachFeature: (feature, lyr) => {
-          const p = feature.properties || {}
-          const kind = isPipe(feature) ? 'Pipeline' : 'Canal / ditch'
-          if (p.gnis_name) {
-            lyr.bindTooltip(`${p.gnis_name} (${kind.toLowerCase()})`, { sticky: true })
-          }
-          lyr.bindPopup(
-            `<strong>${p.gnis_name || `Unnamed ${kind.toLowerCase()}`}</strong><br>` +
-            `${kind}${p.lengthkm ? ` · ${Number(p.lengthkm).toFixed(1)} km segment` : ''}<br>` +
-            `<small>USGS National Hydrography Dataset (high resolution). Geometry only — authorized rates come from the Diversions layer.</small>`,
-          )
-          lyr.on('click', () => callbacks.onFeatureClick(feature as GeoFeature, 'hydro'))
-        },
-      }))
-    }
+    await Promise.all([loadCanals(), loadRiparian()])
   }
 
   if (!opts.deferHeavy) await loadHeavy()
@@ -248,7 +249,10 @@ export async function loadStaticLayers(
   return {
     groups,
     loadHeavy,
+    loadCanals,
+    loadRiparian,
     setFlowEra: (era: FlowEra) => {
+      currentEra = era
       // Real channel: blue everywhere in the historical era; in the recent era
       // the below-Arco reach goes dashed brown and the sinks fade out.
       mainstemLayer?.setStyle((f: any) => mainstemStyle(f?.properties?.reach || 'above-moore', era))

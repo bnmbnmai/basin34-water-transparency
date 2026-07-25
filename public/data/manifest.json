@@ -19,13 +19,15 @@
       "source": "https://gis.idwr.idaho.gov/hosting/rest/services/allocation/WaterRightPous/FeatureServer/0 (filtered BasinNumber=34)",
       "asOf": "2026-07-22",
       "count": 5786,
-      "description": "Place of Use (POU) polygons for water rights in Basin 34. Linked to PODs/rights via WaterRightNumber. Includes TotalAcres. Rendered for all visible rights in the app; district-scale service areas (>=20 km2) draw as outlines only."
+      "description": "Place of Use (POU) polygons for water rights in Basin 34. Linked to PODs/rights via WaterRightNumber. Includes TotalAcres. Rendered for all visible rights in the app; district-scale service areas (>=20 km2) draw as outlines only.",
+      "notes": "Geometries simplified for map performance (Douglas-Peucker)."
     },
     "nhd-canals-pipelines": {
       "source": "https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer layer 6 (fcode canal/ditch 336xx + pipeline 428xx, Basin 34 bbox)",
       "asOf": "2026-07-22",
       "count": 718,
-      "description": "NHD canal/ditch and pipeline flowlines in the basin envelope. Supports Explore toggles and the 'water moved farther' / lined-canal narrative."
+      "description": "NHD canal/ditch and pipeline flowlines in the basin envelope. Supports Explore toggles and the 'water moved farther' / lined-canal narrative.",
+      "notes": "Geometries simplified for map performance (Douglas-Peucker)."
     },
     "wd34-admin-reaches": {
       "source": "WD34 administrative reach approximations (manually digitized from WD34 accounting context)",
@@ -61,13 +63,14 @@
       "source": "https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer layer 12 (fcode 36100 playa / 46600 swamp-marsh, lower basin bbox)",
       "asOf": "2026-07-22",
       "count": 50,
-      "description": "Big Lost River sinks complex near Howe (NHD playa/marsh polygons) — the river's historic terminus."
+      "description": "Big Lost River sinks complex near Howe (NHD playa/marsh polygons) \u2014 the river's historic terminus."
     },
     "nwi-riparian": {
       "source": "https://fwsprimary.wim.usgs.gov/server/rest/services/Riparian/MapServer/0 (basin bbox, centroid-clipped to WBD boundary)",
       "asOf": "2026-07-22",
       "count": 1128,
-      "description": "USFWS National Wetlands Inventory riparian polygons (forested / scrub-shrub / emergent) — the natural riparian corridor of the Big Lost River down to the sinks near Howe."
+      "description": "USFWS National Wetlands Inventory riparian polygons (forested / scrub-shrub / emergent) \u2014 the natural riparian corridor of the Big Lost River down to the sinks near Howe.",
+      "notes": "Geometries simplified for map performance (Douglas-Peucker)."
     }
   }
 }

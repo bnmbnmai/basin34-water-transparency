@@ -77,7 +77,7 @@ export const GUIDE_STEPS: GuideStep[] = [
     kicker: 'Step 5 · Moved farther',
     title: 'Water moved farther from the river corridor',
     body:
-      'Some rights divert far from their authorized place of use; orange fills mark POUs off the natural corridor — a geometric proxy, not a liner inventory. On satellite, look for lined canals east or west of the river. Open the table + CSV in the inspector.',
+      'Some rights divert far from their authorized place of use — a geometric proxy, not a liner inventory. Open the ranked table + CSV, then Zoom a row for purple diversion↔field lines. On satellite, look for lined canals east or west of the river. (Turn on “Show all Place of Use fills” under Advanced if you want orange fills for every transfer.)',
     view: { lat: 43.85, lon: -113.45, zoom: 9 },
     flowEra: 'historical',
     highlightMode: 'transfers',
@@ -93,20 +93,27 @@ export const STORY_STEPS = GUIDE_STEPS
 export interface GuideCallbacks {
   refreshData: () => void
   setFlowEra: (era: FlowEra) => void
-  setView: (lat: number, lon: number, zoom: number) => void
+  setView: (lat: number, lon: number, zoom: number, opts?: { animate?: boolean }) => void
   setPodsEnabled: (on: boolean) => void
   setWellsEnabled: (on: boolean) => void
+  /** Set POD/well enabled flags + checkboxes without rebuilding (Guide uses refreshData once). */
+  setPodsWellsFlags?: (pods: boolean, wells: boolean) => void
   showRiverShrink: () => void
   showDryReach: () => void
   showTransfers: () => void
   onStepChange?: (index: number | null) => void
   ensureCanalsVisible?: () => void
   onGuideActiveChange?: (active: boolean) => void
+  /** Keep map paint light while Guide is open (POU-all-fills off, bigger clusters). */
+  setGuidePaintMode?: (active: boolean) => void
 }
 
 let currentIndex = 0
 let guideActive = false
 let cbs: GuideCallbacks | null = null
+/** Last applied POD/well visibility (avoid enable→rebuild then refresh→rebuild). */
+let guidePodsOn = true
+let guideWellsOn = false
 
 export function isGuideActive(): boolean {
   return guideActive
@@ -196,30 +203,53 @@ export function goToGuideStep(index: number, options: { openReceipt?: boolean } 
   currentIndex = Math.max(0, Math.min(GUIDE_STEPS.length - 1, index))
   const step = GUIDE_STEPS[currentIndex]
 
-  if (step.flowEra) {
+  const wantPods = step.showPods ?? (step.highlightMode != null && step.highlightMode !== 'none')
+  const wantWells = !!step.showWells
+  const eraChanged = !!(step.flowEra && step.flowEra !== state.flowEra)
+  const highlightChanged = step.highlightMode != null && step.highlightMode !== state.highlightMode
+  const podsChanged = wantPods !== guidePodsOn
+  const wellsChanged = wantWells !== guideWellsOn
+  const hadSelection = state.selectedWRs.size > 0 || state.ownerHighlight != null
+
+  if (step.flowEra && eraChanged) {
     state.flowEra = step.flowEra
     cbs.setFlowEra(step.flowEra)
+  } else if (step.flowEra) {
+    state.flowEra = step.flowEra
   }
   if (step.highlightMode != null) {
     state.highlightMode = step.highlightMode
   }
   state.ownerHighlight = null
   state.selectedWRs = new Set()
+  // Guide always keeps dense POU fills off — selection Zoom still paints purple fields.
+  state.placeOfUseMode = false
 
-  const showPods = step.showPods ?? (step.highlightMode != null && step.highlightMode !== 'none')
-  cbs.setPodsEnabled(showPods)
-  cbs.setWellsEnabled(!!step.showWells)
+  if (podsChanged || wellsChanged) {
+    guidePodsOn = wantPods
+    guideWellsOn = wantWells
+    if (cbs.setPodsWellsFlags) cbs.setPodsWellsFlags(wantPods, wantWells)
+    else {
+      if (podsChanged) cbs.setPodsEnabled(wantPods)
+      if (wellsChanged) cbs.setWellsEnabled(wantWells)
+    }
+  }
 
   if (step.highlightMode === 'transfers') {
     cbs.ensureCanalsVisible?.()
   }
 
   syncSidebarToState()
-  cbs.refreshData()
+
+  // One rebuild when filters/highlight/selection/visibility change. Skip when
+  // only camera/era/caption changed (era restyle is handled by setFlowEra).
+  const needsRebuild = highlightChanged || podsChanged || wellsChanged || hadSelection
+  if (needsRebuild) cbs.refreshData()
+
   renderCoachChrome(currentIndex)
 
   if (step.view) {
-    cbs.setView(step.view.lat, step.view.lon, step.view.zoom)
+    cbs.setView(step.view.lat, step.view.lon, step.view.zoom, { animate: false })
   }
 
   if (openReceipt) openStepReceipt(step)
@@ -236,12 +266,14 @@ export function goToStoryStep(index: number, options: { openPanel?: boolean } = 
 export function startGuide(index = 0) {
   if (!cbs) return
   guideActive = true
+  cbs.setGuidePaintMode?.(true)
   setCoachVisible(true)
   goToGuideStep(index, { openReceipt: false })
 }
 
 export function dismissGuide() {
   guideActive = false
+  cbs?.setGuidePaintMode?.(false)
   setCoachVisible(false)
   cbs?.onStepChange?.(null)
 }

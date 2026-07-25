@@ -6,6 +6,7 @@ const YEAR_START = 1880
 const YEAR_END = 2026
 const PLAY_STEP_YEARS = 2
 const PLAY_TICK_MS = 220
+const SCRUB_DEBOUNCE_MS = 120
 
 // Must match the margins/width used for the context chart below (chart.ts M)
 const CHART_W = 360
@@ -114,17 +115,42 @@ export function setupTimeline(store: DataStore, cb: TimelineCallbacks): Timeline
   const cursor = document.getElementById('timeline-cursor')!
 
   let playing: number | null = null
+  let scrubTimer: number | null = null
+  let scrubbing = false
+
+  function updateChrome(year: number) {
+    yearEl.textContent = String(year)
+    const [count, cfs] = cumAt(year)
+    statsEl.textContent = `${count.toLocaleString()} rights · ${Math.round(cfs).toLocaleString()} cfs authorized · ${wellsAt(year).toLocaleString()} irrigation wells`
+    const frac = (year - xMin) / (xMax - xMin)
+    cursor.style.left = `${CHART_ML + frac * (CHART_W - CHART_ML - CHART_MR)}px`
+  }
 
   function setYear(year: number, fromSlider = false) {
     const y = Math.max(YEAR_START, Math.min(YEAR_END, Math.round(year)))
     state.yearMax = y
     if (!fromSlider) slider.value = String(y)
-    yearEl.textContent = String(y)
-    const [count, cfs] = cumAt(y)
-    statsEl.textContent = `${count.toLocaleString()} rights · ${Math.round(cfs).toLocaleString()} cfs authorized · ${wellsAt(y).toLocaleString()} irrigation wells`
-    const frac = (y - xMin) / (xMax - xMin)
-    cursor.style.left = `${CHART_ML + frac * (CHART_W - CHART_ML - CHART_MR)}px`
+    updateChrome(y)
     cb.refreshData()
+  }
+
+  /** Slider scrub: keep POU suspended; debounce unsuspend so dense fills don't thrash. */
+  function scrubYear(year: number) {
+    const y = Math.max(YEAR_START, Math.min(YEAR_END, Math.round(year)))
+    state.yearMax = y
+    updateChrome(y)
+    if (!scrubbing) {
+      scrubbing = true
+      cb.setPouSuspended(true)
+    }
+    cb.refreshData()
+    if (scrubTimer != null) clearTimeout(scrubTimer)
+    scrubTimer = window.setTimeout(() => {
+      scrubTimer = null
+      scrubbing = false
+      cb.setPouSuspended(false)
+      cb.refreshData()
+    }, SCRUB_DEBOUNCE_MS)
   }
 
   function stopPlay() {
@@ -139,6 +165,11 @@ export function setupTimeline(store: DataStore, cb: TimelineCallbacks): Timeline
 
   function startPlay() {
     if (playing != null) return
+    if (scrubTimer != null) {
+      clearTimeout(scrubTimer)
+      scrubTimer = null
+      scrubbing = false
+    }
     if (state.yearMax >= YEAR_END) setYear(YEAR_START) // restart from the beginning
     playBtn.textContent = '❚❚'
     cb.setPouSuspended(true)
@@ -158,6 +189,12 @@ export function setupTimeline(store: DataStore, cb: TimelineCallbacks): Timeline
 
   function close() {
     stopPlay()
+    if (scrubTimer != null) {
+      clearTimeout(scrubTimer)
+      scrubTimer = null
+      scrubbing = false
+      cb.setPouSuspended(false)
+    }
     bar.classList.add('hidden')
     state.yearMax = YEAR_END
     cb.syncSidebar()
@@ -167,7 +204,7 @@ export function setupTimeline(store: DataStore, cb: TimelineCallbacks): Timeline
   playBtn.addEventListener('click', () => (playing != null ? stopPlay() : startPlay()))
   slider.addEventListener('input', () => {
     stopPlay()
-    setYear(parseInt(slider.value, 10), true)
+    scrubYear(parseInt(slider.value, 10))
   })
   document.getElementById('timeline-close')?.addEventListener('click', close)
 

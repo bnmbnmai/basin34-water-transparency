@@ -177,13 +177,11 @@ async function bootstrap() {
   renderShell()
   void loadDataAsOf()
   const lite = preferLiteMap()
+  // Dense POU fills are opt-in (Advanced) — keeps map usable; ★ click still paints selection.
+  state.placeOfUseMode = false
+  state.hideNonMatches = true
   if (lite) {
-    state.placeOfUseMode = false
-    state.hideNonMatches = true
     document.body.classList.add('lite-map')
-  } else {
-    state.placeOfUseMode = true
-    state.hideNonMatches = true
   }
   setLoadStatus(lite ? 'Phone-friendly load…' : 'Building map…', 8)
 
@@ -235,15 +233,15 @@ async function bootstrap() {
 
   const ensureCanalsVisible = () => {
     syncLayerCheckbox('layer-hydro', true)
-    void staticLayers.loadHeavy().then(() => {
+    void staticLayers.loadCanals().then(() => {
       const group = staticLayers.groups.hydro
       if (group && !map.hasLayer(group)) map.addLayer(group)
       updateLegendNow()
     })
   }
 
-  // Desktop: pull heavy layers; phones wait for toggles / Guide
-  if (!lite) void staticLayers.loadHeavy()
+  // Defer canals; never auto-load heavy NWI (user toggles riparian).
+  if (!lite) void staticLayers.loadCanals()
 
   wireSidebar({
     refreshData,
@@ -256,9 +254,17 @@ async function bootstrap() {
       } else if (key === 'diversions') {
         diversionLayer.setEnabled(on)
       } else {
-        if (on && (key === 'riparian' || key === 'hydro')) {
-          void staticLayers.loadHeavy().then(() => {
-            const group = staticLayers.groups[key]
+        if (on && key === 'hydro') {
+          void staticLayers.loadCanals().then(() => {
+            const group = staticLayers.groups.hydro
+            if (group) map.addLayer(group)
+            updateLegendNow()
+          })
+          return
+        }
+        if (on && key === 'riparian') {
+          void staticLayers.loadRiparian().then(() => {
+            const group = staticLayers.groups.riparian
             if (group) map.addLayer(group)
             updateLegendNow()
           })
@@ -306,13 +312,8 @@ async function bootstrap() {
       if (timeline.isOpen()) timeline.close()
       dismissGuide()
       resetState()
-      if (lite) {
-        state.placeOfUseMode = false
-        state.hideNonMatches = true
-      } else {
-        state.placeOfUseMode = true
-        state.hideNonMatches = true
-      }
+      state.placeOfUseMode = false
+      state.hideNonMatches = true
       syncSidebarToState()
       clearOwnerSearchUI()
       closeDetails()
@@ -322,12 +323,15 @@ async function bootstrap() {
   syncSidebarToState()
   syncLayerCheckbox('layer-pods', podLayer.enabled)
   syncLayerCheckbox('layer-wells', wellLayer.enabled)
+  syncLayerCheckbox('layer-riparian', false)
   syncLayerCheckbox('place-of-use-mode', state.placeOfUseMode)
 
   wireGuide({
     refreshData,
     setFlowEra: era => staticLayers.setFlowEra(era),
-    setView: (lat, lon, zoom) => map.setView([lat, lon], zoom),
+    setView: (lat, lon, zoom, opts) => {
+      map.setView([lat, lon], zoom, opts?.animate === false ? { animate: false } : undefined)
+    },
     setPodsEnabled: on => {
       podLayer.setEnabled(on)
       syncLayerCheckbox('layer-pods', on)
@@ -335,6 +339,17 @@ async function bootstrap() {
     setWellsEnabled: on => {
       wellLayer.setEnabled(on)
       syncLayerCheckbox('layer-wells', on)
+    },
+    setPodsWellsFlags: (pods, wells) => {
+      podLayer.enabled = pods
+      wellLayer.enabled = wells
+      syncLayerCheckbox('layer-pods', pods)
+      syncLayerCheckbox('layer-wells', wells)
+    },
+    setGuidePaintMode: active => {
+      state.placeOfUseMode = false
+      syncLayerCheckbox('place-of-use-mode', false)
+      podLayer.setGuideMode(active)
     },
     showRiverShrink: () => showReachLossPanel(),
     showDryReach: () => showDryReachSeniorsPanel(store),
@@ -425,7 +440,8 @@ async function bootstrap() {
       await enrichDataStoreWithPou(store, label => setLoadStatus(label, 85))
       if (state.placeOfUseMode) pouLayer.setVisibleWRs(podLayer.visibleWRs())
       else pouLayer.refreshSelection()
-      if (!lite) await staticLayers.loadHeavy()
+      // Canals only — NWI waits for the riparian checkbox.
+      if (!lite) await staticLayers.loadCanals()
       setLoadStatus('Background data ready — click a ★ for purple links', 100)
     } catch (err) {
       console.error('Background layer load failed', err)

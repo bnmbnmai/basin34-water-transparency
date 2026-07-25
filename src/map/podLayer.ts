@@ -39,6 +39,7 @@ export class PodLayer {
   private markersByWR = new Map<string, L.Marker[]>()
   private recordByMarker = new Map<L.Marker, PodRecord>()
   private lastVisibleWRs = new Set<string>()
+  private lite: boolean
   enabled = true
 
   private map: L.Map
@@ -54,18 +55,30 @@ export class PodLayer {
     this.map = map
     this.store = store
     this.onPodClick = onPodClick
-    const lite = !!opts.lite
+    this.lite = !!opts.lite
     this.cluster = L.markerClusterGroup({
       // Keep clusters longer on phones; unclustering 7k DivIcons kills scroll FPS.
-      disableClusteringAtZoom: lite ? 14 : 11,
+      disableClusteringAtZoom: this.lite ? 14 : 11,
       spiderfyOnMaxZoom: true,
-      maxClusterRadius: lite ? 90 : 45,
+      maxClusterRadius: this.lite ? 90 : 45,
       chunkedLoading: true,
-      chunkInterval: lite ? 100 : 200,
+      chunkInterval: this.lite ? 100 : 200,
       chunkDelay: 20,
       removeOutsideVisibleBounds: true,
       iconCreateFunction: clusterIcon,
     })
+  }
+
+  /**
+   * While Guide is active, keep larger clusters so basin-scale steps stay
+   * scrollable (same idea as phone lite mode).
+   */
+  setGuideMode(on: boolean) {
+    const radius = on || this.lite ? 90 : 45
+    const disableAt = on || this.lite ? 14 : 11
+    ;(this.cluster as any).options.maxClusterRadius = radius
+    ;(this.cluster as any).options.disableClusteringAtZoom = disableAt
+    if (this.enabled) this.rebuild()
   }
 
   /** Rights visible after the last rebuild (drives which POU polygons show). */

@@ -128,9 +128,9 @@ export function renderShell() {
               <select id="reach-select" class="text-xs w-full mb-1 border border-[var(--border)] rounded px-1 py-0.5">
                 <option value="">— Whole basin —</option>
               </select>
-              <label class="block text-xs"><input type="checkbox" id="place-of-use-mode" checked> Show all Place of Use fills</label>
+              <label class="block text-xs"><input type="checkbox" id="place-of-use-mode"> Show all Place of Use fills</label>
               <div class="text-[10px] text-[var(--text-muted)] leading-tight mt-0.5 mb-2">
-                Click a POD ★ anytime for purple field outlines + dashed diversion lines (works even if this is off).
+                Off by default for speed. Click a POD ★ anytime for purple field outlines + dashed diversion lines.
               </div>
 
               <button id="appropriation-btn" class="text-xs px-2 py-1 mt-1 w-full border border-[var(--border)] rounded hover:bg-[var(--border)]">
@@ -142,7 +142,7 @@ export function renderShell() {
 
               <h3 class="adv-h">More layers</h3>
               <div class="layer-item"><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="layer-boundary" checked /> <span>Basin boundary</span></label></div>
-              <div class="layer-item"><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="layer-riparian" checked /> <span>Riparian areas (FWS NWI)</span></label></div>
+              <div class="layer-item"><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="layer-riparian" /> <span>Riparian areas (FWS NWI)</span></label></div>
               <div class="layer-item"><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="layer-diversions" checked /> <span>Named diversions ◆ (≥5 cfs)</span></label></div>
               <div class="layer-item"><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="layer-gages" checked /> <span>Stream gages</span></label></div>
               <div class="layer-item"><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="layer-reaches" checked /> <span>Admin reaches</span></label></div>

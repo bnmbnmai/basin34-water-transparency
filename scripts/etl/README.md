@@ -64,6 +64,7 @@ cd /path/to/basin34-water-transparency
 python3 scripts/etl/fetch_idwr_pods_wells.py   # PODs, wells, POU (IDWR)
 python3 scripts/etl/fetch_nwi_riparian.py      # FWS NWI riparian polygons
 python3 scripts/etl/fetch_nhd_mainstem.py      # Big Lost mainstem + sinks (NHD)
+python3 scripts/etl/simplify_geometries.py    # Douglas-Peucker POU/NWI/canals for map FPS
 ```
 
 `fetch_nhd_mainstem.py` fetches the NHD HR flowlines named "Big Lost River" and tags each segment `above-arco` / `below-arco` (split at the USGS Arco gage, 13132500 — the only derived field, used for the "then vs now" styling), plus the terminal sinks playa/marsh polygons (waterbody fcodes 36100/46600) near Howe.

@@ -105,10 +105,11 @@ export class PouLayer {
       }
     }
 
-    // Connector lines POD → POU center: always for the selection, and for all
-    // visible transfer rights when the Transfers analysis view is active.
+    // Connector lines POD → POU center: always for the selection.
+    // Mass transfer lines only when Place-of-Use fills are on (otherwise Guide /
+    // transfers lens would draw hundreds of polylines every rebuild).
     const lineWRs = new Set<string>(state.selectedWRs)
-    if (state.highlightMode === 'transfers') {
+    if (state.highlightMode === 'transfers' && state.placeOfUseMode) {
       this.store.transferDistKm.forEach((_d, wr) => lineWRs.add(wr))
     }
     for (const wr of lineWRs) {

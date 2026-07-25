@@ -1,4 +1,5 @@
 import type { GeoFeature, PodRecord, PouRecord, WellRecord } from './types'
+import { fetchFeaturesCached } from './fetchCache'
 
 /** POD-to-POU distance (km) beyond which a right is flagged as a potential transfer. */
 export const TRANSFER_DIST_KM = 8
@@ -134,18 +135,7 @@ function distKm(lat1: number, lon1: number, lat2: number, lon2: number): number 
 }
 
 async function fetchFeatures(url: string): Promise<GeoFeature[]> {
-  try {
-    const res = await fetch(url)
-    if (!res.ok) {
-      console.warn(`[data] failed to load ${url}: ${res.status}`)
-      return []
-    }
-    const data = await res.json()
-    return data.features || []
-  } catch (e) {
-    console.warn(`[data] error loading ${url}`, e)
-    return []
-  }
+  return fetchFeaturesCached(url) as Promise<GeoFeature[]>
 }
 
 function buildCorridorPts(mainstemFeats: GeoFeature[], riparianFeats: GeoFeature[]): Array<[number, number]> {

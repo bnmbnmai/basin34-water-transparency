@@ -47,12 +47,16 @@ export class WellLayer {
   }
 
   rebuild() {
-    this.group.clearLayers()
-    this.count = 0
+    // Fast path: wells off and already empty — skip 4k-well scan.
     if (!this.enabled) {
+      if (this.count === 0 && !this.map.hasLayer(this.group)) return
+      this.group.clearLayers()
+      this.count = 0
       if (this.map.hasLayer(this.group)) this.map.removeLayer(this.group)
       return
     }
+    this.group.clearLayers()
+    this.count = 0
     for (const rec of this.store.wells) {
       if (!wellVisible(rec, state, this.store)) continue
       const style = wellStyle(rec, resolveWellEmphasis(rec, state, this.store))
