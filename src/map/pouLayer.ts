@@ -1,22 +1,31 @@
 import L from 'leaflet'
 import { DISTRICT_POU_KM2, type DataStore } from '../data'
 import { state } from '../state'
-import type { GeoFeature } from '../types'
+import type { GeoFeature, PouRecord } from '../types'
 
 const SELECTED_STYLE: L.PathOptions = {
   color: '#a855f7', weight: 2.5, fillColor: '#e9d5ff', fillOpacity: 0.12,
 }
 
+/** Below this zoom, clickable field outlines stay off (basin overview stays light). */
+export const POU_CLICKABLE_MIN_ZOOM = 12
+
+const CLICKABLE_STYLE: L.PathOptions = {
+  color: '#15803d',
+  weight: 1,
+  fillColor: '#4ade80',
+  fillOpacity: 0.06,
+  opacity: 0.55,
+  dashArray: '2,3',
+}
+
 /**
  * Place-of-Use polygons:
- * - one SVG GeoJSON layer for all visible rights (instead of one L.geoJSON
- *   instance per polygon as before). SVG (not canvas) is required here: only
- *   the polygon shapes capture clicks, so gages/reaches/wells in lower panes
- *   stay clickable through the gaps,
- * - a thin outline overlay + dashed POD↔POU connector lines for the current
- *   selection (dedicated non-interactive panes, so no z-order juggling),
- * - selection changes restyle in place; the polygon set only rebuilds when the
- *   set of visible rights actually changes.
+ * - Dense mode (`placeOfUseMode`): fills for all currently visible rights.
+ * - Clickable mode (default): when zoomed in, viewport fields are painted as
+ *   light clickable outlines so a field tap can reveal POD ↔ POU links —
+ *   without loading every basin polygon at overview zoom.
+ * - Selection overlay + dashed POD↔POU lines always work once a right is chosen.
  */
 export class PouLayer {
   private base: L.GeoJSON | null = null
@@ -25,6 +34,9 @@ export class PouLayer {
   private lastKey = ''
   /** While true (timeline playback) polygon rebuilds are skipped entirely. */
   private suspended = false
+  private moveTimer: ReturnType<typeof setTimeout> | null = null
+  /** Rights from the last filter pass (dense mode). */
+  private filterWRs = new Set<string>()
 
   private map: L.Map
   private store: DataStore
@@ -36,6 +48,8 @@ export class PouLayer {
     this.onPouClick = onPouClick
     this.overlay.addTo(map)
     this.lines.addTo(map)
+    map.on('moveend', () => this.scheduleViewportSync())
+    map.on('zoomend', () => this.scheduleViewportSync())
   }
 
   /** Suspend/resume rebuilds (timeline playback rebuilds layers every tick). */
@@ -43,16 +57,45 @@ export class PouLayer {
     this.suspended = on
   }
 
-  /** Show POU polygons for the given rights (no-op if the set is unchanged). */
+  /**
+   * Dense Place-of-Use fills for the given rights, or (when mode is off)
+   * viewport clickable fields at sufficient zoom.
+   */
   setVisibleWRs(wrs: Set<string>) {
+    this.filterWRs = wrs
+    this.syncBase()
+  }
+
+  /** Call after POU data finishes loading in the background. */
+  onPouDataReady() {
+    this.syncBase()
+  }
+
+  private scheduleViewportSync() {
+    if (state.placeOfUseMode) return
+    if (this.moveTimer) clearTimeout(this.moveTimer)
+    this.moveTimer = setTimeout(() => {
+      this.moveTimer = null
+      this.syncBase()
+    }, 140)
+  }
+
+  private syncBase() {
     if (this.suspended) return
-    if (!state.placeOfUseMode || wrs.size === 0) {
+    if (state.placeOfUseMode) {
+      this.paintDense(this.filterWRs)
+      return
+    }
+    this.paintClickableViewport()
+  }
+
+  private paintDense(wrs: Set<string>) {
+    if (wrs.size === 0 || this.store.pous.length === 0) {
       this.clearBase()
       this.refreshSelection()
       return
     }
-    const visible: Array<{ feature: GeoFeature; areaKm2: number }> = []
-    // Order-independent content hash so we only rebuild when the set changes
+    const visible: PouRecord[] = []
     let hash = 0
     for (const rec of this.store.pous) {
       if (wrs.has(rec.wr)) {
@@ -62,23 +105,71 @@ export class PouLayer {
         hash = (hash + h) | 0
       }
     }
-    // Paint large polygons first so small fields end up on top in the SVG and
-    // always win the click over the district-scale POU that contains them.
     visible.sort((a, b) => b.areaKm2 - a.areaKm2)
-    const features = visible.map(v => v.feature)
-    const key = `${features.length}:${hash}`
+    const key = `dense:${visible.length}:${hash}`
     if (key === this.lastKey && this.base) {
       this.refreshSelection()
       return
     }
+    this.paintFeatures(visible.map(v => v.feature), key, false)
+  }
+
+  private paintClickableViewport() {
+    if (this.store.pous.length === 0) {
+      this.clearBase()
+      this.refreshSelection()
+      return
+    }
+    const zoom = this.map.getZoom()
+    if (zoom < POU_CLICKABLE_MIN_ZOOM) {
+      const key = 'click:off'
+      if (key === this.lastKey && !this.base) {
+        this.refreshSelection()
+        return
+      }
+      this.clearBase()
+      this.lastKey = key
+      this.refreshSelection()
+      return
+    }
+
+    const bounds = this.map.getBounds().pad(0.08)
+    const visible: PouRecord[] = []
+    let hash = 0
+    for (const rec of this.store.pous) {
+      if (!featureIntersectsBounds(rec.feature, bounds)) continue
+      // Huge district/service areas stay out of the clickable field layer —
+      // they would blanket the valley and steal clicks from real fields.
+      if (rec.areaKm2 >= DISTRICT_POU_KM2) continue
+      visible.push(rec)
+      let h = 2166136261
+      for (let i = 0; i < rec.wr.length; i++) h = (h ^ rec.wr.charCodeAt(i)) * 16777619 | 0
+      hash = (hash + h) | 0
+    }
+    visible.sort((a, b) => b.areaKm2 - a.areaKm2)
+    const z = Math.round(zoom * 10)
+    const key = `click:${z}:${visible.length}:${hash}`
+    if (key === this.lastKey && this.base) {
+      this.refreshSelection()
+      return
+    }
+    this.paintFeatures(visible.map(v => v.feature), key, true)
+  }
+
+  private paintFeatures(features: GeoFeature[], key: string, clickableLite: boolean) {
     this.lastKey = key
     this.clearBase()
+    if (features.length === 0) {
+      this.refreshSelection()
+      return
+    }
     this.base = L.geoJSON({ type: 'FeatureCollection', features } as any, {
       pane: 'pouPane',
-      style: (f: any) => this.styleFor(f as GeoFeature),
+      style: (f: any) =>
+        clickableLite ? this.styleClickable(f as GeoFeature) : this.styleFor(f as GeoFeature),
       onEachFeature: (feat: any, lyr: L.Layer) => {
         lyr.on('click', (e: any) => {
-          L.DomEvent.stop(e) // don't let the map background-click clear this selection
+          L.DomEvent.stop(e)
           this.onPouClick(feat as GeoFeature)
         })
       },
@@ -88,13 +179,18 @@ export class PouLayer {
 
   /** Restyle polygons + rebuild the selection outline and connector lines. */
   refreshSelection() {
-    this.base?.setStyle(f => this.styleFor(f as GeoFeature))
+    const clickableLite = !state.placeOfUseMode
+    this.base?.setStyle(f =>
+      clickableLite ? this.styleClickable(f as GeoFeature) : this.styleFor(f as GeoFeature),
+    )
     this.overlay.clearLayers()
     this.lines.clearLayers()
-    if (state.selectedWRs.size === 0 && state.highlightMode !== 'transfers') return
+    if (state.selectedWRs.size === 0 && !(state.highlightMode === 'transfers' && state.placeOfUseMode)) {
+      return
+    }
 
     // Purple POD↔field graphics always work when a right is selected — even if
-    // "show all Place of Use" is off (that toggle only controls the dense fill layer).
+    // dense Place-of-Use fills are off.
     for (const wr of state.selectedWRs) {
       for (const pou of this.store.pousByWR.get(wr) || []) {
         this.overlay.addLayer(L.geoJSON(pou.feature as any, {
@@ -105,9 +201,6 @@ export class PouLayer {
       }
     }
 
-    // Connector lines POD → POU center: always for the selection.
-    // Mass transfer lines only when Place-of-Use fills are on (otherwise Guide /
-    // transfers lens would draw hundreds of polylines every rebuild).
     const lineWRs = new Set<string>(state.selectedWRs)
     if (state.highlightMode === 'transfers' && state.placeOfUseMode) {
       this.store.transferDistKm.forEach((_d, wr) => lineWRs.add(wr))
@@ -119,7 +212,7 @@ export class PouLayer {
       for (const pod of this.store.podsByWR.get(wr) || []) {
         this.lines.addLayer(L.polyline([[pod.lat, pod.lon], center], {
           pane: 'pouLinePane',
-          interactive: false, // decoration only — must not steal clicks from markers below
+          interactive: false,
           color: '#a855f7',
           weight: isSelected ? 2.5 : 1.5,
           dashArray: '4,3',
@@ -134,17 +227,18 @@ export class PouLayer {
       this.map.removeLayer(this.base)
       this.base = null
     }
-    this.lastKey = ''
+  }
+
+  private styleClickable(feature: GeoFeature): L.PathOptions {
+    const wr = (feature.properties?.WaterRightNumber || '').trim()
+    if (state.selectedWRs.has(wr)) return SELECTED_STYLE
+    return CLICKABLE_STYLE
   }
 
   private styleFor(feature: GeoFeature): L.PathOptions {
     const wr = (feature.properties?.WaterRightNumber || '').trim()
     const selected = state.selectedWRs.has(wr)
 
-    // District/service-area POUs (e.g. the ~234 km² Big Lost River Irrigation
-    // District area shared by its storage rights) render as outline only: no
-    // fill means no valley-wide tint and no stolen clicks — the unfilled
-    // interior is click-transparent, so the fields inside stay interactive.
     if ((feature.properties?.__areaKm2 ?? 0) >= DISTRICT_POU_KM2) {
       if (selected) return { color: '#a855f7', weight: 2.5, fill: false, dashArray: '8,5' }
       return { color: '#0f766e', weight: 1.5, fill: false, dashArray: '8,5', opacity: 0.7 }
@@ -155,10 +249,6 @@ export class PouLayer {
     const transfersMode = state.highlightMode === 'transfers'
     const isTransfer = this.store.transferDistKm.has(wr)
     if (isTransfer) {
-      // In the Transfers view, destinations outside the river's natural
-      // corridor ("new ground") get a strong solid fill so water moved onto
-      // desert ground is visible at a glance; other transfers read stronger
-      // than usual, everything else dims (below).
       if (transfersMode && this.store.newGroundWRs.has(wr)) {
         return { color: '#c2410c', weight: 2, fillColor: '#f97316', fillOpacity: 0.45 }
       }
@@ -175,4 +265,26 @@ export class PouLayer {
       fillOpacity: hasSelection ? 0.02 : 0.04, dashArray: '2,3',
     }
   }
+}
+
+/** Fast bbox test so we do not build Leaflet layers for off-screen POUs. */
+function featureIntersectsBounds(feature: GeoFeature, bounds: L.LatLngBounds): boolean {
+  const g = feature.geometry
+  if (!g?.coordinates) return false
+  let minLat = Infinity, maxLat = -Infinity, minLon = Infinity, maxLon = -Infinity
+  const walk = (coords: any) => {
+    if (!Array.isArray(coords)) return
+    if (typeof coords[0] === 'number' && typeof coords[1] === 'number') {
+      const lon = coords[0], lat = coords[1]
+      if (lat < minLat) minLat = lat
+      if (lat > maxLat) maxLat = lat
+      if (lon < minLon) minLon = lon
+      if (lon > maxLon) maxLon = lon
+      return
+    }
+    for (const c of coords) walk(c)
+  }
+  walk(g.coordinates)
+  if (!isFinite(minLat)) return false
+  return bounds.intersects(L.latLngBounds([minLat, minLon], [maxLat, maxLon]))
 }

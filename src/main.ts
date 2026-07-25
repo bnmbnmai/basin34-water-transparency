@@ -438,11 +438,10 @@ async function bootstrap() {
   void (async () => {
     try {
       await enrichDataStoreWithPou(store, label => setLoadStatus(label, 85))
-      if (state.placeOfUseMode) pouLayer.setVisibleWRs(podLayer.visibleWRs())
-      else pouLayer.refreshSelection()
+      pouLayer.onPouDataReady()
       // Canals only — NWI waits for the riparian checkbox.
       if (!lite) await staticLayers.loadCanals()
-      setLoadStatus('Background data ready — click a ★ for purple links', 100)
+      setLoadStatus('Background data ready — click a ★ or a field for purple links', 100)
     } catch (err) {
       console.error('Background layer load failed', err)
       setLoadStatus('Some layers failed to load', 100)

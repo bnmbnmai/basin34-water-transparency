@@ -130,7 +130,7 @@ export function renderShell() {
               </select>
               <label class="block text-xs"><input type="checkbox" id="place-of-use-mode"> Show all Place of Use fills</label>
               <div class="text-[10px] text-[var(--text-muted)] leading-tight mt-0.5 mb-2">
-                Off by default for speed. Click a POD ★ anytime for purple field outlines + dashed diversion lines.
+                Off by default for speed. Zoom in and click a field to see purple diversion↔field lines, or click a POD ★ anytime.
               </div>
 
               <button id="appropriation-btn" class="text-xs px-2 py-1 mt-1 w-full border border-[var(--border)] rounded hover:bg-[var(--border)]">
@@ -187,8 +187,8 @@ export function renderShell() {
       <div id="map-wrap">
         <div id="map"></div>
         <div id="map-hint" class="map-hint">
-          <strong>Start here:</strong> zoom in, then tap a ★ water-right point.
-          Purple lines connect that diversion to its fields.
+          <strong>Start here:</strong> tap a ★ diversion, or zoom in and tap a field.
+          Purple lines connect diversion ↔ place of use.
         </div>
         <div id="selection-banner" class="hidden">
           <span id="selection-text"></span>
