@@ -1,4 +1,4 @@
-/** Tiny dependency-free SVG charts for the details panel / modal, with an
+/** Tiny dependency-free SVG charts for the details inspector, with an
  * optional hover crosshair + value readout (see enhanceCharts). */
 
 export interface XY {

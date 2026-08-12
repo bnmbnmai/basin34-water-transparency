@@ -40,20 +40,8 @@ export function fetchAnnualMeans(siteNo: string): Promise<AnnualMean[]> {
   return p
 }
 
-async function doFetch(siteNo: string): Promise<AnnualMean[]> {
-  // Deliberately NOT passing missingData=on: that would include partial years
-  // (e.g. a gage installed/removed mid-season), whose "annual" means are
-  // computed from only the wet or only the dry months and would distort the
-  // record. Complete years only — so a record that ends early means the gage
-  // was discontinued (labeled in the chart), and a 0.0 value is a real
-  // measured zero-flow year, not a data gap.
-  const url =
-    'https://waterservices.usgs.gov/nwis/stat/?format=rdb' +
-    `&sites=${encodeURIComponent(siteNo)}&statReportType=annual&statTypeCd=mean&parameterCd=00060`
-  const res = await fetch(url)
-  if (!res.ok) throw new Error(`NWIS stat service: HTTP ${res.status}`)
-  const text = await res.text()
-
+/** Parse NWIS statistics RDB (tab-separated) into year/cfs rows. Exported for tests. */
+export function parseAnnualMeansRdb(text: string): AnnualMean[] {
   const out: AnnualMean[] = []
   let header: string[] | null = null
   for (const line of text.split('\n')) {
@@ -73,6 +61,21 @@ async function doFetch(siteNo: string): Promise<AnnualMean[]> {
   }
   out.sort((a, b) => a.year - b.year)
   return out
+}
+
+async function doFetch(siteNo: string): Promise<AnnualMean[]> {
+  // Deliberately NOT passing missingData=on: that would include partial years
+  // (e.g. a gage installed/removed mid-season), whose "annual" means are
+  // computed from only the wet or only the dry months and would distort the
+  // record. Complete years only — so a record that ends early means the gage
+  // was discontinued (labeled in the chart), and a 0.0 value is a real
+  // measured zero-flow year, not a data gap.
+  const url =
+    'https://waterservices.usgs.gov/nwis/stat/?format=rdb' +
+    `&sites=${encodeURIComponent(siteNo)}&statReportType=annual&statTypeCd=mean&parameterCd=00060`
+  const res = await fetch(url)
+  if (!res.ok) throw new Error(`NWIS stat service: HTTP ${res.status}`)
+  return parseAnnualMeansRdb(await res.text())
 }
 
 /** Full gage history: published annual means + daily-derived calendar-year stats. */

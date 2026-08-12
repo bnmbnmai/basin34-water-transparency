@@ -36,12 +36,15 @@ A **public accountability / transparency tool** for Water District 34 (Big Lost 
 
 ---
 
-## Current state (2026-07-22)
+## Current state (2026-08-12)
 
 - [x] F0 data refresh (`asOf` 2026-07-22)
 - [x] F1–F5 receipts roadmap (moved farther CSV, sidebar nest, story trim → now Guide, live USGS CFS)
-- [x] Guide not dual-mode + inspector unification (this pass)
+- [x] Guide not dual-mode + inspector unification
+- [x] Map perf + Landsat/Wayback imagery (phone-usable paint, simplified GeoJSON)
+- [x] Receipt unit tests (`npm test`: epoch dates, dry-reach, moved-farther, USGS RDB, permalink)
 - [ ] Curtailment / “who shut off when” (hardest data — later)
+- [ ] General export of currently filtered PODs/wells (CSV/GeoJSON)
 
 ---
 

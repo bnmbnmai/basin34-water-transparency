@@ -34,11 +34,11 @@ Selecting **Potential transfers** also opens a ranked list of the largest POD↔
 
 ### Overappropriation charts (live USGS data)
 
-Chart-heavy panels (gage history, appropriation, conjunctive, river shrink) open in a **lightbox modal** with large charts; every chart supports **hover** (crosshair + per-year value readout), dependency-free SVG.
+Chart-heavy panels (gage history, appropriation, conjunctive, river shrink) open in the **map-adjacent inspector** (`#details`) — not a full-screen lightbox. Every chart supports **hover** (crosshair + per-year value readout), dependency-free SVG. Esc / ✕ closes the inspector; the map stays visible.
 
-- **Click any stream gage** → lightbox fetches the gage's full annual-statistics record from USGS NWIS (CORS, no key needed) and charts annual mean flow for the entire period of record, with early-period vs recent-period mean reference lines and a headline % change. Two honesty features: **zero-flow years** (annual mean ≤ 0.5 cfs) render as red dots on the baseline with a callout — at Arco (13132500) the record runs to the present and the river recorded **0.0 cfs annual mean in 2021, 2022 and 2025**, which otherwise looks like a rendering bug — and records whose last year is stale are labeled **"record ends YYYY — gage discontinued"** (13132565 and 13132535 below Arco both end in 2018) so a short chart is never mistaken for missing data. Partial years are deliberately excluded from NWIS stats (`missingData=on` not used) so annual means aren't computed from only wet or only dry months.
+- **Click any stream gage** → the inspector fetches the gage's full annual-statistics record from USGS NWIS (CORS, no key needed) and charts annual mean flow for the entire period of record, with early-period vs recent-period mean reference lines and a headline % change. Two honesty features: **zero-flow years** (annual mean ≤ 0.5 cfs) render as red dots on the baseline with a callout — at Arco (13132500) the record runs to the present and the river recorded **0.0 cfs annual mean in 2021, 2022 and 2025**, which otherwise looks like a rendering bug — and records whose last year is stale are labeled **"record ends YYYY — gage discontinued"** (13132565 and 13132535 below Arco both end in 2018) so a short chart is never mistaken for missing data. Partial years are deliberately excluded from NWIS stats (`missingData=on` not used) so annual means aren't computed from only wet or only dry months.
 - **"📈 Appropriation vs. supply over time"** (sidebar) → cumulative authorized maximum diversion rate of all dated Basin 34 rights by priority year (total / surface / groundwater step chart), with the long-term mean flow at the Arco gage (USGS 13132500) charted below it and the paper-rights-to-measured-supply ratio called out.
-- **"📉 River shrink: Mackay → Moore → Arco"** (sidebar) → lightbox joins the live annual records of three main-stem gages (13127000 below Mackay, 13132100 below Moore diversion, 13132500 near Arco): a three-line chart, a year-by-year table for the Moore gage era (2020+), segment-loss charts (Mackay−Moore vs Moore−Arco), and the full-record Mackay−Arco loss. Red dots mark zero-flow years at Arco. Zoom buttons jump to each gage on the map.
+- **"📉 River shrink: Mackay → Moore → Arco"** (sidebar) → joins the live annual records of three main-stem gages (13127000 below Mackay, 13132100 below Moore diversion, 13132500 near Arco): a three-line chart, a year-by-year table for the Moore gage era (2020+), segment-loss charts (Mackay−Moore vs Moore−Arco), and the full-record Mackay−Arco loss. Red dots mark zero-flow years at Arco. Zoom buttons jump to each gage on the map.
 - **"▶ Development through time"** (sidebar) → a timeline bar over the map: scrub or play 1880 → 2026 and watch rights (priority year) and wells (construction year) accumulate, with a running rights / cfs / irrigation-well counter and a context chart showing both cumulative authorized cfs (blue) and the cumulative irrigation-well count (brown, scaled) — the post-1950 groundwater boom is visible at a glance while scrubbing. POU polygon redraws are suspended during playback for smooth animation.
 
 ### Exploring rights and places of use
@@ -91,16 +91,17 @@ src/
     diversionLayer.ts Named diversions aggregated from POD DiversionName
     staticLayers.ts Boundary, NWI riparian, NHD canals/pipelines, gages,
                     NHD mainstem + sinks (era-styled "then vs now"), reaches
+    historicalImagery.ts  Landsat year slider + Esri Wayback archive
   ui/
     shell.ts        Static HTML shell
     sidebar.ts      Control wiring (state mutations + refresh callbacks)
     legend.ts       Swatch legend + analysis-view hints
-    details.ts      Details panel renderers (POD / well / POU group / gage
+    details.ts      Inspector renderers (POD / well / POU group / gage
                     flow chart / diversion / transfers list / appropriation /
-                    conjunctive / river shrink)
+                    conjunctive / river shrink / dry-reach / moved farther)
     chart.ts        Dependency-free SVG line/area/step charts + hover
                     crosshair/value readout (enhanceCharts)
-    modal.ts        Lightbox for chart-heavy panels (gage / analyses)
+    story.ts        Thin Guide (“Walk the receipts”) — not a second Explore mode
     timeline.ts     "Development through time" slider/animation bar
     ownerSearch.ts  Debounced owner search + summary
   main.ts           Bootstrap + render orchestration (refreshData / setSelection)
@@ -114,10 +115,10 @@ Key invariants:
 
 ## Data & ETL
 
-- `public/data/` — committed GeoJSON extracts (WGS84) + `manifest.json` with provenance and counts: `wd34-pods` (7,066), `wd34-wells` (4,304), `wd34-pou` (5,786), `nhd-canals-pipelines` (718), `nwi-riparian` (1,128), `nhd-mainstem` (348), `nhd-sinks` (50), `wd34-admin-reaches` (6), `basin-boundary`, `gages` (5), `flow-extent-indicators` (2, fallback only).
+- `public/data/` — committed GeoJSON extracts (WGS84) + `manifest.json` with provenance and counts: `wd34-pods` (7,066), `wd34-wells` (4,323), `wd34-pou` (5,786), `nhd-canals-pipelines` (718), `nwi-riparian` (1,128), `nhd-mainstem` (348), `nhd-sinks` (50), `wd34-admin-reaches` (6), `basin-boundary`, `gages` (5), `flow-extent-indicators` (2, fallback only).
 - `scripts/etl/fetch_idwr_pods_wells.py` — reproducible extraction from IDWR public feature services (PODs, wells, POU; Basin 34 / WD34 filtered). Re-run periodically and commit updated extracts + manifest.
 - `scripts/etl/fetch_nwi_riparian.py` — FWS National Wetlands Inventory riparian polygons for the basin (bbox query, centroid-clipped to the WBD boundary).
-- `scripts/etl/fetch_nhd_mainstem.py` — Big Lost River mainstem flowlines from the NHD HR MapServer, each segment tagged `above-arco` / `below-arco` at the USGS Arco gage (13132500), plus the terminal sinks playa/marsh polygons (NHD waterbody fcodes 36100/46600) near Howe.
+- `scripts/etl/fetch_nhd_mainstem.py` — Big Lost River mainstem flowlines from the NHD HR MapServer, each segment tagged `above-moore` / `below-moore` at the **Moore diversion** (USGS 13132100), plus the terminal sinks playa/marsh polygons (NHD waterbody fcodes 36100/46600) near Howe.
 - Note on dates: IDWR serves `PriorityDate` / `ConstructionDate` as epoch **milliseconds**, and pre-1970 dates are **negative** — ~86% of Basin 34 rights. The data layer handles this.
 
 Primary public sources (all open, no login):
@@ -131,8 +132,10 @@ Primary public sources (all open, no login):
 
 ## Roadmap
 
-- Live USGS gage values (NWIS iv), export of filtered features.
+- Export of currently filtered PODs/wells (CSV/GeoJSON), beyond the two receipt CSVs.
 - Phase 1: parse WD34 accounting (XLSX/PDFs + ditch rider logs) for **curtailment history** ("who got shut off when"), join to reaches/gages for conveyance visualization, time correlations, storage balances.
+
+Live USGS instantaneous CFS is already in the gage inspector. Receipt unit tests: `npm test`.
 
 ## License & Attribution
 

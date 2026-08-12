@@ -67,11 +67,11 @@ python3 scripts/etl/fetch_nhd_mainstem.py      # Big Lost mainstem + sinks (NHD)
 python3 scripts/etl/simplify_geometries.py    # Douglas-Peucker POU/NWI/canals for map FPS
 ```
 
-`fetch_nhd_mainstem.py` fetches the NHD HR flowlines named "Big Lost River" and tags each segment `above-arco` / `below-arco` (split at the USGS Arco gage, 13132500 — the only derived field, used for the "then vs now" styling), plus the terminal sinks playa/marsh polygons (waterbody fcodes 36100/46600) near Howe.
+`fetch_nhd_mainstem.py` fetches the NHD HR flowlines named "Big Lost River" and tags each segment `above-moore` / `below-moore` (split at the **Moore diversion**, USGS 13132100 — the only derived field, used for the "then vs now" styling), plus the terminal sinks playa/marsh polygons (waterbody fcodes 36100/46600) near Howe.
 
 Note: the FWS NWI *Riparian* dataset was never mapped along the lower channel (Arco → sinks: zero polygons) — a real coverage gap, not an ETL bug. The NHD mainstem layer carries the corridor story through that stretch.
 
-Current committed extracts: `wd34-pods.geojson` (7,066), `wd34-wells.geojson` (4,304), `wd34-pou.geojson` (5,786), `nwi-riparian.geojson` (1,128), `nhd-mainstem.geojson` (348), `nhd-sinks.geojson` (50), plus separately produced `nhd-canals-pipelines.geojson` (718), `wd34-admin-reaches.geojson` (6), `basin-boundary.geojson`, `gages.geojson` (5) and `flow-extent-indicators.geojson` (2, kept only as a fallback for the mainstem layer).
+Current committed extracts: `wd34-pods.geojson` (7,066), `wd34-wells.geojson` (4,323), `wd34-pou.geojson` (5,786), `nwi-riparian.geojson` (1,128), `nhd-mainstem.geojson` (348), `nhd-sinks.geojson` (50), plus separately produced `nhd-canals-pipelines.geojson` (718), `wd34-admin-reaches.geojson` (6), `basin-boundary.geojson`, `gages.geojson` (5) and `flow-extent-indicators.geojson` (2, kept only as a fallback for the mainstem layer). `wd34-admin-reaches.geojson` is **manually digitized** (no refresh script) — treat it as a maintained overlay, not an ETL product.
 
 For other layers (NHD, custom reaches, gage summaries) or future accounting data (WD34 accounting XLSX/PDFs + ditch rider logs — the deferred Phase 1 curtailment work), add scripts following the same pattern. Re-run the main script when you want fresh public extracts.
 

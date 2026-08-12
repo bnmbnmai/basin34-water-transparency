@@ -7,7 +7,7 @@ import {
   type ImageryMode,
 } from './map/historicalImagery'
 import { defaultState, state } from './state'
-import type { Basemap, FlowEra, HighlightMode, PodColorMode } from './types'
+import { isHighlightMode, type Basemap, type FlowEra, type PodColorMode } from './types'
 
 /**
  * Shareable views: the URL hash mirrors AppState + map view + basemap, so any
@@ -94,7 +94,7 @@ export function applyHashToState(): RestoredView {
   const p = new URLSearchParams(raw)
 
   const m = p.get('m')
-  if (m) state.highlightMode = m as HighlightMode
+  if (m && isHighlightMode(m)) state.highlightMode = m
   const t = parseFloat(p.get('t') || '')
   if (isFinite(t)) state.highRateThreshold = t
   if (p.get('r')) state.reachFilter = p.get('r')!

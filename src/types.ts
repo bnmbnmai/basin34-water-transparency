@@ -18,6 +18,20 @@ export type HighlightMode =
   | 'conjunctive'
   | 'high-rate'
 
+export const HIGHLIGHT_MODES: readonly HighlightMode[] = [
+  'none',
+  'senior-downstream',
+  'junior-dev',
+  'transfers',
+  'conflict',
+  'conjunctive',
+  'high-rate',
+]
+
+export function isHighlightMode(value: string): value is HighlightMode {
+  return (HIGHLIGHT_MODES as readonly string[]).includes(value)
+}
+
 export interface GeoFeature {
   type: 'Feature'
   geometry: any
