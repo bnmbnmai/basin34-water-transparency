@@ -62,23 +62,28 @@ export function renderShell() {
           <div id="imagery-era" class="imagery-era">
             <div class="flex gap-1 mb-1 flex-wrap" role="group" aria-label="Satellite era">
               <button type="button" class="basemap-btn imagery-mode active" data-imagery="current">Current</button>
-              <button type="button" class="basemap-btn imagery-mode" data-imagery="landsat">Landsat</button>
+              <button type="button" class="basemap-btn imagery-mode" data-imagery="landsat">Year</button>
               <button type="button" class="basemap-btn imagery-mode" data-imagery="wayback">Archive</button>
             </div>
             <div id="imagery-landsat-controls" class="imagery-controls" hidden>
               <label class="imagery-year-field">
-                <span>Year <strong id="landsat-year-label">2000</strong></span>
-                <input type="range" id="landsat-year" min="1984" max="2026" step="1" value="2000" />
+                <span><strong id="landsat-year-label">2020 Sentinel-2 · 10 m</strong></span>
+                <input type="range" id="landsat-year" min="0" max="8" step="1" value="3" list="landsat-year-ticks" />
+                <datalist id="landsat-year-ticks"></datalist>
               </label>
-              <p class="imagery-hint" id="landsat-year-hint">Cloudless mosaics (Sentinel-2 2016+, Landsat before that). Gaps stay transparent instead of black.</p>
+              <p class="imagery-hint" id="landsat-year-hint">Year-by-year mosaics that actually exist. Landsat 5/8 ~30 m before 2016; Sentinel-2 ~10 m after.</p>
             </div>
             <div id="imagery-wayback-controls" class="imagery-controls" hidden>
               <label class="imagery-year-field">
                 <span>Archive year <strong id="wayback-year-label">—</strong></span>
                 <input type="range" id="wayback-year" min="2014" max="2026" step="1" value="2024" />
               </label>
-              <p class="imagery-hint" id="wayback-date-hint">High-res Esri World Imagery snapshots since ~2014.</p>
+              <p class="imagery-hint" id="wayback-date-hint">High-res Esri World Imagery snapshots since ~2014. A different product from the Year slider.</p>
             </div>
+            <label id="show-pou-on-imagery-wrap" class="imagery-pou-toggle" hidden>
+              <input type="checkbox" id="show-pou-on-imagery" />
+              Show today’s authorized fields
+            </label>
           </div>
 
           <h2>Layers</h2>
@@ -104,7 +109,7 @@ export function renderShell() {
           <select id="highlight-mode" class="w-full text-xs border border-[var(--border)] rounded px-1 py-0.5 mb-1">
             <optgroup label="Primary">
               <option value="none">None — show everything</option>
-              <option value="senior-downstream">Senior rights downstream (pre-1950)</option>
+              <option value="senior-downstream">Senior rights on the dry reach (pre-1950)</option>
               <option value="transfers">Water moved farther (POD far from POU)</option>
               <option value="conjunctive">Conjunctive: GW boom vs. senior surface</option>
             </optgroup>

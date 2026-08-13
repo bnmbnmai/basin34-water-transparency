@@ -1,7 +1,7 @@
 import type { DataStore } from '../data'
 import {
+  getAvailableLandsatYears,
   getImageryState,
-  getLandsatYearRange,
   getWaybackYearOptions,
   onImageryChange,
   setImageryMode,
@@ -122,6 +122,8 @@ export function syncSidebarToState() {
   setVal('high-rate-threshold', String(state.highRateThreshold))
   syncReachSelect()
   set('place-of-use-mode', state.placeOfUseMode)
+  const pouOnImg = input('show-pou-on-imagery')
+  if (pouOnImg) pouOnImg.checked = state.showPouOnImagery
   const colorSel = $<HTMLSelectElement>('pod-color-mode')
   if (colorSel) colorSel.value = state.podColorMode
   set('pod-filter-gw', state.showGW)
@@ -173,6 +175,10 @@ export function wireSidebar(cb: SidebarCallbacks) {
   })
   input('place-of-use-mode')?.addEventListener('change', e => {
     state.placeOfUseMode = (e.target as HTMLInputElement).checked
+    cb.refreshData()
+  })
+  input('show-pou-on-imagery')?.addEventListener('change', e => {
+    state.showPouOnImagery = (e.target as HTMLInputElement).checked
     cb.refreshData()
   })
 
@@ -278,24 +284,38 @@ export function wireSidebar(cb: SidebarCallbacks) {
 export function syncImageryControls(): void {
   const s = getImageryState()
   const years = getWaybackYearOptions().map(o => o.year)
+  const historical = s.mode === 'landsat' || s.mode === 'wayback'
 
   document.querySelectorAll<HTMLButtonElement>('.imagery-mode').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.imagery === s.mode)
   })
   const landsatBox = $('imagery-landsat-controls')
   const waybackBox = $('imagery-wayback-controls')
+  const pouWrap = $('show-pou-on-imagery-wrap')
   if (landsatBox) landsatBox.hidden = s.mode !== 'landsat'
   if (waybackBox) waybackBox.hidden = s.mode !== 'wayback'
+  if (pouWrap) pouWrap.hidden = !historical
 
+  const ticks = getAvailableLandsatYears()
   const landsatRange = input('landsat-year')
   const landsatLabel = $('landsat-year-label')
   const landsatHintEl = $('landsat-year-hint')
-  if (landsatRange) landsatRange.value = String(s.landsatYear)
-  if (landsatLabel) {
-    landsatLabel.textContent =
-      s.landsatShownYear !== s.landsatYear ? `${s.landsatYear} → ${s.landsatShownYear}` : String(s.landsatYear)
+  const datalist = $('landsat-year-ticks')
+  if (landsatRange && ticks.length) {
+    landsatRange.min = '0'
+    landsatRange.max = String(ticks.length - 1)
+    landsatRange.step = '1'
+    const idx = Math.max(0, ticks.indexOf(s.landsatShownYear))
+    landsatRange.value = String(idx)
   }
+  if (datalist && ticks.length) {
+    datalist.innerHTML = ticks.map((y, i) => `<option value="${i}" label="${y}"></option>`).join('')
+  }
+  if (landsatLabel) landsatLabel.textContent = s.landsatLabel
   if (landsatHintEl) landsatHintEl.textContent = s.landsatHint
+
+  const pouOnImg = input('show-pou-on-imagery')
+  if (pouOnImg) pouOnImg.checked = state.showPouOnImagery
 
   const waybackRange = input('wayback-year')
   const waybackLabel = $('wayback-year-label')
@@ -308,30 +328,28 @@ export function syncImageryControls(): void {
     if (waybackLabel) waybackLabel.textContent = String(y)
   }
   if (waybackHint && s.waybackDate) {
-    waybackHint.textContent = `Esri Wayback ${s.waybackDate} (publish date). High-res where World Imagery had coverage.`
+    waybackHint.textContent = `Esri Wayback ${s.waybackDate} (publish date). High-res where World Imagery had coverage — not a consistent sensor.`
   }
 }
 
 function wireImageryControls(cb: SidebarCallbacks) {
-  const { min: lsMin, max: lsMax } = getLandsatYearRange()
-  const landsatRange = input('landsat-year')
-  if (landsatRange) {
-    landsatRange.min = String(lsMin)
-    landsatRange.max = String(lsMax)
-  }
-
   document.querySelectorAll<HTMLButtonElement>('.imagery-mode').forEach(btn => {
     btn.addEventListener('click', () => {
       const next = btn.dataset.imagery as ImageryMode | undefined
       if (!next) return
       void setImageryMode(next).then(() => {
         syncImageryControls()
+        cb.refreshData()
         cb.onImageryChange?.()
       })
     })
   })
-  landsatRange?.addEventListener('input', () => {
-    setLandsatYear(Number(landsatRange.value))
+  input('landsat-year')?.addEventListener('input', ev => {
+    const ticks = getAvailableLandsatYears()
+    const idx = Number((ev.currentTarget as HTMLInputElement).value)
+    const year = ticks[idx]
+    if (year == null) return
+    setLandsatYear(year)
     syncImageryControls()
     cb.onImageryChange?.()
   })

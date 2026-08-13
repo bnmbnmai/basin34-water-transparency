@@ -102,6 +102,12 @@ export interface AppState {
   reachFilter: string
   placeOfUseMode: boolean
   /**
+   * When Year or Archive imagery is on, basin-wide POU outlines stay off unless
+   * this is true. IDWR geometry is today’s authorized fields, not historical.
+   * Selection (purple POD↔POU) still paints.
+   */
+  showPouOnImagery: boolean
+  /**
    * When an analysis view is active, hide non-matching PODs instead of drawing
    * thousands of dimmed markers (critical on phones).
    */

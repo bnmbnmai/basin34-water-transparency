@@ -1,5 +1,6 @@
 import type { DataStore } from './data'
 import { CONFLICT_CORRIDOR_KM } from './data'
+import { isDryReachSource, MOORE_LAT } from './dryReach'
 import type { AppState, PodRecord, WellRecord } from './types'
 
 /** Approximate "at or downstream of" test (river flows roughly south in WD34). */
@@ -42,7 +43,11 @@ export function podMatchesMode(rec: PodRecord, state: AppState, store: DataStore
   const down = () => isDownstream(rec.lat, state.reachFilter, store)
   switch (state.highlightMode) {
     case 'senior-downstream':
-      return rec.year != null && rec.year < 1950 && down()
+      // Same rules as the dry-reach table so Guide step 4 does not light up Antelope.
+      return rec.year != null && rec.year < 1950 &&
+        isDryReachSource(rec) &&
+        rec.mainstemDistKm <= CONFLICT_CORRIDOR_KM &&
+        rec.lat <= MOORE_LAT
     case 'junior-dev':
       return rec.year != null && rec.year >= 1980 && rec.rate > state.highRateThreshold
     case 'transfers':

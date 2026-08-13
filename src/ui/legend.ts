@@ -9,7 +9,7 @@ const fillSwatch = (stroke: string, fill: string) =>
   `<span class="lg-poly" style="border-color:${stroke};background:${fill}"></span>`
 
 const MODE_LEGEND: Record<string, string> = {
-  'senior-downstream': `${star(EMPHASIS_COLORS.senior.stroke)} Pre-1950 rights at/below the focus reach (emphasized). Others dimmed.`,
+  'senior-downstream': `${star(EMPHASIS_COLORS.senior.stroke)} Pre-1950 Big Lost / Ferris Slough rights on the NHD mainstem at/below Moore (emphasized). Antelope and other tributaries excluded. Others dimmed.`,
   'junior-dev': `${star(EMPHASIS_COLORS.junior.stroke)} Post-1980 rights/wells above the rate threshold (orange). Others dimmed.`,
   transfers: `${star(EMPHASIS_COLORS.transfer.stroke)} Water moved farther: POD sits far (&gt;8 km) from place of use; dashed lines connect POD ↔ POU. ` +
     `${fillSwatch('#c2410c', 'rgba(249,115,22,0.45)')} solid orange POU = off the natural corridor (geometric — not “built since 2010”). Others dimmed.`,
@@ -108,7 +108,7 @@ export function updateLegend(counts: LegendCounts, layersOn: { pods: boolean; we
 /** Hint text under the Analysis view selector. */
 export const MODE_HINTS: Record<string, string> = {
   none: 'Pick a view to emphasize an investigative pattern. Non-matching points are dimmed, never hidden.',
-  'senior-downstream': 'Shows where the oldest (pre-1950) rights divert at/below the focus reach — the rights most exposed to upstream depletion.',
+  'senior-downstream': 'Same lens as the dry-reach table: pre-1950 Big Lost / Ferris Slough rights on the NHD mainstem at or below Moore. Tributaries such as Antelope Creek are excluded.',
   'junior-dev': 'Shows large post-1980 rights and wells — where significant new development occurred after senior rights were established.',
   transfers: 'Geometric proxy: POD more than 8 km from current POU. Orange fills = POU more than 1.5 km outside the NHD+NWI corridor — not a lined-canal inventory or proof of recent breakout. Use satellite to look for lined canals east/west of the river. Opens ranked table + CSV.',
   conflict: 'Contrasts senior (pre-1970) downstream rights with newer (post-1980) upstream development — but only for PODs within 3 km of the NHD mainstem / NWI riparian corridor (valley-floor river path). Opens a ranked overview panel.',

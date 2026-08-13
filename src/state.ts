@@ -16,6 +16,7 @@ export function defaultState(): AppState {
     ownerHighlight: null,
     reachFilter: '',
     placeOfUseMode: false,
+    showPouOnImagery: false,
     hideNonMatches: false,
     isolateSelection: false,
     selectedWRs: new Set<string>(),

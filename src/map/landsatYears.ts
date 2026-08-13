@@ -11,13 +11,22 @@ export const S2_CLOUDLESS_LAYERS: Record<number, string> = {
   2025: 's2cloudless-2025_3857',
 }
 
-export type LandsatKind = 's2' | 'local' | 'esri'
+export type LandsatKind = 's2' | 'local' | 'none'
 
 export interface LandsatSource {
-  /** Year actually shown (may snap from the slider). */
+  /** Year actually shown (may snap from the slider / permalink). */
   year: number
   kind: LandsatKind
   layer?: string
+  /** Landsat-5 TM / Landsat-8 OLI when known from index.json. */
+  platform?: string
+}
+
+export interface LocalYearMeta {
+  file: string
+  platform?: string
+  sensor?: string
+  resolutionM?: number
 }
 
 function nearestYear(year: number, years: number[]): number {
@@ -30,25 +39,58 @@ function nearestYear(year: number, years: number[]): number {
   })
 }
 
-/**
- * Pick a source that will actually paint the basin.
- * Esri's public Landsat/MS service is a scene catalog (GLS epochs + Landsat 8
- * strips), not a yearly mosaic — requesting 1995 as a JPEG fills the map with
- * nodata black. Prefer seamless S2 cloudless tiles; fall back to a local
- * basin mosaic; only then hit Esri per-tile with transparent nodata.
- */
-export function resolveLandsatSource(year: number, localYears: number[]): LandsatSource {
-  const s2Years = Object.keys(S2_CLOUDLESS_LAYERS).map(Number).sort((a, b) => a - b)
+export function s2Years(): number[] {
+  return Object.keys(S2_CLOUDLESS_LAYERS).map(Number).sort((a, b) => a - b)
+}
+
+/** Slider ticks: local mosaics that actually filled ∪ published S2 years. */
+export function availableImageryYears(localYears: number[]): number[] {
+  return [...new Set([...localYears, ...s2Years()])].sort((a, b) => a - b)
+}
+
+export function resolveLandsatSource(
+  year: number,
+  localYears: number[],
+  localMeta: Record<string, LocalYearMeta> = {},
+  opts: { indexReady?: boolean } = {},
+): LandsatSource {
   if (S2_CLOUDLESS_LAYERS[year]) {
     return { year, kind: 's2', layer: S2_CLOUDLESS_LAYERS[year] }
   }
-  if (year >= 2016 && s2Years.length) {
-    const y = nearestYear(year, s2Years)
-    return { year: y, kind: 's2', layer: S2_CLOUDLESS_LAYERS[y] }
+  if (localYears.includes(year)) {
+    return { year, kind: 'local', platform: localMeta[String(year)]?.platform }
   }
-  if (localYears.includes(year)) return { year, kind: 'local' }
-  if (localYears.length) return { year: nearestYear(year, localYears), kind: 'local' }
-  return { year, kind: 'esri' }
+  // Do not snap 1990 → 2016 S2 before index.json has loaded.
+  if (year < 2016 && !localYears.length && opts.indexReady === false) {
+    return { year, kind: 'none' }
+  }
+  const available = availableImageryYears(localYears)
+  if (available.length) {
+    const y = nearestYear(year, available)
+    return resolveLandsatSource(y, localYears, localMeta, opts)
+  }
+  return { year, kind: 'none' }
+}
+
+export function imagerySensorLabel(shown: LandsatSource): string {
+  if (shown.kind === 's2') return `${shown.year} Sentinel-2 · 10 m`
+  if (shown.kind === 'local') {
+    const n = shown.platform === 'landsat-8' ? '8' : shown.platform === 'landsat-5' ? '5' : ''
+    const sat = n ? `Landsat ${n}` : 'Landsat'
+    return `${shown.year} ${sat} · 30 m`
+  }
+  return `${shown.year} — no mosaic`
+}
+
+export function imageryBanner(requested: number, shown: LandsatSource): string {
+  const snap = requested !== shown.year ? `No mosaic for ${requested} — showing ${shown.year}. ` : ''
+  if (shown.kind === 's2') {
+    return `${snap}Showing ${shown.year} Sentinel-2 (10 m) — today’s satellite is off`
+  }
+  if (shown.kind === 'local') {
+    return `${snap}Showing ${shown.year} Landsat (30 m) — today’s satellite is off`
+  }
+  return `No mosaic for ${requested}`
 }
 
 export function landsatHint(requested: number, shown: LandsatSource): string {
@@ -57,7 +99,7 @@ export function landsatHint(requested: number, shown: LandsatSource): string {
     return `${snap}Sentinel-2 cloudless mosaic (~10 m). Best for crop circles and new ground.`
   }
   if (shown.kind === 'local') {
-    return `${snap}Landsat basin mosaic (~30 m), served locally. Gaps show current satellite underneath.`
+    return `${snap}Landsat Collection 2 summer mosaic (~30 m). Dark map outside the valley — not today’s satellite.`
   }
-  return `${snap}Live Landsat tiles (transparent gaps). Prefer Archive for high-res 2014+.`
+  return `No summer mosaic for ${requested}. The Year slider only includes years that actually filled.`
 }

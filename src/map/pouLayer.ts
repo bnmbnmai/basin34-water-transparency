@@ -1,5 +1,7 @@
 import L from 'leaflet'
 import { DISTRICT_POU_KM2, type DataStore } from '../data'
+import { getImageryState, isYearOrArchiveActive } from './historicalImagery'
+import { basinPouOutlinesAllowed } from './pouVisibility'
 import { state } from '../state'
 import type { GeoFeature, PouRecord } from '../types'
 
@@ -82,6 +84,17 @@ export class PouLayer {
 
   private syncBase() {
     if (this.suspended) return
+    if (!basinPouOutlinesAllowed(
+      isYearOrArchiveActive() ? getImageryState().mode : 'current',
+      state.showPouOnImagery,
+    )) {
+      if (this.lastKey !== 'hist-off') {
+        this.clearBase()
+        this.lastKey = 'hist-off'
+      }
+      this.refreshSelection()
+      return
+    }
     if (state.placeOfUseMode) {
       this.paintDense(this.filterWRs)
       return

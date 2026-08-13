@@ -1,0 +1,329 @@
+{
+  "bounds": {
+    "south": 43.45291889355465,
+    "west": -113.90625,
+    "north": 44.21370990970205,
+    "east": -113.02734375
+  },
+  "searchBbox": {
+    "west": -113.85,
+    "south": 43.5,
+    "east": -113.1,
+    "north": 44.1
+  },
+  "attribution": "Landsat Collection 2 via Microsoft Planetary Computer. USGS / NASA.",
+  "zoom": 11,
+  "years": {
+    "1984": {
+      "file": "1984.jpg",
+      "bytes": 397964,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "1985": {
+      "file": "1985.jpg",
+      "bytes": 454510,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "1986": {
+      "file": "1986.jpg",
+      "bytes": 401530,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "1987": {
+      "file": "1987.jpg",
+      "bytes": 423461,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "1988": {
+      "file": "1988.jpg",
+      "bytes": 432565,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "1989": {
+      "file": "1989.jpg",
+      "bytes": 411640,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "1990": {
+      "file": "1990.jpg",
+      "bytes": 451776,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "1991": {
+      "file": "1991.jpg",
+      "bytes": 439574,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "1992": {
+      "file": "1992.jpg",
+      "bytes": 383711,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "1993": {
+      "file": "1993.jpg",
+      "bytes": 407206,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "1994": {
+      "file": "1994.jpg",
+      "bytes": 440564,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "1995": {
+      "file": "1995.jpg",
+      "bytes": 417520,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "1996": {
+      "file": "1996.jpg",
+      "bytes": 450342,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "1997": {
+      "file": "1997.jpg",
+      "bytes": 430107,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "1998": {
+      "file": "1998.jpg",
+      "bytes": 403729,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "1999": {
+      "file": "1999.jpg",
+      "bytes": 425647,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "2000": {
+      "file": "2000.jpg",
+      "bytes": 426932,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "2001": {
+      "file": "2001.jpg",
+      "bytes": 426368,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "2002": {
+      "file": "2002.jpg",
+      "bytes": 435100,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "2003": {
+      "file": "2003.jpg",
+      "bytes": 416075,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "2004": {
+      "file": "2004.jpg",
+      "bytes": 416759,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "2005": {
+      "file": "2005.jpg",
+      "bytes": 410554,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "2006": {
+      "file": "2006.jpg",
+      "bytes": 437434,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "2007": {
+      "file": "2007.jpg",
+      "bytes": 420590,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "2008": {
+      "file": "2008.jpg",
+      "bytes": 436982,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "2009": {
+      "file": "2009.jpg",
+      "bytes": 424119,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "2010": {
+      "file": "2010.jpg",
+      "bytes": 412204,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "2011": {
+      "file": "2011.jpg",
+      "bytes": 412482,
+      "platform": "landsat-5",
+      "sensor": "TM",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "2013": {
+      "file": "2013.jpg",
+      "bytes": 434420,
+      "platform": "landsat-8",
+      "sensor": "OLI",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "2014": {
+      "file": "2014.jpg",
+      "bytes": 430321,
+      "platform": "landsat-8",
+      "sensor": "OLI",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    },
+    "2015": {
+      "file": "2015.jpg",
+      "bytes": 435572,
+      "platform": "landsat-8",
+      "sensor": "OLI",
+      "resolutionM": 30,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
+    }
+  },
+  "generated": "2026-08-13"
+}

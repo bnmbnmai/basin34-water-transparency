@@ -14,6 +14,9 @@ const BASIN_ZOOM = 9
  * Everything is SVG, so only the shapes themselves capture clicks: a well/gage
  * dot wins the click on the dot, and a click just beside it falls through to the
  * POU polygon underneath.
+ *   tilePane         200  OSM / satellite / S2 / Wayback
+ *   landsatPane      250  opaque local Landsat overlay (under vectors)
+ *   labelsPane       350  hybrid place names (above the photo, below vectors)
  *   overlayPane      400  (default vector overlays: boundary, canals, reaches…)
  *   pouPane          450  base POU polygons
  *   wellPane         470  wells (clickable above POU)
@@ -24,6 +27,12 @@ const BASIN_ZOOM = 9
  */
 export function createMap(): L.Map {
   const map = L.map('map', { zoomControl: true }).setView(BASIN_CENTER, BASIN_ZOOM)
+  const landsatPane = map.createPane('landsatPane')
+  landsatPane.style.zIndex = '250'
+  landsatPane.style.pointerEvents = 'none'
+  const labelsPane = map.createPane('labelsPane')
+  labelsPane.style.zIndex = '350'
+  labelsPane.style.pointerEvents = 'none'
   map.createPane('pouPane').style.zIndex = '450'
   map.createPane('wellPane').style.zIndex = '470'
   map.createPane('gagePane').style.zIndex = '480'
@@ -74,7 +83,7 @@ export class BasemapControl {
       if (type === 'hybrid') {
         this.labels = L.tileLayer(
           'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
-          { maxZoom: 18, opacity: 0.9 },
+          { maxZoom: 18, opacity: 0.9, pane: 'labelsPane' },
         ).addTo(this.map)
       }
     }

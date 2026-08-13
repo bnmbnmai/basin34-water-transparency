@@ -320,7 +320,10 @@ async function bootstrap() {
       syncImageryControls()
       updatePermalink()
     },
-    onImageryChange: () => updatePermalink(),
+    onImageryChange: () => {
+      updatePermalink()
+      pouLayer.setVisibleWRs(podLayer.visibleWRs())
+    },
     setFlowEra: era => staticLayers.setFlowEra(era),
     // Map emphasis — primary receipts open via Insight buttons only.
     // Conflict is Advanced-only and its ranked list is the point of that lens.

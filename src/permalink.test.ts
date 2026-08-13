@@ -12,6 +12,8 @@ vi.mock('./map/historicalImagery', () => ({
     landsatShownYear: 2024,
     landsatKind: 's2',
     landsatHint: '',
+    landsatLabel: '2024 Sentinel-2 · 10 m',
+    landsatBanner: '',
   }),
   setImageryMode: async () => undefined,
   setLandsatYear: () => undefined,

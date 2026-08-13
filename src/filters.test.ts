@@ -29,6 +29,29 @@ describe('podMatchesMode / podVisible', () => {
     expect(podMatchesMode(upstream, state, store)).toBe(false)
   })
 
+  it('excludes Antelope / off-mainstem rights from senior-downstream (same as dry-reach)', () => {
+    const store = emptyStore()
+    const state = defaultState()
+    state.highlightMode = 'senior-downstream'
+    const antelope = pod({
+      wr: '34-ant',
+      year: 1940,
+      lat: 43.70,
+      source: 'ANTELOPE CREEK',
+      mainstemDistKm: 0.4,
+    })
+    const offMainstem = pod({
+      wr: '34-far',
+      year: 1940,
+      lat: 43.70,
+      source: 'BIG LOST RIVER',
+      mainstemDistKm: 9,
+    })
+    expect(podMatchesMode(antelope, state, store)).toBe(false)
+    expect(podMatchesMode(offMainstem, state, store)).toBe(false)
+    expect(podMatchesMode(pod({ year: 1940, lat: 43.70 }), state, store)).toBe(true)
+  })
+
   it('keeps a selected right visible even when hideNonMatches is on', () => {
     const store = emptyStore()
     const state = defaultState()
