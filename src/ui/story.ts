@@ -64,7 +64,7 @@ export const GUIDE_STEPS: GuideStep[] = [
     kicker: 'Step 4 · Senior rights',
     title: 'Downstream seniors on a dry reach',
     body:
-      'Pre-1950 surface rights on the corridor at or below Moore sit where the channel often goes dry. Open the ranked table + CSV in the inspector. Zoom any row to paint purple diversion↔field lines on the map.',
+      'Pre-1950 Big Lost / Ferris Slough rights on the NHD mainstem at or below Moore sit where the channel often goes dry. Tributaries such as Antelope Creek are excluded. Open the ranked table + CSV in the inspector. Zoom any row to isolate that right (purple star + diversion↔field lines).',
     view: { lat: 43.65, lon: -113.30, zoom: 11 },
     flowEra: 'recent',
     highlightMode: 'senior-downstream',
@@ -222,6 +222,7 @@ export function goToGuideStep(index: number, options: { openReceipt?: boolean } 
   }
   state.ownerHighlight = null
   state.selectedWRs = new Set()
+  state.isolateSelection = false
   // Guide always keeps dense POU fills off — selection Zoom still paints purple fields.
   state.placeOfUseMode = false
 

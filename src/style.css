@@ -436,6 +436,40 @@ main {
   text-decoration: underline;
 }
 
+.basin-pod-star {
+  background: none !important;
+  border: none !important;
+}
+.basin-pod-selected {
+  overflow: visible !important;
+  z-index: 700 !important;
+}
+.basin-pod-selected::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 180%;
+  height: 180%;
+  margin-left: -90%;
+  margin-top: -90%;
+  border: 2px solid #c084fc;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: basin-pod-ring 1.5s ease-out 4;
+}
+@keyframes basin-pod-ring {
+  0% { transform: scale(0.55); opacity: 0.95; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .basin-pod-selected::after {
+    animation: none;
+    opacity: 0.85;
+    transform: scale(1);
+  }
+}
+
 /* Timeline bar (development through time) */
 #timeline-bar {
   position: absolute;

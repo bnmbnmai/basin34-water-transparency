@@ -77,6 +77,8 @@ export interface PodIconSpec {
   strokeWidth: number
   /** Kept for cache keys; glow is intentionally unused (too noisy on satellite). */
   glow: 'none'
+  /** Receipt / click selection: CSS ring so the star is findable among clusters. */
+  pulse: boolean
 }
 
 /**
@@ -91,13 +93,17 @@ export function podIconSpec(rec: PodRecord, baseColor: string, emphasis: PodEmph
   let strokeWidth = 0.8
 
   const accent = EMPHASIS_COLORS[emphasis]
+  let pulse = false
+  let maxSize = 18
   switch (emphasis) {
     case 'selected':
-      radius = Math.max(radius * 1.55, 4.5)
+      pulse = true
+      maxSize = 28
+      radius = Math.max(radius * 2.2, 7)
       stroke = accent.stroke
       fill = accent.fill
-      fillOpacity = 0.9
-      strokeWidth = 2
+      fillOpacity = 0.95
+      strokeWidth = 2.4
       break
     case 'owner':
       radius *= 1.35
@@ -149,12 +155,13 @@ export function podIconSpec(rec: PodRecord, baseColor: string, emphasis: PodEmph
   }
 
   return {
-    size: Math.max(8, Math.min(18, Math.round(radius * 2.6))),
+    size: Math.max(8, Math.min(maxSize, Math.round(radius * 2.6))),
     stroke,
     fill,
     fillOpacity: Math.round(fillOpacity * 100) / 100,
     strokeWidth: Math.max(0.75, Math.round(strokeWidth * 10) / 10),
     glow: 'none',
+    pulse,
   }
 }
 
@@ -162,7 +169,7 @@ const iconCache = new Map<string, L.DivIcon>()
 
 /** Star-shaped divIcon, cached by style key (7k markers share a few dozen icons). */
 export function podStarIcon(spec: PodIconSpec): L.DivIcon {
-  const key = `${spec.size}|${spec.stroke}|${spec.fill}|${spec.fillOpacity}|${spec.strokeWidth}`
+  const key = `${spec.size}|${spec.stroke}|${spec.fill}|${spec.fillOpacity}|${spec.strokeWidth}|${spec.pulse ? 'p' : ''}`
   const cached = iconCache.get(key)
   if (cached) return cached
 
@@ -173,7 +180,7 @@ export function podStarIcon(spec: PodIconSpec): L.DivIcon {
     `fill="${spec.fill}" fill-opacity="${spec.fillOpacity}" stroke="${spec.stroke}" stroke-width="${spec.strokeWidth}" stroke-opacity="0.9"/></svg>`
 
   const icon = L.divIcon({
-    className: 'basin-pod-star',
+    className: spec.pulse ? 'basin-pod-star basin-pod-selected' : 'basin-pod-star',
     html,
     iconSize: [spec.size, spec.size],
     iconAnchor: [spec.size / 2, spec.size / 2],

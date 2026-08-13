@@ -40,7 +40,11 @@ export function updateLegend(counts: LegendCounts, layersOn: { pods: boolean; we
     rows.push(`<div class="lg-row">${star(EMPHASIS_COLORS.owner.stroke)} Rights owned by “${state.ownerHighlight}”. Others dimmed.</div>`)
   }
   if (state.selectedWRs.size > 0) {
-    rows.push(`<div class="lg-row">${star(EMPHASIS_COLORS.selected.stroke)} Selected right(s) — purple POU outline + dashed POD lines.</div>`)
+    rows.push(`<div class="lg-row">${star(EMPHASIS_COLORS.selected.stroke)} ${
+      state.isolateSelection
+        ? 'Selected right isolated — other stars hidden. Clear selection to see neighbors.'
+        : 'Selected right(s) — purple POU outline + dashed POD lines.'
+    }</div>`)
   }
 
   if (layersOn.pods) {

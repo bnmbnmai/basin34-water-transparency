@@ -37,6 +37,7 @@ export function pod(over: Partial<PodRecord> = {}): PodRecord {
     lon: -113.30,
     isTransfer: false,
     corridorDistKm: 0.5,
+    mainstemDistKm: 0.5,
     uses: 'IRRIGATION',
     diversionName: '',
     ...over,

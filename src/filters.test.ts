@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { defaultState } from './state'
-import { isDownstream, podMatchesMode, podVisible } from './filters'
+import { isDownstream, onRiverCorridor, podMatchesMode, podVisible } from './filters'
 import { emptyStore, pod } from './test/fixtures'
 
 describe('isDownstream', () => {
@@ -38,5 +38,19 @@ describe('podMatchesMode / podVisible', () => {
     expect(podVisible(rec, state, store)).toBe(false)
     state.selectedWRs = new Set(['34-sel'])
     expect(podVisible(rec, state, store)).toBe(true)
+  })
+
+  it('uses mainstem distance for the river-corridor test, not NWI wetlands', () => {
+    expect(onRiverCorridor(pod({ corridorDistKm: 0.2, mainstemDistKm: 9 }))).toBe(false)
+    expect(onRiverCorridor(pod({ corridorDistKm: 9, mainstemDistKm: 0.2 }))).toBe(true)
+  })
+
+  it('hides non-selected rights when isolateSelection is on', () => {
+    const store = emptyStore()
+    const state = defaultState()
+    state.isolateSelection = true
+    state.selectedWRs = new Set(['34-sel'])
+    expect(podVisible(pod({ wr: '34-sel' }), state, store)).toBe(true)
+    expect(podVisible(pod({ wr: '34-other' }), state, store)).toBe(false)
   })
 })

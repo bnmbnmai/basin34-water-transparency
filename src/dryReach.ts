@@ -11,9 +11,9 @@ export const DRY_REACH_SENIOR_YEAR = 1950
 /**
  * Downstream seniors on a dry reach — public-data proxy, not a legal finding.
  *
- * - Surface / Big Lost–like source on corridor
+ * - IDWR source is the Big Lost River or Ferris Slough (not tributaries)
  * - Priority year < 1950
- * - POD within CONFLICT_CORRIDOR_KM of NHD/NWI corridor
+ * - POD within CONFLICT_CORRIDOR_KM of the NHD Big Lost mainstem (not NWI)
  * - At or below Moore diversion (POD latitude ≤ Moore gage lat)
  */
 export interface DryReachSeniorRow {
@@ -22,21 +22,25 @@ export interface DryReachSeniorRow {
   year: number
   rate: number
   source: string
+  uses: string
   lat: number
   lon: number
-  corridorKm: number
+  mainstemKm: number
 }
 
 export const DRY_REACH_METHODOLOGY =
-  'Proxy only (not a legal determination): Big Lost / surface rights with priority before 1950, ' +
-  'POD within 3 km of the NHD corridor, and at or below the Moore diversion (USGS 13132100). ' +
-  'Sources: IDWR PODs + NHD mainstem. Sorted by diversion rate (cfs).'
+  'Proxy only (not a legal determination): rights whose IDWR source is the Big Lost River ' +
+  'or Ferris Slough (a connected lower-valley channel), with priority before 1950, ' +
+  'a POD within 3 km of the NHD Big Lost mainstem, and at or below the Moore diversion ' +
+  '(USGS 13132100). Tributaries such as Antelope Creek are excluded even when they sit ' +
+  'near NWI riparian wetlands. Distance is to the NHD mainstem, not to tributary wetlands. ' +
+  'Authorized max cfs is not actual delivery. Sources: IDWR PODs + NHD mainstem. Sorted by diversion rate (cfs).'
 
-function isBigLostSurface(rec: PodRecord): boolean {
+/** Big Lost mainstem or the named lower-valley slough — not Antelope / Dry Fork / springs. */
+export function isDryReachSource(rec: PodRecord): boolean {
   if (rec.isGW) return false
   const s = rec.source.toUpperCase()
-  if (s.includes('BIG LOST')) return true
-  return rec.isSurf && rec.corridorDistKm <= CONFLICT_CORRIDOR_KM
+  return s.includes('BIG LOST') || s.includes('FERRIS SLOUGH')
 }
 
 /** One row per water right (highest rate among matching PODs). */
@@ -44,8 +48,8 @@ export function listDryReachSeniors(store: DataStore): DryReachSeniorRow[] {
   const best = new Map<string, DryReachSeniorRow>()
   for (const rec of store.pods) {
     if (rec.year == null || rec.year >= DRY_REACH_SENIOR_YEAR) continue
-    if (!isBigLostSurface(rec)) continue
-    if (rec.corridorDistKm > CONFLICT_CORRIDOR_KM) continue
+    if (!isDryReachSource(rec)) continue
+    if (rec.mainstemDistKm > CONFLICT_CORRIDOR_KM) continue
     if (rec.lat > MOORE_LAT) continue
     if (!rec.wr) continue
 
@@ -57,9 +61,10 @@ export function listDryReachSeniors(store: DataStore): DryReachSeniorRow[] {
         year: rec.year,
         rate: rec.rate,
         source: rec.source,
+        uses: rec.uses,
         lat: rec.lat,
         lon: rec.lon,
-        corridorKm: rec.corridorDistKm,
+        mainstemKm: rec.mainstemDistKm,
       })
     }
   }
@@ -68,10 +73,10 @@ export function listDryReachSeniors(store: DataStore): DryReachSeniorRow[] {
 
 export function dryReachSeniorsToCsv(rows: DryReachSeniorRow[]): string {
   return toCsv(
-    ['water_right', 'owner', 'priority_year', 'max_diversion_cfs', 'source', 'lat', 'lon', 'corridor_km'],
+    ['water_right', 'owner', 'priority_year', 'max_diversion_cfs', 'source', 'uses', 'lat', 'lon', 'mainstem_km'],
     rows.map(r => [
-      r.wr, r.owner, r.year, r.rate, r.source,
-      r.lat.toFixed(5), r.lon.toFixed(5), r.corridorKm.toFixed(2),
+      r.wr, r.owner, r.year, r.rate, r.source, r.uses,
+      r.lat.toFixed(5), r.lon.toFixed(5), r.mainstemKm.toFixed(2),
     ]),
   )
 }

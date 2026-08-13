@@ -57,6 +57,8 @@ export interface PodRecord {
   isTransfer: boolean
   /** Distance (km) from this POD to the nearest NHD mainstem / NWI riparian point. */
   corridorDistKm: number
+  /** Distance (km) from this POD to the nearest NHD Big Lost mainstem vertex (never NWI). */
+  mainstemDistKm: number
   uses: string
   diversionName: string
 }
@@ -104,6 +106,11 @@ export interface AppState {
    * thousands of dimmed markers (critical on phones).
    */
   hideNonMatches: boolean
+  /**
+   * When true, hide every POD except the current selection (receipt Zoom).
+   * Cleared with the selection. Not persisted in the URL hash.
+   */
+  isolateSelection: boolean
   /** Rights selected by clicking a POD or POU polygon. */
   selectedWRs: Set<string>
   flowEra: FlowEra

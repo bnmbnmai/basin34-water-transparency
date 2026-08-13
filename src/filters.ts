@@ -11,9 +11,9 @@ export function isDownstream(lat: number, reachId: string, store: DataStore): bo
   return lat < 43.62 // global lower-basin approximation
 }
 
-/** POD sits on/near the Big Lost mainstem valley corridor (not a mountain spring). */
+/** POD sits on/near the NHD Big Lost mainstem (not tributary NWI wetlands). */
 export function onRiverCorridor(rec: PodRecord): boolean {
-  return rec.corridorDistKm <= CONFLICT_CORRIDOR_KM
+  return rec.mainstemDistKm <= CONFLICT_CORRIDOR_KM
 }
 
 export function conflictSenior(rec: PodRecord, state: AppState, store: DataStore): boolean {
@@ -71,6 +71,11 @@ export function podOwnerMatch(rec: PodRecord, state: AppState): boolean {
 }
 
 export function podVisible(rec: PodRecord, state: AppState, store: DataStore): boolean {
+  // Receipt Zoom: hide the 7k-star field so the selected right is findable.
+  if (state.isolateSelection && state.selectedWRs.size > 0) {
+    return state.selectedWRs.has(rec.wr)
+  }
+
   // Force-includes: selection and owner match stay visible.
   if (state.selectedWRs.has(rec.wr)) return true
   if (podOwnerMatch(rec, state)) return true

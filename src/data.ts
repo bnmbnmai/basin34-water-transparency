@@ -14,10 +14,10 @@ export const TRANSFER_DIST_KM = 8
 export const NEW_GROUND_KM = 1.5
 
 /**
- * Potential-conflicts view: POD must sit within this distance of the NHD
- * mainstem + NWI riparian corridor. Filters mountain springs and tributary
- * PODs that share a basin number but are not on the valley floor river path
- * (e.g. 34-12491 at ~29 km vs 34-13725 at ~0 km on the Big Lost River).
+ * Dry-reach / potential-conflicts: POD must sit within this distance of the
+ * NHD Big Lost mainstem (not NWI riparian). NWI follows tributary wetlands
+ * (Antelope Creek, Dry Fork, …) and is only used for the moved-farther
+ * “new ground” corridor, not for “on the dry reach.”
  */
 export const CONFLICT_CORRIDOR_KM = 3
 
@@ -136,6 +136,17 @@ function distKm(lat1: number, lon1: number, lat2: number, lon2: number): number 
   return Math.sqrt(dLat * dLat + dLon * dLon)
 }
 
+function nearestPtsKm(lat: number, lon: number, pts: Array<[number, number]>): number {
+  if (!pts.length) return Infinity
+  let best = Infinity
+  for (const [plat, plon] of pts) {
+    if (Math.abs(lat - plat) * 111 >= best) continue
+    const d = distKm(lat, lon, plat, plon)
+    if (d < best) best = d
+  }
+  return best
+}
+
 async function fetchFeatures(url: string): Promise<GeoFeature[]> {
   return fetchFeaturesCached(url) as Promise<GeoFeature[]>
 }
@@ -161,15 +172,7 @@ function buildCorridorPts(mainstemFeats: GeoFeature[], riparianFeats: GeoFeature
 
 function applyCorridorDistances(pods: PodRecord[], corridorPts: Array<[number, number]>) {
   if (!corridorPts.length) return
-  for (const pod of pods) {
-    let best = Infinity
-    for (const [lat, lon] of corridorPts) {
-      if (Math.abs(lat - pod.lat) * 111 >= best) continue
-      const d = distKm(pod.lat, pod.lon, lat, lon)
-      if (d < best) best = d
-    }
-    pod.corridorDistKm = best
-  }
+  for (const pod of pods) pod.corridorDistKm = nearestPtsKm(pod.lat, pod.lon, corridorPts)
 }
 
 function emptyStore(): DataStore {
@@ -217,6 +220,7 @@ export async function loadDataStoreLight(
         lon: f.geometry.coordinates[0],
         isTransfer: false,
         corridorDistKm: Infinity,
+        mainstemDistKm: Infinity,
         uses: p.Uses || '',
         diversionName: (p.DiversionName || '').trim(),
       }
@@ -247,8 +251,6 @@ export async function loadDataStoreLight(
     else podsByWR.set(r.wr, [r])
   }
 
-  applyCorridorDistances(pods, buildCorridorPts(mainstemFeats, []))
-
   const mainstemPts: Array<[number, number]> = []
   for (const f of mainstemFeats) {
     const g = f.geometry
@@ -259,6 +261,10 @@ export async function loadDataStoreLight(
     for (const line of lines) {
       for (const [lon, lat] of line) mainstemPts.push([lat, lon])
     }
+  }
+  for (const pod of pods) {
+    pod.mainstemDistKm = nearestPtsKm(pod.lat, pod.lon, mainstemPts)
+    pod.corridorDistKm = pod.mainstemDistKm
   }
 
   const reachSouthLat = new Map<string, number>()
@@ -321,7 +327,8 @@ export async function enrichDataStoreWithPou(
     }
   }
 
-  // Refresh corridor with riparian centroids too
+  // NWI riparian is for moved-farther / new-ground only. Do not overwrite mainstemDistKm —
+  // that distance is the dry-reach / conflict "on the Big Lost" test.
   applyCorridorDistances(store.pods, buildCorridorPts(mainstemFeats, riparianFeats))
 
   store.pouCenter = new Map()
@@ -348,12 +355,7 @@ export async function enrichDataStoreWithPou(
     store.transferDistKm.forEach((_d, wr) => {
       const center = store.pouCenter.get(wr)
       if (!center) return
-      let best = Infinity
-      for (const [lat, lon] of corridorPts) {
-        if (Math.abs(lat - center[0]) * 111 >= best) continue
-        const d = distKm(center[0], center[1], lat, lon)
-        if (d < best) best = d
-      }
+      const best = nearestPtsKm(center[0], center[1], corridorPts)
       store.corridorDistKm.set(wr, best)
       if (best > NEW_GROUND_KM) store.newGroundWRs.add(wr)
     })

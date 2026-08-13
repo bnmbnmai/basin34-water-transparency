@@ -10,8 +10,9 @@ export const ARCO_LON = -113.2705556
 export const LOWER_VALLEY_METHODOLOGY =
   'Proxy only (not a determination): surface irrigation rights with a POD at or below the Moore diversion ' +
   '(USGS 13132100), ranked by priority year. “On dry-styled channel” means the POD is also within 3 km of the ' +
-  'NHD mainstem (the reach the map draws dashed brown in the recent-era view). Distance is to the Arco gage ' +
-  '(USGS 13132500). Authorized max cfs is not actual delivery. Sources: IDWR PODs + NHD mainstem.'
+  'NHD Big Lost mainstem (the reach the map draws dashed brown in the recent-era view) — not tributary ' +
+  'wetlands such as Antelope Creek. Distance is to the Arco gage (USGS 13132500). Authorized max cfs is not ' +
+  'actual delivery. Sources: IDWR PODs + NHD mainstem.'
 
 export interface LowerValleyRow {
   wr: string
@@ -23,7 +24,7 @@ export interface LowerValleyRow {
   lat: number
   lon: number
   arcoKm: number
-  corridorKm: number
+  mainstemKm: number
   onDryChannel: boolean
 }
 
@@ -58,8 +59,8 @@ export function listLowerValleySurface(store: DataStore): LowerValleyRow[] {
       lat: rec.lat,
       lon: rec.lon,
       arcoKm,
-      corridorKm: rec.corridorDistKm,
-      onDryChannel: rec.corridorDistKm <= CONFLICT_CORRIDOR_KM,
+      mainstemKm: rec.mainstemDistKm,
+      onDryChannel: rec.mainstemDistKm <= CONFLICT_CORRIDOR_KM,
     }
     const prev = best.get(rec.wr)
     if (!prev || rec.rate > prev.rate || (rec.rate === prev.rate && arcoKm < prev.arcoKm)) {
@@ -75,12 +76,12 @@ export function lowerValleyToCsv(rows: LowerValleyRow[]): string {
   return toCsv(
     [
       'water_right', 'owner', 'priority_year', 'max_diversion_cfs', 'source', 'diversion',
-      'lat', 'lon', 'arco_gage_km', 'corridor_km', 'on_dry_styled_channel',
+      'lat', 'lon', 'arco_gage_km', 'mainstem_km', 'on_dry_styled_channel',
     ],
     rows.map(r => [
       r.wr, r.owner, r.year ?? '', r.rate, r.source, r.diversion,
       r.lat.toFixed(5), r.lon.toFixed(5), r.arcoKm.toFixed(2),
-      isFinite(r.corridorKm) ? r.corridorKm.toFixed(2) : '',
+      isFinite(r.mainstemKm) ? r.mainstemKm.toFixed(2) : '',
       r.onDryChannel ? 'yes' : 'no',
     ]),
   )

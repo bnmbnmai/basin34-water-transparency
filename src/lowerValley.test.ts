@@ -15,6 +15,21 @@ describe('listLowerValleySurface', () => {
     expect(rows[0].onDryChannel).toBe(true)
   })
 
+  it('does not flag Antelope Creek irrigation as on the dry-styled channel', () => {
+    const antelope = pod({
+      wr: '34-ant',
+      year: 1910,
+      lat: 43.70,
+      source: 'ANTELOPE CREEK',
+      uses: 'IRRIGATION',
+      corridorDistKm: 0.4,
+      mainstemDistKm: 9.6,
+    })
+    const rows = listLowerValleySurface(emptyStore({ pods: [antelope] }))
+    expect(rows).toHaveLength(1)
+    expect(rows[0].onDryChannel).toBe(false)
+  })
+
   it('ranks by priority year, senior first', () => {
     const a = pod({ wr: '34-a', year: 1975, rate: 8, lat: 43.58 })
     const b = pod({ wr: '34-b', year: 1885, rate: 1, lat: 43.58 })

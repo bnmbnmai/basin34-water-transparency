@@ -30,9 +30,10 @@ function podPopupHtml(rec: PodRecord): string {
 
 /**
  * Manages the clustered POD layer.
- * - `rebuild()` re-filters and re-creates markers (only on filter changes).
- * - `restyle(wrs)` updates icons in place for the given rights (selection
- *   changes never trigger a full 7k-marker rebuild).
+ * - `rebuild()` re-filters and re-creates markers (only on filter changes,
+ *   including receipt Zoom isolation).
+ * - `restyle(wrs)` updates icons in place for the given rights (plain map
+ *   clicks restyle only; isolation rebuilds so other stars disappear).
  */
 export class PodLayer {
   private cluster: L.MarkerClusterGroup
@@ -112,6 +113,7 @@ export class PodLayer {
         L.DomEvent.stop(e) // keep the map background-click from clearing the new selection
         this.onPodClick(rec)
       })
+      if (rec.wr && state.selectedWRs.has(rec.wr)) marker.setZIndexOffset(2000)
       markers.push(marker)
       this.recordByMarker.set(marker, rec)
       if (rec.wr) {
@@ -121,8 +123,20 @@ export class PodLayer {
         this.lastVisibleWRs.add(rec.wr)
       }
     }
-    this.cluster.addLayers(markers)
+      this.cluster.addLayers(markers)
     if (!this.map.hasLayer(this.cluster)) this.map.addLayer(this.cluster)
+  }
+
+  /**
+   * Uncluster and raise the selected right so Zoom from a receipt table
+   * actually lands on that star instead of a 200-count cluster.
+   */
+  reveal(wr: string) {
+    const markers = this.markersByWR.get(wr)
+    if (!markers?.length) return
+    const m = markers[0]
+    m.setZIndexOffset(2000)
+    ;(this.cluster as any).zoomToShowLayer(m)
   }
 
   /** Restyle only the markers for the given rights (cheap selection updates). */
@@ -132,7 +146,10 @@ export class PodLayer {
       if (!markers) continue
       for (const m of markers) {
         const rec = this.recordByMarker.get(m)
-        if (rec) m.setIcon(this.iconFor(rec))
+        if (rec) {
+          m.setIcon(this.iconFor(rec))
+          m.setZIndexOffset(state.selectedWRs.has(wr) ? 2000 : 0)
+        }
       }
     }
   }

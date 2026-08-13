@@ -4,7 +4,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import './style.css'
 import L from 'leaflet'
 
-import { loadDataStoreLight, enrichDataStoreWithPou, pouGeomKey, type DataStore } from './data'
+import { DISTRICT_POU_KM2, loadDataStoreLight, enrichDataStoreWithPou, pouGeomKey, type DataStore } from './data'
 import { applyHashToState, restoreImageryFromHash, schedulePermalinkUpdate, setStoryStepForHash } from './permalink'
 import { preferLiteMap } from './perf'
 import { state, resetState } from './state'
@@ -75,10 +75,17 @@ function refreshData() {
 
 function setSelection(wrs: Set<string>) {
   const affected = new Set([...state.selectedWRs, ...wrs])
+  const isolateOff = state.isolateSelection && wrs.size === 0
+  if (isolateOff) state.isolateSelection = false
   state.selectedWRs = wrs
 
   const visible = podLayer.visibleWRs()
-  const needsRebuild = selectionForcedRebuild || [...wrs].some(wr => !visible.has(wr))
+  // Isolating (or un-isolating) changes which of the 7k stars exist — rebuild.
+  const needsRebuild =
+    state.isolateSelection ||
+    isolateOff ||
+    selectionForcedRebuild ||
+    [...wrs].some(wr => !visible.has(wr))
   if (needsRebuild) {
     podLayer.rebuild()
     pouLayer.setVisibleWRs(podLayer.visibleWRs())
@@ -93,7 +100,7 @@ function setSelection(wrs: Set<string>) {
 }
 
 function clearSelection() {
-  if (state.selectedWRs.size === 0) return
+  if (state.selectedWRs.size === 0 && !state.isolateSelection) return
   setSelection(new Set())
   // Pinned receipts (CSV/charts) stay open so Zoom-from-table keeps context
   if (!isDetailsPinned()) closeDetails()
@@ -123,9 +130,13 @@ function updateSelectionBanner() {
   const wrs = [...state.selectedWRs]
   if (wrs.length === 1) {
     const owner = store.podsByWR.get(wrs[0])?.[0]?.owner
-    text.textContent = `Right ${wrs[0]}${owner ? ` — ${owner}` : ''} · purple = diversion ↔ fields`
+    text.textContent = state.isolateSelection
+      ? `Right ${wrs[0]}${owner ? ` — ${owner}` : ''} · only this right shown`
+      : `Right ${wrs[0]}${owner ? ` — ${owner}` : ''} · purple = diversion ↔ fields`
   } else {
-    text.textContent = `${wrs.length} rights share this place of use · purple links diversions to fields`
+    text.textContent = state.isolateSelection
+      ? `${wrs.length} rights isolated · purple links diversions to fields`
+      : `${wrs.length} rights share this place of use · purple links diversions to fields`
   }
   banner.classList.remove('hidden')
 }
@@ -145,19 +156,26 @@ function onPouClick(feature: GeoFeature) {
   showPouGroupDetails(wrs, feature, store)
 }
 
-function zoomToWR(wr: string) {
+function zoomToWR(wr: string, opts: { podsOnly?: boolean } = {}) {
   const bounds = L.latLngBounds([])
   for (const pod of store.podsByWR.get(wr) || []) bounds.extend([pod.lat, pod.lon])
-  for (const pou of store.pousByWR.get(wr) || []) {
-    try { bounds.extend(L.geoJSON(pou.feature as any).getBounds()) } catch { /* skip bad geometry */ }
+  if (!opts.podsOnly) {
+    for (const pou of store.pousByWR.get(wr) || []) {
+      if (pou.areaKm2 >= DISTRICT_POU_KM2) continue
+      try { bounds.extend(L.geoJSON(pou.feature as any).getBounds()) } catch { /* skip bad geometry */ }
+    }
   }
-  if (bounds.isValid()) map.fitBounds(bounds.pad(0.3), { maxZoom: 14 })
+  if (bounds.isValid()) {
+    map.fitBounds(bounds.pad(opts.podsOnly ? 0.12 : 0.2), { maxZoom: opts.podsOnly ? 16 : 15 })
+  }
 }
 
-/** Zoom + select + optional Back-to-list when coming from a receipt table. */
+/** Zoom + select + isolate when coming from a receipt table. */
 function focusWRFromReceipt(wr: string) {
-  zoomToWR(wr)
+  state.isolateSelection = true
   setSelection(new Set([wr]))
+  zoomToWR(wr, { podsOnly: true })
+  podLayer.reveal(wr)
   const rec = store.podsByWR.get(wr)?.[0]
   if (rec) showPodDetails(rec, store, { fromReceipt: !!getReceiptReopen() })
 }
@@ -228,6 +246,7 @@ async function bootstrap() {
     onReachSelect: reachId => {
       state.reachFilter = reachId
       state.selectedWRs = new Set()
+      state.isolateSelection = false
       syncReachSelect()
       refreshData()
     },
@@ -339,6 +358,7 @@ async function bootstrap() {
     setOwnerHighlight: owner => {
       state.ownerHighlight = owner
       state.selectedWRs = new Set()
+      state.isolateSelection = false
       refreshData()
     },
     resetAll: () => {
@@ -404,6 +424,7 @@ async function bootstrap() {
     onSelect: owner => {
       state.ownerHighlight = owner
       state.selectedWRs = new Set()
+      state.isolateSelection = false
       if (!podLayer.enabled) {
         podLayer.setEnabled(true)
         syncLayerCheckbox('layer-pods', true)
@@ -413,6 +434,7 @@ async function bootstrap() {
     onClear: () => {
       state.ownerHighlight = null
       state.selectedWRs = new Set()
+      state.isolateSelection = false
       refreshData()
     },
   })

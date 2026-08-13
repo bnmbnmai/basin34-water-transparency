@@ -116,8 +116,8 @@ export function showPodDetails(rec: PodRecord, store: DataStore, opts?: { fromRe
   html += `<h3 style="margin-top:0">Water Right ${rec.wr || p.OBJECTID || ''}</h3>`
   if (rec.year != null) html += priorityBadge(rec.year)
   if (store.transferDistKm.has(rec.wr)) html += transferBadge(store.transferDistKm.get(rec.wr)!)
-  if (rec.corridorDistKm > CONFLICT_CORRIDOR_KM) {
-    html += `<span class="badge" title="POD is ${rec.corridorDistKm.toFixed(1)} km from the NHD mainstem / NWI riparian corridor — excluded from Potential conflicts view">${rec.corridorDistKm.toFixed(1)} km off river corridor</span>`
+  if (rec.mainstemDistKm > CONFLICT_CORRIDOR_KM) {
+    html += `<span class="badge" title="POD is ${rec.mainstemDistKm.toFixed(1)} km from the NHD Big Lost mainstem — excluded from Potential conflicts / dry-reach views">${rec.mainstemDistKm.toFixed(1)} km off Big Lost mainstem</span>`
   }
   html += `<div style="margin-top:6px">`
   if (rec.owner) html += `<div><strong>Owner:</strong> ${rec.owner}</div>`
@@ -397,7 +397,7 @@ export function showConflictsOverview(store: DataStore) {
     const down = rec.lat < 43.62
     const wouldMatchOld =
       (rec.year < 1970 && down) || (rec.year >= 1980 && !down)
-    if (wouldMatchOld && rec.corridorDistKm > CONFLICT_CORRIDOR_KM) excluded++
+    if (wouldMatchOld && rec.mainstemDistKm > CONFLICT_CORRIDOR_KM) excluded++
     if (conflictSenior(rec, state, store) && !senior.has(rec.wr)) senior.set(rec.wr, rec)
     if (conflictJunior(rec, state, store) && !junior.has(rec.wr)) junior.set(rec.wr, rec)
   }
@@ -409,7 +409,7 @@ export function showConflictsOverview(store: DataStore) {
   let html = `<h3 style="margin-top:0">Potential conflicts (river corridor)</h3>`
   html += `<div style="font-size:0.85em;margin-bottom:6px">` +
     `Senior (pre-1970) rights on the valley-floor river path downstream vs newer (post-1980) upstream development — ` +
-    `POD within <strong>${CONFLICT_CORRIDOR_KM} km</strong> of the NHD Big Lost mainstem + NWI riparian corridor. ` +
+    `POD within <strong>${CONFLICT_CORRIDOR_KM} km</strong> of the NHD Big Lost mainstem (tributary wetlands such as Antelope Creek are excluded). ` +
     `Mountain springs and tributary PODs far from the channel are excluded (${excluded} PODs dropped from the old latitude-only rule).</div>`
 
   html += `<div style="font-size:0.85em;margin:8px 0"><strong style="color:#eab308">Senior downstream</strong> — ${seniorList.length} rights</div>`
@@ -441,7 +441,7 @@ export function showConflictsOverview(store: DataStore) {
 function conflictCard(rec: PodRecord): string {
   let html = `<div class="wr-card"><div class="wr-card-head"><strong>${rec.wr}</strong>`
   if (rec.year != null) html += priorityBadge(rec.year)
-  html += ` <span class="badge" title="Distance from POD to nearest mainstem / riparian point">${rec.corridorDistKm.toFixed(1)} km on corridor</span>`
+  html += ` <span class="badge" title="Distance from POD to NHD Big Lost mainstem">${rec.mainstemDistKm.toFixed(1)} km to mainstem</span>`
   if (rec.rate > 0) html += ` <span class="badge">${rec.rate} cfs</span>`
   html += `</div>`
   if (rec.owner) html += `${rec.owner}<br>`
@@ -969,7 +969,7 @@ export function showDryReachSeniorsPanel(store: DataStore) {
     `<p id="dry-reach-filter-status" style="font-size:0.8em;color:var(--text-muted);min-height:1.2em"></p>`
 
   if (!rows.length) {
-    html += `<p>No matching rights with current corridor distances loaded yet. Wait for data finish, then retry.</p>`
+    html += `<p>No matching rights with current mainstem distances loaded yet. Wait for data finish, then retry.</p>`
     open(html, { wide: true })
     return
   }
@@ -981,6 +981,8 @@ export function showDryReachSeniorsPanel(store: DataStore) {
     `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Owner</th>` +
     `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">Year</th>` +
     `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">cfs</th>` +
+    `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Source</th>` +
+    `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)" title="Distance to NHD Big Lost mainstem">km</th>` +
     `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)"></th>` +
     `</tr></thead><tbody id="dry-reach-tbody">`
 
@@ -991,18 +993,21 @@ export function showDryReachSeniorsPanel(store: DataStore) {
       const r = list[i]
       // Rank is position in the full (unfiltered) sort when possible
       const rank = rows.indexOf(r) + 1
+      const src = r.source.length > 24 ? `${r.source.slice(0, 22)}…` : r.source
       body += `<tr>` +
         `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right;color:var(--text-muted)">${rank}</td>` +
         `<td style="padding:4px;border-bottom:1px solid var(--border)"><code>${r.wr}</code></td>` +
         `<td style="padding:4px;border-bottom:1px solid var(--border)">${r.owner || '—'}</td>` +
         `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${r.year}</td>` +
         `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${r.rate.toFixed(2)}</td>` +
+        `<td style="padding:4px;border-bottom:1px solid var(--border)" title="${r.source}">${src || '—'}</td>` +
+        `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${r.mainstemKm.toFixed(1)}</td>` +
         `<td style="padding:4px;border-bottom:1px solid var(--border)">` +
         `<button type="button" class="zoom-btn" data-zoom-wr="${r.wr}">Zoom</button></td>` +
         `</tr>`
     }
     if (!list.length) {
-      body = `<tr><td colspan="6" style="padding:12px;color:var(--text-muted)">No rights match that owner filter under the dry-reach rules.</td></tr>`
+      body = `<tr><td colspan="8" style="padding:12px;color:var(--text-muted)">No rights match that owner filter under the dry-reach rules.</td></tr>`
     }
     return { body, truncated: list.length > max }
   }
