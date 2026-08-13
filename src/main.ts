@@ -26,6 +26,11 @@ import {
   showDryReachSeniorsPanel, showGageDetails, showGenericDetails, showPodDetails, showPouGroupDetails,
   showReachLossPanel, showTransfersOverview, showWellDetails,
 } from './ui/details'
+import {
+  showAccountingPanel, showLowerValleyPanel, showOwnerConcentrationPanel,
+  showWatchlistPanel, showWellPressurePanel, wireExportButtons,
+} from './ui/observerPanels'
+import { loadLocalWatchlist } from './watchlist'
 import { dismissGuide, goToGuideStep, setGuideStepIndex, startGuide, wireGuide } from './ui/story'
 
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
@@ -49,6 +54,7 @@ let staticLayers: StaticLayers
 let basemap: BasemapControl
 let timeline: TimelineControl
 let currentBasemap: Basemap = 'satellite'
+let localWatchlist: string[] = []
 
 function updatePermalink() {
   if (map) schedulePermalinkUpdate(() => currentBasemap, map)
@@ -96,7 +102,11 @@ function clearSelection() {
 function updateLegendNow() {
   updateLegend(
     { pods: podLayer.visibleCount(), wells: wellLayer.visibleCount() },
-    { pods: podLayer.enabled, wells: wellLayer.enabled },
+    {
+      pods: podLayer.enabled,
+      wells: wellLayer.enabled,
+      hydro: !!(staticLayers?.groups.hydro && map.hasLayer(staticLayers.groups.hydro)),
+    },
   )
 }
 
@@ -230,6 +240,13 @@ async function bootstrap() {
   }
 
   populateReachSelect(store)
+  wireExportButtons(store)
+
+  void loadLocalWatchlist().then(wrs => {
+    localWatchlist = wrs
+    const btn = document.getElementById('watchlist-btn')
+    if (btn && wrs.length) btn.classList.remove('hidden')
+  })
 
   const ensureCanalsVisible = () => {
     syncLayerCheckbox('layer-hydro', true)
@@ -303,6 +320,22 @@ async function bootstrap() {
       showTransfersOverview(store)
     },
     showConjunctive: () => showConjunctivePanel(store),
+    showLowerValley: () => showLowerValleyPanel(store),
+    showOwnerConcentration: () => showOwnerConcentrationPanel(store),
+    showWellPressure: () => {
+      showWellPressurePanel(store, {
+        revealWells: () => {
+          wellLayer.setEnabled(true)
+          syncLayerCheckbox('layer-wells', true)
+          syncLayerCheckbox('well-hide-domestic', state.hideDomestic)
+          const wellColor = document.getElementById('well-color-mode') as HTMLSelectElement | null
+          if (wellColor) wellColor.value = state.wellColorMode
+          refreshData()
+        },
+      })
+    },
+    showAccounting: () => { void showAccountingPanel() },
+    showWatchlist: () => showWatchlistPanel(store, localWatchlist),
     setOwnerHighlight: owner => {
       state.ownerHighlight = owner
       state.selectedWRs = new Set()

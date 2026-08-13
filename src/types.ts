@@ -2,6 +2,7 @@
 
 export type Basemap = 'osm' | 'satellite' | 'hybrid'
 export type PodColorMode = 'source' | 'priority'
+export type WellColorMode = 'use' | 'era' | 'swl'
 export type FlowEra = 'historical' | 'recent'
 
 /**
@@ -56,6 +57,8 @@ export interface PodRecord {
   isTransfer: boolean
   /** Distance (km) from this POD to the nearest NHD mainstem / NWI riparian point. */
   corridorDistKm: number
+  uses: string
+  diversionName: string
 }
 
 export interface WellRecord {
@@ -66,6 +69,9 @@ export interface WellRecord {
   year: number | null
   rate: number
   lat: number
+  lon: number
+  depth: number | null
+  swl: number | null
 }
 
 export interface PouRecord {
@@ -85,6 +91,8 @@ export interface AppState {
   showGW: boolean
   showSurface: boolean
   hideDomestic: boolean
+  /** Well marker color: use class, construction era, or drill-time static water level. */
+  wellColorMode: WellColorMode
   focusIrrigation: boolean
   highRateThreshold: number
   highlightMode: HighlightMode

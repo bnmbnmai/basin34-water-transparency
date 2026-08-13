@@ -32,6 +32,11 @@ credentials.json
 *.sln
 *.sw?
 
+# Local-only notes and watchlists — never commit
+private/
+watchlist.json
+*.local.json
+
 # OS / misc
 Thumbs.db
 *.tmp

@@ -41,6 +41,16 @@ Chart-heavy panels (gage history, appropriation, conjunctive, river shrink) open
 - **"📉 River shrink: Mackay → Moore → Arco"** (sidebar) → joins the live annual records of three main-stem gages (13127000 below Mackay, 13132100 below Moore diversion, 13132500 near Arco): a three-line chart, a year-by-year table for the Moore gage era (2020+), segment-loss charts (Mackay−Moore vs Moore−Arco), and the full-record Mackay−Arco loss. Red dots mark zero-flow years at Arco. Zoom buttons jump to each gage on the map.
 - **"▶ Development through time"** (sidebar) → a timeline bar over the map: scrub or play 1880 → 2026 and watch rights (priority year) and wells (construction year) accumulate, with a running rights / cfs / irrigation-well counter and a context chart showing both cumulative authorized cfs (blue) and the cumulative irrigation-well count (brown, scaled) — the post-1950 groundwater boom is visible at a glance while scrubbing. POU polygon redraws are suspended during playback for smooth animation.
 
+Advanced (still not a seventh map-emphasis mode):
+
+- **Surface irrigation below Moore** — all surface irrigation PODs at/below the Moore diversion, ranked by priority year (includes post-1950 rights the dry-reach seniors lens omits), with km to the Arco gage and a dry-styled-channel flag. CSV export.
+- **Authorized cfs by owner** — paper-rights concentration (one max rate per right), surface vs groundwater, above vs below Moore.
+- **Lower-valley well logs** — IDWR drill-time static water level and total depth for wells at/below Moore, median by construction decade. Opt-in: turns wells on and colors them by static water level (Hide domestic stays the default until this panel is opened).
+- **WD34 published accounting** — daily inflow / losses / below-Moore delivery and named-canal season totals copied from IDWR’s storage-results workbook (values as published). PDFs are linked, not parsed. This is not a curtailment roster.
+- **Export current filters** — visible PODs (CSV + GeoJSON) and visible wells (CSV).
+
+Optional local pins: copy [`watchlist.example.json`](watchlist.example.json) to `private/watchlist.json` (gitignored) and run `npm run dev`. Production builds never fetch or ship that file.
+
 ### Exploring rights and places of use
 
 - **Click a field (POU polygon)** → details panel lists every water right sharing that polygon (sorted senior-first, with priority badges and transfer distance), the polygon gets a purple outline, and dashed lines connect it to each POD. A selection banner appears at the top of the map.
@@ -52,9 +62,9 @@ Chart-heavy panels (gage history, appropriation, conjunctive, river shrink) open
 
 - **Owner search** — type a partial name, click a match to highlight that owner's rights (amber) with an aggregate summary (count, total cfs, by source, priority range).
 - **POD filters** — color by source (GW violet / surface blue) or by priority year; filter by source class, era buckets (<1950 / 1950–2000 / >2000), and a year range. The same time filters apply to well construction years.
-- **Wells** — colored by use (irrigation teal, domestic gray, stock burnt-orange, …), sized by production rate, with "hide domestic & unlabeled" on by default. Rendered as SVG in a pane above the POU polygons so a well dot always wins the click over the field it sits in (click just beside the dot to select the field instead).
+- **Wells** — colored by use by default (irrigation teal, domestic gray, stock burnt-orange, …), or by construction era / drill-time static water level from Advanced. Sized by production rate, with "hide domestic & unlabeled" on by default.
 - **Riparian areas (FWS NWI)** — 1,128 National Wetlands Inventory riparian polygons (forested dark green, scrub-shrub olive): the river's natural green corridor. Drawn beneath all interactive layers (never steals clicks); hover for type and acreage. Styled to read as a green band at basin zoom, stronger in the "then" era and dimmed in the "now" era. **Coverage note:** NWI riparian was simply not mapped along the lower channel — Arco to the Howe sinks has zero polygons (and decades of dry channel mean little riparian vegetation remains to map, which is itself part of the story); the NHD river-channel layer carries the corridor through that stretch.
-- **Canals & pipelines (NHD)** — real USGS National Hydrography Dataset geometry for the basin: 718 canal/ditch segments (dashed blue) and pipelines (dotted slate), named on hover (Moore Canal, Burnett Ditch, Telford Pipe, …).
+- **Canals & pipelines (NHD)** — real USGS National Hydrography Dataset geometry for the basin: 718 canal/ditch segments and pipelines, named on hover (Moore Canal, Burnett Ditch, Telford Pipe, …). Canals east of the NHD mainstem draw dashed cyan; west draw teal; pipelines are dotted slate. East/west is longitude vs the nearest mainstem vertex — not a liner inventory.
 - **Named diversions ◆** — orange diamonds aggregating IDWR POD `DiversionName` for surface rights into delivery systems (≥5 cfs total). Labels appear at zoom ≥ 11; click one for every right it serves, total authorized cfs, and earliest priority.
 - **River channel & sinks (NHD) — "Then vs now: where the river ends"** — the real Big Lost River channel (348 NHD segments) plus the terminal sinks complex near Howe (50 playa/marsh polygons). Each segment is tagged `above-moore` / `below-moore` at the **Moore diversion** (USGS 13132100) during ETL — because WD34 accounting and field observations show surface flow commonly ends near Moore in recent years, long before Arco or the sinks. In the **"Then"** era the whole channel runs vivid blue to the sinks; in the **"Now"** era everything below Moore (including the reach to Arco and the eastern sinks limb) renders **dashed brown**. Gage coordinates are from the USGS NWIS site service (13132565 is on the sinks limb near Howe, not near Arco). Orange gage dots mark Moore; red marks Arco and downstream extent gages.
 - **Basemap & layer toggles** — Map / Satellite / Hybrid basemaps; per-layer checkboxes for PODs, wells, basin boundary, canals & pipelines, named diversions, gages, flow extent, and admin reaches.
@@ -80,6 +90,16 @@ src/
   symbology.ts      Color tables, sizes, cached star icon factory
   usgs.ts           Live USGS NWIS annual-statistics fetch + RDB parsing (cached)
   permalink.ts      URL-hash encode/decode of AppState + map view (share links)
+  dryReach.ts       Downstream seniors (pre-1950) receipt
+  lowerValley.ts    Surface irrigation at/below Moore (all priority years)
+  ownerConcentration.ts  Authorized cfs by owner
+  wellPressure.ts   Lower-valley well log medians
+  accounting.ts     WD34 storage-results extract
+  sideOfChannel.ts  Geometric east/west of NHD mainstem
+  exportVisible.ts  Filtered POD/well CSV + GeoJSON
+  csv.ts            Shared CSV download helpers
+  wrLinks.ts        IDWR report / transfer-search URLs
+  watchlist.ts      Dev-only local pin list (never in dist/)
   map/
     createMap.ts    Map + pane z-order (defined once; no bringToFront juggling)
     podLayer.ts     Clustered POD stars; full rebuild only on filter changes,
@@ -99,6 +119,7 @@ src/
     details.ts      Inspector renderers (POD / well / POU group / gage
                     flow chart / diversion / transfers list / appropriation /
                     conjunctive / river shrink / dry-reach / moved farther)
+    observerPanels.ts  Advanced receipts (below Moore, owners, well logs, accounting)
     chart.ts        Dependency-free SVG line/area/step charts + hover
                     crosshair/value readout (enhanceCharts)
     story.ts        Thin Guide (“Walk the receipts”) — not a second Explore mode
@@ -115,10 +136,11 @@ Key invariants:
 
 ## Data & ETL
 
-- `public/data/` — committed GeoJSON extracts (WGS84) + `manifest.json` with provenance and counts: `wd34-pods` (7,066), `wd34-wells` (4,323), `wd34-pou` (5,786), `nhd-canals-pipelines` (718), `nwi-riparian` (1,128), `nhd-mainstem` (348), `nhd-sinks` (50), `wd34-admin-reaches` (6), `basin-boundary`, `gages` (5), `flow-extent-indicators` (2, fallback only).
+- `public/data/` — committed GeoJSON extracts (WGS84) + `manifest.json` with provenance and counts: `wd34-pods` (7,066), `wd34-wells` (4,323), `wd34-pou` (5,786), `nhd-canals-pipelines` (718), `nwi-riparian` (1,128), `nhd-mainstem` (348), `nhd-sinks` (50), `wd34-admin-reaches` (6), `basin-boundary`, `gages` (5), `flow-extent-indicators` (2, fallback only), `wd34-accounting` (published storage-results tables).
 - `scripts/etl/fetch_idwr_pods_wells.py` — reproducible extraction from IDWR public feature services (PODs, wells, POU; Basin 34 / WD34 filtered). Re-run periodically and commit updated extracts + manifest.
 - `scripts/etl/fetch_nwi_riparian.py` — FWS National Wetlands Inventory riparian polygons for the basin (bbox query, centroid-clipped to the WBD boundary).
 - `scripts/etl/fetch_nhd_mainstem.py` — Big Lost River mainstem flowlines from the NHD HR MapServer, each segment tagged `above-moore` / `below-moore` at the **Moore diversion** (USGS 13132100), plus the terminal sinks playa/marsh polygons (NHD waterbody fcodes 36100/46600) near Howe.
+- `scripts/etl/fetch_wd34_accounting.py` — copies IDWR WD34 storage-results XLSX (daily delivery/loss columns and named-canal totals, values as published) into `wd34-accounting.json`. PDFs on the WD34 page are catalogued and linked, not parsed.
 - Note on dates: IDWR serves `PriorityDate` / `ConstructionDate` as epoch **milliseconds**, and pre-1970 dates are **negative** — ~86% of Basin 34 rights. The data layer handles this.
 
 Primary public sources (all open, no login):
@@ -132,8 +154,7 @@ Primary public sources (all open, no login):
 
 ## Roadmap
 
-- Export of currently filtered PODs/wells (CSV/GeoJSON), beyond the two receipt CSVs.
-- Phase 1: parse WD34 accounting (XLSX/PDFs + ditch rider logs) for **curtailment history** ("who got shut off when"), join to reaches/gages for conveyance visualization, time correlations, storage balances.
+- Phase 1 remainder: ditch rider logs / a true curtailment roster ("who got shut off when") if those tables become public. The storage-results extract is daily delivery, losses, and named-canal totals as published — not a shutoff list.
 
 Live USGS instantaneous CFS is already in the gage inspector. Receipt unit tests: `npm test`.
 

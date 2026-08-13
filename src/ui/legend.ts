@@ -23,7 +23,7 @@ export interface LegendCounts {
   wells: number
 }
 
-export function updateLegend(counts: LegendCounts, layersOn: { pods: boolean; wells: boolean }) {
+export function updateLegend(counts: LegendCounts, layersOn: { pods: boolean; wells: boolean; hydro?: boolean }) {
   const el = document.getElementById('main-legend')
   if (!el) return
   const rows: string[] = []
@@ -58,10 +58,29 @@ export function updateLegend(counts: LegendCounts, layersOn: { pods: boolean; we
     }
   }
   if (layersOn.wells) {
+    if (state.wellColorMode === 'swl') {
+      rows.push(
+        `<div class="lg-row"><strong>● Wells by static water level</strong> (${counts.wells.toLocaleString()} shown)<br>` +
+        `${dot('#38bdf8')} &lt;50 ft &nbsp; ${dot('#0ea5e9')} 50–100 &nbsp; ${dot('#ca8a04')} 100–150 &nbsp; ${dot('#ea580c')} 150–250 &nbsp; ${dot('#b91c1c')} &gt;250 ft (drill-time)</div>`,
+      )
+    } else if (state.wellColorMode === 'era') {
+      rows.push(
+        `<div class="lg-row"><strong>● Wells by construction era</strong> (${counts.wells.toLocaleString()} shown)<br>` +
+        `${dot('#0ea5e9')} &lt;1980 &nbsp; ${dot('#ca8a04')} 1980–99 &nbsp; ${dot('#ea580c')} 2000–14 &nbsp; ${dot('#b91c1c')} 2015+</div>`,
+      )
+    } else {
+      rows.push(
+        `<div class="lg-row"><strong>● Wells by use</strong> (${counts.wells.toLocaleString()} shown)<br>` +
+        WELL_USE_COLORS.slice(0, 4).map(c => `${dot(c.color)} ${c.label}`).join(' &nbsp; ') +
+        `</div>`,
+      )
+    }
+  }
+  if (layersOn.hydro) {
     rows.push(
-      `<div class="lg-row"><strong>● Wells by use</strong> (${counts.wells.toLocaleString()} shown)<br>` +
-      WELL_USE_COLORS.slice(0, 4).map(c => `${dot(c.color)} ${c.label}`).join(' &nbsp; ') +
-      `</div>`,
+      `<div class="lg-row"><strong>NHD canals &amp; pipelines</strong><br>` +
+      `${swatch('#0369a1', true)} canal east of mainstem &nbsp; ${swatch('#0f766e', true)} canal west of mainstem &nbsp; ` +
+      `${swatch('#64748b', true)} pipeline. Geometric side-of-channel (longitude vs nearest NHD vertex); NHD does not mark liners.</div>`,
     )
   }
   if (state.placeOfUseMode) {

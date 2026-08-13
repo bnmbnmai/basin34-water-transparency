@@ -16,6 +16,7 @@ import {
   listMovedFarther,
   movedFartherToCsv,
 } from '../movedFarther'
+import { TRANSFER_SEARCH_URL } from '../wrLinks'
 
 /** Chart width from the open inspector (map-adjacent, not a lightbox). */
 function inspectorChartW(): number {
@@ -24,7 +25,7 @@ function inspectorChartW(): number {
   return Math.max(240, Math.min(560, w - 28))
 }
 
-export type ReceiptKind = 'dry-reach' | 'moved-farther' | 'river-shrink' | 'conjunctive' | 'appropriation' | 'conflict' | null
+export type ReceiptKind = 'dry-reach' | 'moved-farther' | 'river-shrink' | 'conjunctive' | 'appropriation' | 'conflict' | 'lower-valley' | 'owners' | 'well-pressure' | 'accounting' | 'watchlist' | null
 
 let activeReceipt: ReceiptKind = null
 let receiptReopen: (() => void) | null = null
@@ -89,6 +90,9 @@ function open(html: string, opts: OpenInspectorOpts = {}) {
   enhanceCharts(content)
 }
 
+/** Used by Advanced observer receipts in observerPanels.ts */
+export { open as openInspector }
+
 export function closeDetails() {
   document.getElementById('details')?.classList.remove('open', 'wide', 'receipt')
   detailsPinned = false
@@ -121,6 +125,7 @@ export function showPodDetails(rec: PodRecord, store: DataStore, opts?: { fromRe
   if (rec.year != null) html += `<div><strong>Priority year:</strong> ${rec.year}</div>`
   if (p.OverallMaxDiversionRate != null) html += `<div><strong>Max diversion rate:</strong> ${p.OverallMaxDiversionRate} cfs</div>`
   if (p.Uses) html += `<div><strong>Uses:</strong> ${p.Uses}</div>`
+  if (p.DiversionName) html += `<div><strong>Diversion:</strong> ${p.DiversionName}</div>`
   if (p.Status) html += `<div><strong>Status:</strong> ${p.Status}</div>`
   html += `</div>`
   const pouCount = (store.pousByWR.get(rec.wr) || []).length
@@ -129,6 +134,7 @@ export function showPodDetails(rec: PodRecord, store: DataStore, opts?: { fromRe
     html += `<button class="zoom-btn" data-zoom-wr="${rec.wr}">Zoom to right (POD + place of use)</button>`
   }
   if (p.WRReport) html += `<div style="margin-top:4px"><a href="${p.WRReport}" target="_blank" rel="noopener">Official Water Right Report →</a></div>`
+  html += `<div style="margin-top:4px"><a href="${TRANSFER_SEARCH_URL}" target="_blank" rel="noopener">IDWR transfer records search →</a></div>`
   html += `${FOOT}Data: IDWR WaterRightPods (Basin 34 / WD34). PriorityDate is the authoritative seniority field.</div>`
   open(html, {
     heading: rec.wr ? `Right ${rec.wr}` : 'Water right',
@@ -484,6 +490,7 @@ export function showTransfersOverview(store: DataStore) {
     `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">Year</th>` +
     `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">POD↔POU km</th>` +
     `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Off corridor</th>` +
+    `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">POU side</th>` +
     `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)"></th>` +
     `</tr></thead><tbody id="moved-farther-tbody">`
 
@@ -504,12 +511,13 @@ export function showTransfersOverview(store: DataStore) {
             ? `<span class="badge badge-newground" title="POU ${r.corridorKm?.toFixed(1) ?? '?'} km from corridor">yes · ${r.corridorKm?.toFixed(1) ?? '?'} km</span>`
             : '—'
         }</td>` +
+        `<td style="padding:4px;border-bottom:1px solid var(--border)">${r.pouSide === 'unknown' ? '—' : r.pouSide}</td>` +
         `<td style="padding:4px;border-bottom:1px solid var(--border)">` +
         `<button type="button" class="zoom-btn" data-zoom-wr="${r.wr}">Zoom</button></td>` +
         `</tr>`
     }
     if (!list.length) {
-      body = `<tr><td colspan="7" style="padding:12px;color:var(--text-muted)">No rights match that owner filter.</td></tr>`
+      body = `<tr><td colspan="8" style="padding:12px;color:var(--text-muted)">No rights match that owner filter.</td></tr>`
     }
     return { body, truncated: list.length > max }
   }

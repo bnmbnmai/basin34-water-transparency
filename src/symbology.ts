@@ -1,5 +1,6 @@
 import L from 'leaflet'
 import type { PodEmphasis, WellEmphasis } from './emphasis'
+import { state } from './state'
 import type { PodColorMode, PodRecord, WellRecord } from './types'
 
 // ---------- Color scales ----------
@@ -188,6 +189,8 @@ export function wellStyle(rec: WellRecord, emphasis: WellEmphasis): L.CircleMark
   let radius = wellRadius(rec.rate)
   let color = wellColor(rec.use)
   let fillOpacity = 0.65
+  if (state.wellColorMode === 'era') color = wellEraColor(rec.year)
+  else if (state.wellColorMode === 'swl') color = wellSwlColor(rec.swl)
   if (emphasis === 'junior' || emphasis === 'conjunctive-gw') {
     radius *= 1.7
     color = EMPHASIS_COLORS[emphasis].stroke
@@ -197,4 +200,21 @@ export function wellStyle(rec: WellRecord, emphasis: WellEmphasis): L.CircleMark
     fillOpacity = 0.18
   }
   return { radius, color, fillColor: color, fillOpacity, weight: 0.5 }
+}
+
+export function wellEraColor(year: number | null): string {
+  if (year == null) return '#94a3b8'
+  if (year < 1980) return '#0ea5e9'
+  if (year < 2000) return '#ca8a04'
+  if (year < 2015) return '#ea580c'
+  return '#b91c1c'
+}
+
+export function wellSwlColor(swl: number | null): string {
+  if (swl == null || swl <= 0) return '#94a3b8'
+  if (swl < 50) return '#38bdf8'
+  if (swl < 100) return '#0ea5e9'
+  if (swl < 150) return '#ca8a04'
+  if (swl < 250) return '#ea580c'
+  return '#b91c1c'
 }

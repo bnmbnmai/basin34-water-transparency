@@ -26,6 +26,11 @@ export interface SidebarCallbacks {
   showDryReach?: () => void
   showMovedFarther?: () => void
   showConjunctive?: () => void
+  showLowerValley?: () => void
+  showOwnerConcentration?: () => void
+  showWellPressure?: () => void
+  showAccounting?: () => void
+  showWatchlist?: () => void
   onSheetChange?: () => void
   setOwnerHighlight?: (owner: string | null) => void
   /** Called when Landsat/Wayback era changes (for permalink). */
@@ -128,6 +133,8 @@ export function syncSidebarToState() {
   setVal('pod-max-year', String(state.yearMax))
   set('well-hide-domestic', state.hideDomestic)
   set('well-focus-irrigation', state.focusIrrigation)
+  const wellColor = $<HTMLSelectElement>('well-color-mode')
+  if (wellColor) wellColor.value = state.wellColorMode
   syncEraButtons()
 }
 
@@ -172,6 +179,18 @@ export function wireSidebar(cb: SidebarCallbacks) {
   $('appropriation-btn')?.addEventListener('click', () => cb.showAppropriation?.())
   $('river-shrink-btn')?.addEventListener('click', () => cb.showRiverShrink?.())
   $('dry-reach-btn')?.addEventListener('click', () => cb.showDryReach?.())
+  $('lower-valley-btn')?.addEventListener('click', () => cb.showLowerValley?.())
+  $('owner-conc-btn')?.addEventListener('click', () => cb.showOwnerConcentration?.())
+  $('well-pressure-btn')?.addEventListener('click', () => cb.showWellPressure?.())
+  $('accounting-btn')?.addEventListener('click', () => cb.showAccounting?.())
+  $('watchlist-btn')?.addEventListener('click', () => cb.showWatchlist?.())
+  $<HTMLSelectElement>('well-color-mode')?.addEventListener('change', e => {
+    const v = (e.target as HTMLSelectElement).value
+    if (v === 'use' || v === 'era' || v === 'swl') {
+      state.wellColorMode = v
+      cb.refreshData()
+    }
+  })
   $('moved-farther-btn')?.addEventListener('click', () => {
     setHighlightMode('transfers', cb)
     cb.showMovedFarther?.()

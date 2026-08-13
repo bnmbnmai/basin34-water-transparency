@@ -1,0 +1,7269 @@
+{
+  "asOf": "2025",
+  "generated": "2026-08-13",
+  "sourcePage": "https://idwr.idaho.gov/wr-administration/water-rights-accounting/wd34/",
+  "workbookUrl": "https://idwr.idaho.gov/wp-content/uploads/sites/2/water-rights-accounting/blsto/Big-lost-2025-storage-result.xlsx",
+  "season": {
+    "start": "2025-05-01",
+    "end": "2025-09-28",
+    "days": 151
+  },
+  "notes": "Copied from IDWR Water District 34 storage-results workbook. Daily losses, delivery factors, and named canals (including Eastside / Westside) are as published. Authorized max diversion on the POD layer is a different quantity. This extract does not infer curtailment or unauthorized diversion.",
+  "files": [
+    {
+      "title": "2026 Storage Results (XLSX)",
+      "url": "https://idwr.idaho.gov/wp-content/uploads/sites/2/water-rights-accounting/blsto/Big-lost-2026-storage-result.xlsx",
+      "kind": "xlsx",
+      "available": false
+    },
+    {
+      "title": "2025 Storage Results (XLSX)",
+      "url": "https://idwr.idaho.gov/wp-content/uploads/sites/2/water-rights-accounting/blsto/Big-lost-2025-storage-result.xlsx",
+      "kind": "xlsx",
+      "available": true
+    },
+    {
+      "title": "2026 Water Rights Accounting Report (PDF)",
+      "url": "https://idwr.idaho.gov/wp-content/uploads/2026/06/2026-biglost-wr-accounting-report.pdf",
+      "kind": "pdf",
+      "available": false
+    },
+    {
+      "title": "2025 Water Rights Accounting Report (PDF)",
+      "url": "https://idwr.idaho.gov/wp-content/uploads/sites/2/water-rights-accounting/blwra/Big-lost-2025-accounting-report.pdf",
+      "kind": "pdf",
+      "available": true
+    },
+    {
+      "title": "2019 Water Rights Accounting Report (PDF)",
+      "url": "https://idwr.idaho.gov/wp-content/uploads/sites/2/water-rights-accounting/blwra/2019-big-lost-wr-accounting-report.pdf",
+      "kind": "pdf",
+      "available": true
+    },
+    {
+      "title": "WD34 Water Rights Accounting 101 (2015 PDF)",
+      "url": "https://idwr.idaho.gov/wp-content/uploads/sites/2/water-rights-accounting/20151208-WD34-accounting-101.pdf",
+      "kind": "pdf",
+      "available": true
+    },
+    {
+      "title": "WD34 Demand Database (2015 PDF)",
+      "url": "https://idwr.idaho.gov/wp-content/uploads/sites/2/water-rights-accounting/20151104-WD34-demand-database.pdf",
+      "kind": "pdf",
+      "available": true
+    }
+  ],
+  "daily": [
+    {
+      "date": "2025-05-01",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 144.6,
+      "mackayReleaseCfs": 0.5,
+      "storageCfs": 131.4,
+      "decreeDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 0.0,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.4,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 3.0,
+        "belowMoore": 1.9
+      },
+      "totals": {
+        "decree": 0.5,
+        "storage": 5.3
+      },
+      "losses": {
+        "decree": 0.0,
+        "storage": 127.2
+      },
+      "deliveryFactor": {
+        "decree": 1.0,
+        "storage": 0.5
+      },
+      "conveyance": {
+        "leslie": 0.33,
+        "moore": 0.96,
+        "arco": 0.0
+      },
+      "rotationFactor": {
+        "leslie": 0.67,
+        "moore": 0.0268,
+        "arco": 0.0268
+      },
+      "df": {
+        "reach": 0.0,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-05-02",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 135.2,
+      "mackayReleaseCfs": 0.5,
+      "storageCfs": 131.4,
+      "decreeDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 0.0,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.4,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 3.2,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 0.5,
+        "storage": 3.6
+      },
+      "losses": {
+        "decree": 0.0,
+        "storage": 127.6
+      },
+      "deliveryFactor": {
+        "decree": 1.0,
+        "storage": 0.5
+      },
+      "conveyance": {
+        "leslie": 0.29,
+        "moore": 0.96,
+        "arco": 0.0
+      },
+      "rotationFactor": {
+        "leslie": 0.71,
+        "moore": 0.0284,
+        "arco": 0.0284
+      },
+      "df": {
+        "reach": 0.0,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-05-03",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 142.7,
+      "mackayReleaseCfs": 0.5,
+      "storageCfs": 132.4,
+      "decreeDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 0.0,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.4,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 2.3,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 0.5,
+        "storage": 2.7
+      },
+      "losses": {
+        "decree": 0.0,
+        "storage": 161.5
+      },
+      "deliveryFactor": {
+        "decree": 1.0,
+        "storage": 0.5
+      },
+      "conveyance": {
+        "leslie": 0.3,
+        "moore": 0.97,
+        "arco": 0.0
+      },
+      "rotationFactor": {
+        "leslie": 0.7,
+        "moore": 0.021,
+        "arco": 0.021
+      },
+      "df": {
+        "reach": 0.798,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-05-04",
+      "decreeDate": "1888-06-01",
+      "percentFilled": 0.77,
+      "inflowCfs": 130.1,
+      "mackayReleaseCfs": 112.2,
+      "storageCfs": 21.7,
+      "decreeDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 0.0,
+        "belowMoore": 3.0
+      },
+      "storageDelivery": {
+        "sharp": 0.4,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 0.8,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 3.5,
+        "storage": 1.2
+      },
+      "losses": {
+        "decree": 111.1,
+        "storage": 21.2
+      },
+      "deliveryFactor": {
+        "decree": 0.0305,
+        "storage": 0.5
+      },
+      "conveyance": {
+        "leslie": 0.31,
+        "moore": 0.99,
+        "arco": 0.0
+      },
+      "rotationFactor": {
+        "leslie": 0.69,
+        "moore": 0.0069,
+        "arco": 0.0069
+      },
+      "df": {
+        "reach": 0.798,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-05-05",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.06,
+      "inflowCfs": 152.1,
+      "mackayReleaseCfs": 141.2,
+      "storageCfs": 141.2,
+      "decreeDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 0.4,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.4,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 0.0,
+        "belowMoore": 0.4
+      },
+      "totals": {
+        "decree": 0.4,
+        "storage": 0.8
+      },
+      "losses": {
+        "decree": 140.3,
+        "storage": 0.0
+      },
+      "deliveryFactor": {
+        "decree": 0.0028,
+        "storage": 1.0
+      },
+      "conveyance": {
+        "leslie": 0.32,
+        "moore": 1.0,
+        "arco": 0.0
+      },
+      "rotationFactor": {
+        "leslie": 0.68,
+        "moore": 0.0,
+        "arco": 0.0
+      },
+      "df": {
+        "reach": 0.848,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-05-06",
+      "decreeDate": "1896-09-28",
+      "percentFilled": 0.07,
+      "inflowCfs": 130.3,
+      "mackayReleaseCfs": 103.3,
+      "storageCfs": 29.1,
+      "decreeDelivery": {
+        "sharp": 0.4,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 0.0,
+        "belowMoore": 10.0
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 0.4,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 10.4,
+        "storage": 0.4
+      },
+      "losses": {
+        "decree": 102.6,
+        "storage": 29.0
+      },
+      "deliveryFactor": {
+        "decree": 0.092,
+        "storage": 0.5
+      },
+      "conveyance": {
+        "leslie": 0.33,
+        "moore": 1.0,
+        "arco": 0.0
+      },
+      "rotationFactor": {
+        "leslie": 0.67,
+        "moore": 0.0,
+        "arco": 0.0
+      },
+      "df": {
+        "reach": 0.876,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-05-07",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.06,
+      "inflowCfs": 129.6,
+      "mackayReleaseCfs": 118.7,
+      "storageCfs": 13.3,
+      "decreeDelivery": {
+        "sharp": 0.4,
+        "twoBToLeslie": 1.6,
+        "leslieToMoore": 0.0,
+        "belowMoore": 0.4
+      },
+      "storageDelivery": {
+        "sharp": 0.6,
+        "twoBToLeslie": 1.8,
+        "leslieToMoore": 0.4,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 2.4,
+        "storage": 2.8
+      },
+      "losses": {
+        "decree": 116.3,
+        "storage": 12.3
+      },
+      "deliveryFactor": {
+        "decree": 0.0202,
+        "storage": 0.5
+      },
+      "conveyance": {
+        "leslie": 0.31,
+        "moore": 1.0,
+        "arco": 0.0
+      },
+      "rotationFactor": {
+        "leslie": 0.69,
+        "moore": 0.0,
+        "arco": 0.0
+      },
+      "df": {
+        "reach": 0.885,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-05-08",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.06,
+      "inflowCfs": 220.0,
+      "mackayReleaseCfs": 209.1,
+      "storageCfs": 2.2,
+      "decreeDelivery": {
+        "sharp": 0.4,
+        "twoBToLeslie": 2.8,
+        "leslieToMoore": 0.0,
+        "belowMoore": 2.3
+      },
+      "storageDelivery": {
+        "sharp": 1.9,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 0.4,
+        "belowMoore": 49.6
+      },
+      "totals": {
+        "decree": 5.5,
+        "storage": 51.9
+      },
+      "losses": {
+        "decree": 205.5,
+        "storage": 0.3
+      },
+      "deliveryFactor": {
+        "decree": 0.0261,
+        "storage": 0.9943
+      },
+      "conveyance": {
+        "leslie": 0.5,
+        "moore": 1.0,
+        "arco": 0.0
+      },
+      "rotationFactor": {
+        "leslie": 0.5,
+        "moore": 0.0,
+        "arco": 0.0
+      },
+      "df": {
+        "reach": 0.921,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-05-09",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.04,
+      "inflowCfs": 230.1,
+      "mackayReleaseCfs": 223.4,
+      "storageCfs": 78.3,
+      "decreeDelivery": {
+        "sharp": 1.0,
+        "twoBToLeslie": 3.2,
+        "leslieToMoore": 0.0,
+        "belowMoore": 0.3
+      },
+      "storageDelivery": {
+        "sharp": 2.7,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 0.4,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 4.5,
+        "storage": 3.1
+      },
+      "losses": {
+        "decree": 218.9,
+        "storage": 77.5
+      },
+      "deliveryFactor": {
+        "decree": 0.0201,
+        "storage": 0.5
+      },
+      "conveyance": {
+        "leslie": 0.33,
+        "moore": 1.0,
+        "arco": 0.0
+      },
+      "rotationFactor": {
+        "leslie": 0.67,
+        "moore": 0.0,
+        "arco": 0.0
+      },
+      "df": {
+        "reach": 0.924,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-05-10",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 173.2,
+      "mackayReleaseCfs": 59.2,
+      "storageCfs": 255.5,
+      "decreeDelivery": {
+        "sharp": 2.3,
+        "twoBToLeslie": 3.2,
+        "leslieToMoore": 3.5,
+        "belowMoore": 9.6
+      },
+      "storageDelivery": {
+        "sharp": 1.4,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 51.0,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 18.6,
+        "storage": 52.4
+      },
+      "losses": {
+        "decree": 40.5,
+        "storage": 218.3
+      },
+      "deliveryFactor": {
+        "decree": 0.3147,
+        "storage": 0.5
+      },
+      "conveyance": {
+        "leslie": 0.32,
+        "moore": 0.75,
+        "arco": 0.0
+      },
+      "rotationFactor": {
+        "leslie": 0.68,
+        "moore": 0.17,
+        "arco": 0.17
+      },
+      "df": {
+        "reach": 1.048,
+        "canal": 0.064,
+        "river": 0.067
+      }
+    },
+    {
+      "date": "2025-05-11",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 375.8,
+      "mackayReleaseCfs": 97.7,
+      "storageCfs": 243.0,
+      "decreeDelivery": {
+        "sharp": 3.7,
+        "twoBToLeslie": 3.2,
+        "leslieToMoore": 0.0,
+        "belowMoore": 8.9
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 50.7,
+        "belowMoore": 3.0
+      },
+      "totals": {
+        "decree": 15.8,
+        "storage": 53.7
+      },
+      "losses": {
+        "decree": 81.9,
+        "storage": 189.3
+      },
+      "deliveryFactor": {
+        "decree": 0.1617,
+        "storage": 0.5
+      },
+      "conveyance": {
+        "leslie": 0.3,
+        "moore": 0.66,
+        "arco": 0.461
+      },
+      "rotationFactor": {
+        "leslie": 0.7,
+        "moore": 0.238,
+        "arco": 0.1283
+      },
+      "df": {
+        "reach": 0.854,
+        "canal": 0.631,
+        "river": 0.539
+      }
+    },
+    {
+      "date": "2025-05-12",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 483.8,
+      "mackayReleaseCfs": 324.6,
+      "storageCfs": 53.4,
+      "decreeDelivery": {
+        "sharp": 5.7,
+        "twoBToLeslie": 2.7,
+        "leslieToMoore": 38.3,
+        "belowMoore": 17.4
+      },
+      "storageDelivery": {
+        "sharp": 3.3,
+        "twoBToLeslie": 0.5,
+        "leslieToMoore": 21.9,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 64.1,
+        "storage": 25.7
+      },
+      "losses": {
+        "decree": 260.5,
+        "storage": 32.9
+      },
+      "deliveryFactor": {
+        "decree": 0.1975,
+        "storage": 0.5
+      },
+      "conveyance": {
+        "leslie": 0.33,
+        "moore": 0.65,
+        "arco": 0.426
+      },
+      "rotationFactor": {
+        "leslie": 0.67,
+        "moore": 0.2345,
+        "arco": 0.1346
+      },
+      "df": {
+        "reach": 0.893,
+        "canal": 0.643,
+        "river": 0.574
+      }
+    },
+    {
+      "date": "2025-05-13",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 563.7,
+      "mackayReleaseCfs": 343.5,
+      "storageCfs": 122.5,
+      "decreeDelivery": {
+        "sharp": 5.7,
+        "twoBToLeslie": 2.7,
+        "leslieToMoore": 54.6,
+        "belowMoore": 20.3
+      },
+      "storageDelivery": {
+        "sharp": 3.3,
+        "twoBToLeslie": 0.5,
+        "leslieToMoore": 29.8,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 83.3,
+        "storage": 33.6
+      },
+      "losses": {
+        "decree": 260.2,
+        "storage": 88.8
+      },
+      "deliveryFactor": {
+        "decree": 0.2425,
+        "storage": 0.5
+      },
+      "conveyance": {
+        "leslie": 0.36,
+        "moore": 0.61,
+        "arco": 0.45
+      },
+      "rotationFactor": {
+        "leslie": 0.64,
+        "moore": 0.2496,
+        "arco": 0.1373
+      },
+      "df": {
+        "reach": 0.903,
+        "canal": 0.609,
+        "river": 0.55
+      }
+    },
+    {
+      "date": "2025-05-14",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 619.7,
+      "mackayReleaseCfs": 392.7,
+      "storageCfs": 121.3,
+      "decreeDelivery": {
+        "sharp": 6.5,
+        "twoBToLeslie": 3.2,
+        "leslieToMoore": 82.4,
+        "belowMoore": 29.4
+      },
+      "storageDelivery": {
+        "sharp": 2.5,
+        "twoBToLeslie": 0.0,
+        "leslieToMoore": 45.8,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 121.5,
+        "storage": 48.3
+      },
+      "losses": {
+        "decree": 271.3,
+        "storage": 81.5
+      },
+      "deliveryFactor": {
+        "decree": 0.3093,
+        "storage": 0.5
+      },
+      "conveyance": {
+        "leslie": 0.33,
+        "moore": 0.55,
+        "arco": 0.099
+      },
+      "rotationFactor": {
+        "leslie": 0.67,
+        "moore": 0.3015,
+        "arco": 0.2717
+      },
+      "df": {
+        "reach": 1.023,
+        "canal": 0.89,
+        "river": 0.901
+      }
+    },
+    {
+      "date": "2025-05-15",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 850.6,
+      "mackayReleaseCfs": 330.2,
+      "storageCfs": 166.8,
+      "decreeDelivery": {
+        "sharp": 0.4,
+        "twoBToLeslie": 32.7,
+        "leslieToMoore": 78.4,
+        "belowMoore": 29.4
+      },
+      "storageDelivery": {
+        "sharp": 6.6,
+        "twoBToLeslie": 16.8,
+        "leslieToMoore": 48.9,
+        "belowMoore": 2.8
+      },
+      "totals": {
+        "decree": 140.9,
+        "storage": 75.1
+      },
+      "losses": {
+        "decree": 189.7,
+        "storage": 91.6
+      },
+      "deliveryFactor": {
+        "decree": 0.4262,
+        "storage": 0.4505
+      },
+      "conveyance": {
+        "leslie": 0.23,
+        "moore": 0.52,
+        "arco": 0.106
+      },
+      "rotationFactor": {
+        "leslie": 0.77,
+        "moore": 0.3696,
+        "arco": 0.3304
+      },
+      "df": {
+        "reach": 0.93,
+        "canal": 0.929,
+        "river": 0.894
+      }
+    },
+    {
+      "date": "2025-05-16",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 567.1,
+      "mackayReleaseCfs": 310.78,
+      "storageCfs": 167.3,
+      "decreeDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 34.0,
+        "leslieToMoore": 80.0,
+        "belowMoore": 28.8
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 32.4,
+        "leslieToMoore": 52.0,
+        "belowMoore": 1.2
+      },
+      "totals": {
+        "decree": 142.8,
+        "storage": 85.6
+      },
+      "losses": {
+        "decree": 167.8,
+        "storage": 81.8
+      },
+      "deliveryFactor": {
+        "decree": 0.4598,
+        "storage": 0.5114
+      },
+      "conveyance": {
+        "leslie": 0.16,
+        "moore": 0.5,
+        "arco": 0.108
+      },
+      "rotationFactor": {
+        "leslie": 0.84,
+        "moore": 0.42,
+        "arco": 0.3746
+      },
+      "df": {
+        "reach": 0.915,
+        "canal": 0.934,
+        "river": 0.892
+      }
+    },
+    {
+      "date": "2025-05-17",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 532.6,
+      "mackayReleaseCfs": 340.1,
+      "storageCfs": 116.9,
+      "decreeDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 32.6,
+        "leslieToMoore": 82.1,
+        "belowMoore": 28.6
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 12.4,
+        "leslieToMoore": 33.3,
+        "belowMoore": 5.7
+      },
+      "totals": {
+        "decree": 143.3,
+        "storage": 51.4
+      },
+      "losses": {
+        "decree": 196.8,
+        "storage": 65.5
+      },
+      "deliveryFactor": {
+        "decree": 0.4213,
+        "storage": 0.4397
+      },
+      "conveyance": {
+        "leslie": 0.19,
+        "moore": 0.5,
+        "arco": 0.203
+      },
+      "rotationFactor": {
+        "leslie": 0.81,
+        "moore": 0.405,
+        "arco": 0.3228
+      },
+      "df": {
+        "reach": 0.822,
+        "canal": 0.916,
+        "river": 0.797
+      }
+    },
+    {
+      "date": "2025-05-18",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 526.7,
+      "mackayReleaseCfs": 327.4,
+      "storageCfs": 118.6,
+      "decreeDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 33.4,
+        "leslieToMoore": 88.4,
+        "belowMoore": 29.0
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 26.2,
+        "leslieToMoore": 27.4,
+        "belowMoore": 8.4
+      },
+      "totals": {
+        "decree": 150.8,
+        "storage": 62.0
+      },
+      "losses": {
+        "decree": 176.7,
+        "storage": 56.7
+      },
+      "deliveryFactor": {
+        "decree": 0.4605,
+        "storage": 0.5223
+      },
+      "conveyance": {
+        "leslie": 0.17,
+        "moore": 0.47,
+        "arco": 0.191
+      },
+      "rotationFactor": {
+        "leslie": 0.83,
+        "moore": 0.4399,
+        "arco": 0.3559
+      },
+      "df": {
+        "reach": 0.895,
+        "canal": 0.876,
+        "river": 0.809
+      }
+    },
+    {
+      "date": "2025-05-19",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 504.3,
+      "mackayReleaseCfs": 309.4,
+      "storageCfs": 107.6,
+      "decreeDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 51.8,
+        "leslieToMoore": 77.4,
+        "belowMoore": 30.7
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 10.9,
+        "leslieToMoore": 29.2,
+        "belowMoore": 12.0
+      },
+      "totals": {
+        "decree": 159.9,
+        "storage": 52.1
+      },
+      "losses": {
+        "decree": 149.6,
+        "storage": 55.5
+      },
+      "deliveryFactor": {
+        "decree": 0.5166,
+        "storage": 0.4842
+      },
+      "conveyance": {
+        "leslie": 0.14,
+        "moore": 0.49,
+        "arco": 0.207
+      },
+      "rotationFactor": {
+        "leslie": 0.86,
+        "moore": 0.4386,
+        "arco": 0.3478
+      },
+      "df": {
+        "reach": 0.852,
+        "canal": 0.888,
+        "river": 0.793
+      }
+    },
+    {
+      "date": "2025-05-20",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 441.3,
+      "mackayReleaseCfs": 342.4,
+      "storageCfs": 60.6,
+      "decreeDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 51.7,
+        "leslieToMoore": 66.4,
+        "belowMoore": 29.6
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 10.9,
+        "leslieToMoore": 22.9,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 147.7,
+        "storage": 33.8
+      },
+      "losses": {
+        "decree": 194.6,
+        "storage": 28.7
+      },
+      "deliveryFactor": {
+        "decree": 0.4315,
+        "storage": 0.5408
+      },
+      "conveyance": {
+        "leslie": 0.16,
+        "moore": 0.51,
+        "arco": 0.389
+      },
+      "rotationFactor": {
+        "leslie": 0.84,
+        "moore": 0.4116,
+        "arco": 0.2515
+      },
+      "df": {
+        "reach": 0.821,
+        "canal": 0.702,
+        "river": 0.611
+      }
+    },
+    {
+      "date": "2025-05-21",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 396.9,
+      "mackayReleaseCfs": 333.1,
+      "storageCfs": 39.9,
+      "decreeDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 28.8,
+        "leslieToMoore": 62.8,
+        "belowMoore": 28.8
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 22.7,
+        "leslieToMoore": 20.3,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 120.4,
+        "storage": 43.0
+      },
+      "losses": {
+        "decree": 212.7,
+        "storage": 29.1
+      },
+      "deliveryFactor": {
+        "decree": 0.3615,
+        "storage": 0.5964
+      },
+      "conveyance": {
+        "leslie": 0.18,
+        "moore": 0.53,
+        "arco": 0.413
+      },
+      "rotationFactor": {
+        "leslie": 0.82,
+        "moore": 0.3854,
+        "arco": 0.2262
+      },
+      "df": {
+        "reach": 0.777,
+        "canal": 0.708,
+        "river": 0.587
+      }
+    },
+    {
+      "date": "2025-05-22",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 370.1,
+      "mackayReleaseCfs": 258.8,
+      "storageCfs": 142.2,
+      "decreeDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 28.3,
+        "leslieToMoore": 63.5,
+        "belowMoore": 22.1
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 22.4,
+        "leslieToMoore": 22.5,
+        "belowMoore": 21.1
+      },
+      "totals": {
+        "decree": 113.9,
+        "storage": 66.0
+      },
+      "losses": {
+        "decree": 144.2,
+        "storage": 76.2
+      },
+      "deliveryFactor": {
+        "decree": 0.4413,
+        "storage": 0.4641
+      },
+      "conveyance": {
+        "leslie": 0.18,
+        "moore": 0.53,
+        "arco": 0.296
+      },
+      "rotationFactor": {
+        "leslie": 0.82,
+        "moore": 0.3854,
+        "arco": 0.2713
+      },
+      "df": {
+        "reach": 0.859,
+        "canal": 0.797,
+        "river": 0.704
+      }
+    },
+    {
+      "date": "2025-05-23",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 355.5,
+      "mackayReleaseCfs": 268.0,
+      "storageCfs": 124.5,
+      "decreeDelivery": {
+        "sharp": 6.4,
+        "twoBToLeslie": 25.3,
+        "leslieToMoore": 66.5,
+        "belowMoore": 20.2
+      },
+      "storageDelivery": {
+        "sharp": 0.1,
+        "twoBToLeslie": 40.7,
+        "leslieToMoore": 23.4,
+        "belowMoore": 5.4
+      },
+      "totals": {
+        "decree": 118.4,
+        "storage": 69.6
+      },
+      "losses": {
+        "decree": 149.6,
+        "storage": 55.0
+      },
+      "deliveryFactor": {
+        "decree": 0.4418,
+        "storage": 0.5586
+      },
+      "conveyance": {
+        "leslie": 0.16,
+        "moore": 0.54,
+        "arco": 0.177
+      },
+      "rotationFactor": {
+        "leslie": 0.84,
+        "moore": 0.3864,
+        "arco": 0.318
+      },
+      "df": {
+        "reach": 1.032,
+        "canal": 0.804,
+        "river": 0.823
+      }
+    },
+    {
+      "date": "2025-05-24",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 336.0,
+      "mackayReleaseCfs": 279.1,
+      "storageCfs": 108.7,
+      "decreeDelivery": {
+        "sharp": 6.8,
+        "twoBToLeslie": 14.6,
+        "leslieToMoore": 71.5,
+        "belowMoore": 16.2
+      },
+      "storageDelivery": {
+        "sharp": 0.1,
+        "twoBToLeslie": 19.0,
+        "leslieToMoore": 21.3,
+        "belowMoore": 7.6
+      },
+      "totals": {
+        "decree": 109.1,
+        "storage": 48.0
+      },
+      "losses": {
+        "decree": 170.0,
+        "storage": 60.7
+      },
+      "deliveryFactor": {
+        "decree": 0.3909,
+        "storage": 0.4416
+      },
+      "conveyance": {
+        "leslie": 0.25,
+        "moore": 0.54,
+        "arco": 0.256
+      },
+      "rotationFactor": {
+        "leslie": 0.75,
+        "moore": 0.345,
+        "arco": 0.2567
+      },
+      "df": {
+        "reach": 1.053,
+        "canal": 0.716,
+        "river": 0.744
+      }
+    },
+    {
+      "date": "2025-05-25",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 333.1,
+      "mackayReleaseCfs": 281.7,
+      "storageCfs": 122.4,
+      "decreeDelivery": {
+        "sharp": 7.1,
+        "twoBToLeslie": 21.3,
+        "leslieToMoore": 74.2,
+        "belowMoore": 18.3
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 48.8,
+        "leslieToMoore": 20.3,
+        "belowMoore": 2.7
+      },
+      "totals": {
+        "decree": 120.9,
+        "storage": 71.8
+      },
+      "losses": {
+        "decree": 160.9,
+        "storage": 50.5
+      },
+      "deliveryFactor": {
+        "decree": 0.429,
+        "storage": 0.5871
+      },
+      "conveyance": {
+        "leslie": 0.2,
+        "moore": 0.52,
+        "arco": 0.343
+      },
+      "rotationFactor": {
+        "leslie": 0.8,
+        "moore": 0.384,
+        "arco": 0.2523
+      },
+      "df": {
+        "reach": 1.056,
+        "canal": 0.631,
+        "river": 0.657
+      }
+    },
+    {
+      "date": "2025-05-26",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 343.5,
+      "mackayReleaseCfs": 326.4,
+      "storageCfs": 97.2,
+      "decreeDelivery": {
+        "sharp": 7.5,
+        "twoBToLeslie": 27.4,
+        "leslieToMoore": 76.2,
+        "belowMoore": 18.2
+      },
+      "storageDelivery": {
+        "sharp": 0.1,
+        "twoBToLeslie": 48.0,
+        "leslieToMoore": 18.1,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 129.3,
+        "storage": 66.2
+      },
+      "losses": {
+        "decree": 197.1,
+        "storage": 34.2
+      },
+      "deliveryFactor": {
+        "decree": 0.3961,
+        "storage": 0.6594
+      },
+      "conveyance": {
+        "leslie": 0.2,
+        "moore": 0.54,
+        "arco": 0.337
+      },
+      "rotationFactor": {
+        "leslie": 0.8,
+        "moore": 0.368,
+        "arco": 0.244
+      },
+      "df": {
+        "reach": 1.059,
+        "canal": 0.635,
+        "river": 0.663
+      }
+    },
+    {
+      "date": "2025-05-27",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 395.9,
+      "mackayReleaseCfs": 335.8,
+      "storageCfs": 116.7,
+      "decreeDelivery": {
+        "sharp": 6.5,
+        "twoBToLeslie": 29.2,
+        "leslieToMoore": 76.3,
+        "belowMoore": 21.4
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 43.5,
+        "leslieToMoore": 22.7,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 133.4,
+        "storage": 66.2
+      },
+      "losses": {
+        "decree": 202.4,
+        "storage": 51.5
+      },
+      "deliveryFactor": {
+        "decree": 0.3973,
+        "storage": 0.5624
+      },
+      "conveyance": {
+        "leslie": 0.22,
+        "moore": 0.55,
+        "arco": 0.343
+      },
+      "rotationFactor": {
+        "leslie": 0.78,
+        "moore": 0.351,
+        "arco": 0.2306
+      },
+      "df": {
+        "reach": 1.056,
+        "canal": 0.631,
+        "river": 0.657
+      }
+    },
+    {
+      "date": "2025-05-28",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 530.1,
+      "mackayReleaseCfs": 366.1,
+      "storageCfs": 121.5,
+      "decreeDelivery": {
+        "sharp": 7.5,
+        "twoBToLeslie": 34.7,
+        "leslieToMoore": 77.4,
+        "belowMoore": 21.4
+      },
+      "storageDelivery": {
+        "sharp": 0.1,
+        "twoBToLeslie": 40.3,
+        "leslieToMoore": 23.8,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 141.0,
+        "storage": 64.2
+      },
+      "losses": {
+        "decree": 225.2,
+        "storage": 57.8
+      },
+      "deliveryFactor": {
+        "decree": 0.385,
+        "storage": 0.5262
+      },
+      "conveyance": {
+        "leslie": 0.25,
+        "moore": 0.55,
+        "arco": 0.271
+      },
+      "rotationFactor": {
+        "leslie": 0.75,
+        "moore": 0.3375,
+        "arco": 0.246
+      },
+      "df": {
+        "reach": 1.042,
+        "canal": 0.706,
+        "river": 0.729
+      }
+    },
+    {
+      "date": "2025-05-29",
+      "decreeDate": "1916-02-07",
+      "percentFilled": 1.0,
+      "inflowCfs": 696.9,
+      "mackayReleaseCfs": 458.0,
+      "storageCfs": 139.6,
+      "decreeDelivery": {
+        "sharp": 7.6,
+        "twoBToLeslie": 96.3,
+        "leslieToMoore": 107.1,
+        "belowMoore": 64.8
+      },
+      "storageDelivery": {
+        "sharp": 0.1,
+        "twoBToLeslie": 31.0,
+        "leslieToMoore": 22.0,
+        "belowMoore": 6.4
+      },
+      "totals": {
+        "decree": 275.8,
+        "storage": 59.5
+      },
+      "losses": {
+        "decree": 278.9,
+        "storage": 80.1
+      },
+      "deliveryFactor": {
+        "decree": 0.4972,
+        "storage": 0.4262
+      },
+      "conveyance": {
+        "leslie": 0.28,
+        "moore": 0.58,
+        "arco": 0.181
+      },
+      "rotationFactor": {
+        "leslie": 0.72,
+        "moore": 0.3024,
+        "arco": 0.2477
+      },
+      "df": {
+        "reach": 0.956,
+        "canal": 0.847,
+        "river": 0.819
+      }
+    },
+    {
+      "date": "2025-05-30",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 940.9,
+      "mackayReleaseCfs": 559.9,
+      "storageCfs": 134.5,
+      "decreeDelivery": {
+        "sharp": 7.8,
+        "twoBToLeslie": 83.6,
+        "leslieToMoore": 111.5,
+        "belowMoore": 36.8
+      },
+      "storageDelivery": {
+        "sharp": 0.6,
+        "twoBToLeslie": 44.6,
+        "leslieToMoore": 30.4,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 239.7,
+        "storage": 75.6
+      },
+      "losses": {
+        "decree": 320.3,
+        "storage": 62.2
+      },
+      "deliveryFactor": {
+        "decree": 0.428,
+        "storage": 0.5486
+      },
+      "conveyance": {
+        "leslie": 0.26,
+        "moore": 0.52,
+        "arco": 0.055
+      },
+      "rotationFactor": {
+        "leslie": 0.74,
+        "moore": 0.3552,
+        "arco": 0.3357
+      },
+      "df": {
+        "reach": 0.926,
+        "canal": 0.995,
+        "river": 0.945
+      }
+    },
+    {
+      "date": "2025-05-31",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 979.2,
+      "mackayReleaseCfs": 592.1,
+      "storageCfs": 177.5,
+      "decreeDelivery": {
+        "sharp": 8.0,
+        "twoBToLeslie": 93.4,
+        "leslieToMoore": 123.4,
+        "belowMoore": 37.1
+      },
+      "storageDelivery": {
+        "sharp": 0.6,
+        "twoBToLeslie": 50.6,
+        "leslieToMoore": 38.7,
+        "belowMoore": 0.9
+      },
+      "totals": {
+        "decree": 261.9,
+        "storage": 90.8
+      },
+      "losses": {
+        "decree": 330.2,
+        "storage": 86.6
+      },
+      "deliveryFactor": {
+        "decree": 0.4423,
+        "storage": 0.5118
+      },
+      "conveyance": {
+        "leslie": 0.24,
+        "moore": 0.53,
+        "arco": 0.055
+      },
+      "rotationFactor": {
+        "leslie": 0.76,
+        "moore": 0.3572,
+        "arco": 0.3376
+      },
+      "df": {
+        "reach": 0.832,
+        "canal": 1.065,
+        "river": 0.945
+      }
+    },
+    {
+      "date": "2025-06-01",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 969.0,
+      "mackayReleaseCfs": 587.5,
+      "storageCfs": 191.7,
+      "decreeDelivery": {
+        "sharp": 8.5,
+        "twoBToLeslie": 93.4,
+        "leslieToMoore": 135.3,
+        "belowMoore": 47.6
+      },
+      "storageDelivery": {
+        "sharp": 0.7,
+        "twoBToLeslie": 50.9,
+        "leslieToMoore": 43.9,
+        "belowMoore": 6.9
+      },
+      "totals": {
+        "decree": 284.8,
+        "storage": 102.4
+      },
+      "losses": {
+        "decree": 302.7,
+        "storage": 89.4
+      },
+      "deliveryFactor": {
+        "decree": 0.4848,
+        "storage": 0.5339
+      },
+      "conveyance": {
+        "leslie": 0.21,
+        "moore": 0.48,
+        "arco": 0.139
+      },
+      "rotationFactor": {
+        "leslie": 0.79,
+        "moore": 0.4108,
+        "arco": 0.3537
+      },
+      "df": {
+        "reach": 0.895,
+        "canal": 0.922,
+        "river": 0.861
+      }
+    },
+    {
+      "date": "2025-06-02",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 948.3,
+      "mackayReleaseCfs": 559.5,
+      "storageCfs": 176.1,
+      "decreeDelivery": {
+        "sharp": 8.9,
+        "twoBToLeslie": 99.3,
+        "leslieToMoore": 140.7,
+        "belowMoore": 47.3
+      },
+      "storageDelivery": {
+        "sharp": 0.7,
+        "twoBToLeslie": 58.5,
+        "leslieToMoore": 38.8,
+        "belowMoore": 8.3
+      },
+      "totals": {
+        "decree": 296.2,
+        "storage": 106.3
+      },
+      "losses": {
+        "decree": 263.3,
+        "storage": 69.8
+      },
+      "deliveryFactor": {
+        "decree": 0.5294,
+        "storage": 0.6036
+      },
+      "conveyance": {
+        "leslie": 0.14,
+        "moore": 0.48,
+        "arco": 0.163
+      },
+      "rotationFactor": {
+        "leslie": 0.86,
+        "moore": 0.4472,
+        "arco": 0.3743
+      },
+      "df": {
+        "reach": 0.84,
+        "canal": 0.93,
+        "river": 0.837
+      }
+    },
+    {
+      "date": "2025-06-03",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 992.0,
+      "mackayReleaseCfs": 527.5,
+      "storageCfs": 168.8,
+      "decreeDelivery": {
+        "sharp": 8.6,
+        "twoBToLeslie": 99.2,
+        "leslieToMoore": 144.8,
+        "belowMoore": 47.4
+      },
+      "storageDelivery": {
+        "sharp": 0.7,
+        "twoBToLeslie": 57.5,
+        "leslieToMoore": 42.1,
+        "belowMoore": 6.8
+      },
+      "totals": {
+        "decree": 300.0,
+        "storage": 107.1
+      },
+      "losses": {
+        "decree": 227.4,
+        "storage": 61.8
+      },
+      "deliveryFactor": {
+        "decree": 0.5688,
+        "storage": 0.6341
+      },
+      "conveyance": {
+        "leslie": 0.15,
+        "moore": 0.42,
+        "arco": 0.115
+      },
+      "rotationFactor": {
+        "leslie": 0.85,
+        "moore": 0.493,
+        "arco": 0.4363
+      },
+      "df": {
+        "reach": 0.841,
+        "canal": 0.981,
+        "river": 0.885
+      }
+    },
+    {
+      "date": "2025-06-04",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 946.6,
+      "mackayReleaseCfs": 506.1,
+      "storageCfs": 187.9,
+      "decreeDelivery": {
+        "sharp": 9.2,
+        "twoBToLeslie": 93.5,
+        "leslieToMoore": 140.3,
+        "belowMoore": 47.4
+      },
+      "storageDelivery": {
+        "sharp": 0.8,
+        "twoBToLeslie": 61.8,
+        "leslieToMoore": 49.0,
+        "belowMoore": 7.3
+      },
+      "totals": {
+        "decree": 290.4,
+        "storage": 118.9
+      },
+      "losses": {
+        "decree": 215.7,
+        "storage": 69.0
+      },
+      "deliveryFactor": {
+        "decree": 0.5738,
+        "storage": 0.6328
+      },
+      "conveyance": {
+        "leslie": 0.15,
+        "moore": 0.41,
+        "arco": 0.132
+      },
+      "rotationFactor": {
+        "leslie": 0.85,
+        "moore": 0.5015,
+        "arco": 0.4353
+      },
+      "df": {
+        "reach": 0.82,
+        "canal": 0.978,
+        "river": 0.868
+      }
+    },
+    {
+      "date": "2025-06-05",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 716.3,
+      "mackayReleaseCfs": 493.2,
+      "storageCfs": 126.8,
+      "decreeDelivery": {
+        "sharp": 8.2,
+        "twoBToLeslie": 107.2,
+        "leslieToMoore": 132.9,
+        "belowMoore": 50.9
+      },
+      "storageDelivery": {
+        "sharp": 0.8,
+        "twoBToLeslie": 51.4,
+        "leslieToMoore": 32.4,
+        "belowMoore": 3.7
+      },
+      "totals": {
+        "decree": 299.2,
+        "storage": 88.3
+      },
+      "losses": {
+        "decree": 193.9,
+        "storage": 38.6
+      },
+      "deliveryFactor": {
+        "decree": 0.6068,
+        "storage": 0.6958
+      },
+      "conveyance": {
+        "leslie": 0.07,
+        "moore": 0.44,
+        "arco": 0.171
+      },
+      "rotationFactor": {
+        "leslie": 0.93,
+        "moore": 0.5208,
+        "arco": 0.4317
+      },
+      "df": {
+        "reach": 0.791,
+        "canal": 0.956,
+        "river": 0.829
+      }
+    },
+    {
+      "date": "2025-06-06",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 610.5,
+      "mackayReleaseCfs": 424.6,
+      "storageCfs": 104.4,
+      "decreeDelivery": {
+        "sharp": 8.3,
+        "twoBToLeslie": 110.1,
+        "leslieToMoore": 121.6,
+        "belowMoore": 48.3
+      },
+      "storageDelivery": {
+        "sharp": 0.7,
+        "twoBToLeslie": 41.3,
+        "leslieToMoore": 34.9,
+        "belowMoore": 1.5
+      },
+      "totals": {
+        "decree": 288.3,
+        "storage": 78.4
+      },
+      "losses": {
+        "decree": 136.3,
+        "storage": 26.0
+      },
+      "deliveryFactor": {
+        "decree": 0.679,
+        "storage": 0.751
+      },
+      "conveyance": {
+        "leslie": 0.03,
+        "moore": 0.38,
+        "arco": 0.207
+      },
+      "rotationFactor": {
+        "leslie": 0.97,
+        "moore": 0.6014,
+        "arco": 0.4769
+      },
+      "df": {
+        "reach": 0.831,
+        "canal": 0.889,
+        "river": 0.793
+      }
+    },
+    {
+      "date": "2025-06-07",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 666.3,
+      "mackayReleaseCfs": 404.3,
+      "storageCfs": 118.7,
+      "decreeDelivery": {
+        "sharp": 7.5,
+        "twoBToLeslie": 91.3,
+        "leslieToMoore": 110.5,
+        "belowMoore": 42.6
+      },
+      "storageDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 40.7,
+        "leslieToMoore": 33.9,
+        "belowMoore": 4.4
+      },
+      "totals": {
+        "decree": 251.9,
+        "storage": 79.5
+      },
+      "losses": {
+        "decree": 152.3,
+        "storage": 39.1
+      },
+      "deliveryFactor": {
+        "decree": 0.6232,
+        "storage": 0.6703
+      },
+      "conveyance": {
+        "leslie": 0.09,
+        "moore": 0.43,
+        "arco": 0.201
+      },
+      "rotationFactor": {
+        "leslie": 0.91,
+        "moore": 0.5187,
+        "arco": 0.4144
+      },
+      "df": {
+        "reach": 0.78,
+        "canal": 0.934,
+        "river": 0.799
+      }
+    },
+    {
+      "date": "2025-06-08",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 699.0,
+      "mackayReleaseCfs": 421.5,
+      "storageCfs": 130.5,
+      "decreeDelivery": {
+        "sharp": 7.5,
+        "twoBToLeslie": 89.3,
+        "leslieToMoore": 111.6,
+        "belowMoore": 42.6
+      },
+      "storageDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 37.7,
+        "leslieToMoore": 31.8,
+        "belowMoore": 11.3
+      },
+      "totals": {
+        "decree": 251.0,
+        "storage": 81.3
+      },
+      "losses": {
+        "decree": 170.5,
+        "storage": 49.2
+      },
+      "deliveryFactor": {
+        "decree": 0.5955,
+        "storage": 0.623
+      },
+      "conveyance": {
+        "leslie": 0.12,
+        "moore": 0.43,
+        "arco": 0.147
+      },
+      "rotationFactor": {
+        "leslie": 0.88,
+        "moore": 0.5016,
+        "arco": 0.4279
+      },
+      "df": {
+        "reach": 0.837,
+        "canal": 0.955,
+        "river": 0.853
+      }
+    },
+    {
+      "date": "2025-06-09",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 684.2,
+      "mackayReleaseCfs": 458.9,
+      "storageCfs": 122.1,
+      "decreeDelivery": {
+        "sharp": 4.5,
+        "twoBToLeslie": 103.5,
+        "leslieToMoore": 116.2,
+        "belowMoore": 46.4
+      },
+      "storageDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 31.0,
+        "leslieToMoore": 30.3,
+        "belowMoore": 11.4
+      },
+      "totals": {
+        "decree": 270.6,
+        "storage": 73.2
+      },
+      "losses": {
+        "decree": 188.4,
+        "storage": 48.9
+      },
+      "deliveryFactor": {
+        "decree": 0.5895,
+        "storage": 0.5995
+      },
+      "conveyance": {
+        "leslie": 0.12,
+        "moore": 0.44,
+        "arco": 0.109
+      },
+      "rotationFactor": {
+        "leslie": 0.88,
+        "moore": 0.4928,
+        "arco": 0.4391
+      },
+      "df": {
+        "reach": 0.847,
+        "canal": 0.989,
+        "river": 0.891
+      }
+    },
+    {
+      "date": "2025-06-10",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 756.8,
+      "mackayReleaseCfs": 484.2,
+      "storageCfs": 139.8,
+      "decreeDelivery": {
+        "sharp": 7.5,
+        "twoBToLeslie": 106.7,
+        "leslieToMoore": 119.5,
+        "belowMoore": 43.2
+      },
+      "storageDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 33.3,
+        "leslieToMoore": 30.6,
+        "belowMoore": 15.6
+      },
+      "totals": {
+        "decree": 276.9,
+        "storage": 80.0
+      },
+      "losses": {
+        "decree": 207.3,
+        "storage": 59.8
+      },
+      "deliveryFactor": {
+        "decree": 0.5719,
+        "storage": 0.5722
+      },
+      "conveyance": {
+        "leslie": 0.16,
+        "moore": 0.43,
+        "arco": 0.223
+      },
+      "rotationFactor": {
+        "leslie": 0.84,
+        "moore": 0.4788,
+        "arco": 0.372
+      },
+      "df": {
+        "reach": 0.756,
+        "canal": 0.929,
+        "river": 0.777
+      }
+    },
+    {
+      "date": "2025-06-11",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 813.9,
+      "mackayReleaseCfs": 507.6,
+      "storageCfs": 135.4,
+      "decreeDelivery": {
+        "sharp": 7.5,
+        "twoBToLeslie": 109.8,
+        "leslieToMoore": 124.1,
+        "belowMoore": 47.2
+      },
+      "storageDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 35.2,
+        "leslieToMoore": 31.3,
+        "belowMoore": 11.9
+      },
+      "totals": {
+        "decree": 288.6,
+        "storage": 78.9
+      },
+      "losses": {
+        "decree": 219.0,
+        "storage": 56.5
+      },
+      "deliveryFactor": {
+        "decree": 0.5686,
+        "storage": 0.5827
+      },
+      "conveyance": {
+        "leslie": 0.14,
+        "moore": 0.45,
+        "arco": 0.162
+      },
+      "rotationFactor": {
+        "leslie": 0.86,
+        "moore": 0.473,
+        "arco": 0.3964
+      },
+      "df": {
+        "reach": 0.743,
+        "canal": 1.014,
+        "river": 0.838
+      }
+    },
+    {
+      "date": "2025-06-12",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 812.5,
+      "mackayReleaseCfs": 513.2,
+      "storageCfs": 131.7,
+      "decreeDelivery": {
+        "sharp": 7.4,
+        "twoBToLeslie": 105.9,
+        "leslieToMoore": 128.8,
+        "belowMoore": 29.7
+      },
+      "storageDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 36.1,
+        "leslieToMoore": 29.7,
+        "belowMoore": 10.9
+      },
+      "totals": {
+        "decree": 271.8,
+        "storage": 77.2
+      },
+      "losses": {
+        "decree": 225.2,
+        "storage": 54.4
+      },
+      "deliveryFactor": {
+        "decree": 0.5469,
+        "storage": 0.5866
+      },
+      "conveyance": {
+        "leslie": 0.14,
+        "moore": 0.43,
+        "arco": 0.238
+      },
+      "rotationFactor": {
+        "leslie": 0.86,
+        "moore": 0.4902,
+        "arco": 0.3735
+      },
+      "df": {
+        "reach": 0.723,
+        "canal": 0.937,
+        "river": 0.762
+      }
+    },
+    {
+      "date": "2025-06-13",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 838.2,
+      "mackayReleaseCfs": 513.2,
+      "storageCfs": 108.7,
+      "decreeDelivery": {
+        "sharp": 7.4,
+        "twoBToLeslie": 104.7,
+        "leslieToMoore": 124.2,
+        "belowMoore": 53.1
+      },
+      "storageDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 34.8,
+        "leslieToMoore": 30.4,
+        "belowMoore": 3.4
+      },
+      "totals": {
+        "decree": 289.4,
+        "storage": 69.1
+      },
+      "losses": {
+        "decree": 223.7,
+        "storage": 39.7
+      },
+      "deliveryFactor": {
+        "decree": 0.564,
+        "storage": 0.6351
+      },
+      "conveyance": {
+        "leslie": 0.12,
+        "moore": 0.42,
+        "arco": 0.249
+      },
+      "rotationFactor": {
+        "leslie": 0.88,
+        "moore": 0.5104,
+        "arco": 0.3833
+      },
+      "df": {
+        "reach": 0.735,
+        "canal": 0.9,
+        "river": 0.751
+      }
+    },
+    {
+      "date": "2025-06-14",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 718.2,
+      "mackayReleaseCfs": 446.4,
+      "storageCfs": 100.5,
+      "decreeDelivery": {
+        "sharp": 7.4,
+        "twoBToLeslie": 97.1,
+        "leslieToMoore": 120.4,
+        "belowMoore": 53.1
+      },
+      "storageDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 34.9,
+        "leslieToMoore": 31.1,
+        "belowMoore": 3.2
+      },
+      "totals": {
+        "decree": 278.0,
+        "storage": 69.7
+      },
+      "losses": {
+        "decree": 168.4,
+        "storage": 30.8
+      },
+      "deliveryFactor": {
+        "decree": 0.6228,
+        "storage": 0.6935
+      },
+      "conveyance": {
+        "leslie": 0.09,
+        "moore": 0.37,
+        "arco": 0.32
+      },
+      "rotationFactor": {
+        "leslie": 0.91,
+        "moore": 0.5733,
+        "arco": 0.3898
+      },
+      "df": {
+        "reach": 0.74,
+        "canal": 0.812,
+        "river": 0.68
+      }
+    },
+    {
+      "date": "2025-06-15",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 679.9,
+      "mackayReleaseCfs": 406.9,
+      "storageCfs": 101.7,
+      "decreeDelivery": {
+        "sharp": 8.1,
+        "twoBToLeslie": 88.3,
+        "leslieToMoore": 117.0,
+        "belowMoore": 47.8
+      },
+      "storageDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 45.7,
+        "leslieToMoore": 30.5,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 261.2,
+        "storage": 76.7
+      },
+      "losses": {
+        "decree": 145.5,
+        "storage": 26.4
+      },
+      "deliveryFactor": {
+        "decree": 0.6422,
+        "storage": 0.7439
+      },
+      "conveyance": {
+        "leslie": 0.08,
+        "moore": 0.39,
+        "arco": 0.216
+      },
+      "rotationFactor": {
+        "leslie": 0.92,
+        "moore": 0.5612,
+        "arco": 0.44
+      },
+      "df": {
+        "reach": 0.761,
+        "canal": 0.902,
+        "river": 0.784
+      }
+    },
+    {
+      "date": "2025-06-16",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 565.2,
+      "mackayReleaseCfs": 373.5,
+      "storageCfs": 108.1,
+      "decreeDelivery": {
+        "sharp": 6.4,
+        "twoBToLeslie": 89.5,
+        "leslieToMoore": 95.1,
+        "belowMoore": 40.0
+      },
+      "storageDelivery": {
+        "sharp": 2.2,
+        "twoBToLeslie": 47.5,
+        "leslieToMoore": 23.7,
+        "belowMoore": 4.1
+      },
+      "totals": {
+        "decree": 231.0,
+        "storage": 77.5
+      },
+      "losses": {
+        "decree": 142.5,
+        "storage": 30.6
+      },
+      "deliveryFactor": {
+        "decree": 0.6185,
+        "storage": 0.7169
+      },
+      "conveyance": {
+        "leslie": 0.05,
+        "moore": 0.47,
+        "arco": 0.182
+      },
+      "rotationFactor": {
+        "leslie": 0.95,
+        "moore": 0.5035,
+        "arco": 0.4119
+      },
+      "df": {
+        "reach": 0.79,
+        "canal": 0.924,
+        "river": 0.818
+      }
+    },
+    {
+      "date": "2025-06-17",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 574.0,
+      "mackayReleaseCfs": 386.1,
+      "storageCfs": 98.9,
+      "decreeDelivery": {
+        "sharp": 6.3,
+        "twoBToLeslie": 60.9,
+        "leslieToMoore": 92.0,
+        "belowMoore": 40.0
+      },
+      "storageDelivery": {
+        "sharp": 0.7,
+        "twoBToLeslie": 32.1,
+        "leslieToMoore": 22.7,
+        "belowMoore": 2.9
+      },
+      "totals": {
+        "decree": 199.2,
+        "storage": 58.4
+      },
+      "losses": {
+        "decree": 187.0,
+        "storage": 40.5
+      },
+      "deliveryFactor": {
+        "decree": 0.5158,
+        "storage": 0.5905
+      },
+      "conveyance": {
+        "leslie": 0.17,
+        "moore": 0.48,
+        "arco": 0.253
+      },
+      "rotationFactor": {
+        "leslie": 0.83,
+        "moore": 0.4316,
+        "arco": 0.3224
+      },
+      "df": {
+        "reach": 0.828,
+        "canal": 0.829,
+        "river": 0.747
+      }
+    },
+    {
+      "date": "2025-06-18",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 520.6,
+      "mackayReleaseCfs": 369.1,
+      "storageCfs": 121.9,
+      "decreeDelivery": {
+        "sharp": 4.1,
+        "twoBToLeslie": 73.5,
+        "leslieToMoore": 89.5,
+        "belowMoore": 36.1
+      },
+      "storageDelivery": {
+        "sharp": 2.9,
+        "twoBToLeslie": 36.5,
+        "leslieToMoore": 25.9,
+        "belowMoore": 8.9
+      },
+      "totals": {
+        "decree": 203.2,
+        "storage": 74.2
+      },
+      "losses": {
+        "decree": 166.0,
+        "storage": 47.6
+      },
+      "deliveryFactor": {
+        "decree": 0.5504,
+        "storage": 0.6092
+      },
+      "conveyance": {
+        "leslie": 0.11,
+        "moore": 0.48,
+        "arco": 0.25
+      },
+      "rotationFactor": {
+        "leslie": 0.89,
+        "moore": 0.4628,
+        "arco": 0.3471
+      },
+      "df": {
+        "reach": 0.821,
+        "canal": 0.855,
+        "river": 0.75
+      }
+    },
+    {
+      "date": "2025-06-19",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 477.7,
+      "mackayReleaseCfs": 360.4,
+      "storageCfs": 119.6,
+      "decreeDelivery": {
+        "sharp": 4.9,
+        "twoBToLeslie": 78.3,
+        "leslieToMoore": 88.5,
+        "belowMoore": 34.2
+      },
+      "storageDelivery": {
+        "sharp": 2.1,
+        "twoBToLeslie": 40.2,
+        "leslieToMoore": 24.5,
+        "belowMoore": 9.1
+      },
+      "totals": {
+        "decree": 205.9,
+        "storage": 75.9
+      },
+      "losses": {
+        "decree": 154.5,
+        "storage": 43.8
+      },
+      "deliveryFactor": {
+        "decree": 0.5713,
+        "storage": 0.6341
+      },
+      "conveyance": {
+        "leslie": 0.08,
+        "moore": 0.49,
+        "arco": 0.171
+      },
+      "rotationFactor": {
+        "leslie": 0.92,
+        "moore": 0.4692,
+        "arco": 0.389
+      },
+      "df": {
+        "reach": 0.829,
+        "canal": 0.963,
+        "river": 0.829
+      }
+    },
+    {
+      "date": "2025-06-20",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 460.1,
+      "mackayReleaseCfs": 348.6,
+      "storageCfs": 108.4,
+      "decreeDelivery": {
+        "sharp": 2.0,
+        "twoBToLeslie": 82.5,
+        "leslieToMoore": 85.2,
+        "belowMoore": 36.4
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 38.5,
+        "leslieToMoore": 26.6,
+        "belowMoore": 5.9
+      },
+      "totals": {
+        "decree": 206.1,
+        "storage": 71.0
+      },
+      "losses": {
+        "decree": 142.5,
+        "storage": 37.5
+      },
+      "deliveryFactor": {
+        "decree": 0.5912,
+        "storage": 0.6544
+      },
+      "conveyance": {
+        "leslie": 0.05,
+        "moore": 0.48,
+        "arco": 0.173
+      },
+      "rotationFactor": {
+        "leslie": 0.95,
+        "moore": 0.494,
+        "arco": 0.4085
+      },
+      "df": {
+        "reach": 0.863,
+        "canal": 0.931,
+        "river": 0.827
+      }
+    },
+    {
+      "date": "2025-06-21",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 450.3,
+      "mackayReleaseCfs": 351.4,
+      "storageCfs": 94.6,
+      "decreeDelivery": {
+        "sharp": 2.0,
+        "twoBToLeslie": 73.3,
+        "leslieToMoore": 86.3,
+        "belowMoore": 38.1
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 13.7,
+        "leslieToMoore": 29.7,
+        "belowMoore": 7.3
+      },
+      "totals": {
+        "decree": 199.7,
+        "storage": 50.7
+      },
+      "losses": {
+        "decree": 151.7,
+        "storage": 43.9
+      },
+      "deliveryFactor": {
+        "decree": 0.5683,
+        "storage": 0.5359
+      },
+      "conveyance": {
+        "leslie": 0.11,
+        "moore": 0.47,
+        "arco": 0.161
+      },
+      "rotationFactor": {
+        "leslie": 0.89,
+        "moore": 0.4717,
+        "arco": 0.3958
+      },
+      "df": {
+        "reach": 0.871,
+        "canal": 0.921,
+        "river": 0.839
+      }
+    },
+    {
+      "date": "2025-06-22",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 322.0,
+      "mackayReleaseCfs": 322.0,
+      "storageCfs": 108.0,
+      "decreeDelivery": {
+        "sharp": 2.0,
+        "twoBToLeslie": 74.0,
+        "leslieToMoore": 85.8,
+        "belowMoore": 30.1
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 13.0,
+        "leslieToMoore": 301.0,
+        "belowMoore": 15.0
+      },
+      "totals": {
+        "decree": 191.9,
+        "storage": 329.0
+      },
+      "losses": {
+        "decree": 125.9,
+        "storage": 54.6
+      },
+      "deliveryFactor": {
+        "decree": 0.6038,
+        "storage": 0.8577
+      },
+      "conveyance": {
+        "leslie": 0.08,
+        "moore": 0.48,
+        "arco": 0.147
+      },
+      "rotationFactor": {
+        "leslie": 0.92,
+        "moore": 0.4784,
+        "arco": 0.4081
+      },
+      "df": {
+        "reach": 0.848,
+        "canal": 0.953,
+        "river": 0.853
+      }
+    },
+    {
+      "date": "2025-06-23",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 412.8,
+      "mackayReleaseCfs": 342.6,
+      "storageCfs": 76.4,
+      "decreeDelivery": {
+        "sharp": 2.0,
+        "twoBToLeslie": 60.8,
+        "leslieToMoore": 92.8,
+        "belowMoore": 32.7
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 16.2,
+        "leslieToMoore": 23.8,
+        "belowMoore": 3.3
+      },
+      "totals": {
+        "decree": 188.3,
+        "storage": 43.3
+      },
+      "losses": {
+        "decree": 154.2,
+        "storage": 33.1
+      },
+      "deliveryFactor": {
+        "decree": 0.5498,
+        "storage": 0.5668
+      },
+      "conveyance": {
+        "leslie": 0.11,
+        "moore": 0.47,
+        "arco": 0.16
+      },
+      "rotationFactor": {
+        "leslie": 0.89,
+        "moore": 0.4717,
+        "arco": 0.3962
+      },
+      "df": {
+        "reach": 0.792,
+        "canal": 0.983,
+        "river": 0.84
+      }
+    },
+    {
+      "date": "2025-06-24",
+      "decreeDate": "1959-09-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 388.0,
+      "mackayReleaseCfs": 356.7,
+      "storageCfs": 68.1,
+      "decreeDelivery": {
+        "sharp": 1.8,
+        "twoBToLeslie": 63.2,
+        "leslieToMoore": 89.8,
+        "belowMoore": 32.7
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 15.8,
+        "leslieToMoore": 19.6,
+        "belowMoore": 2.3
+      },
+      "totals": {
+        "decree": 187.5,
+        "storage": 37.7
+      },
+      "losses": {
+        "decree": 150.6,
+        "storage": 48.9
+      },
+      "deliveryFactor": {
+        "decree": 0.5546,
+        "storage": 0.4353
+      },
+      "conveyance": {
+        "leslie": 0.11,
+        "moore": 0.51,
+        "arco": 0.233
+      },
+      "rotationFactor": {
+        "leslie": 0.89,
+        "moore": 0.4361,
+        "arco": 0.3345
+      },
+      "df": {
+        "reach": 0.811,
+        "canal": 0.883,
+        "river": 0.767
+      }
+    },
+    {
+      "date": "2025-06-25",
+      "decreeDate": "1896-09-28",
+      "percentFilled": 0.9,
+      "inflowCfs": 335.2,
+      "mackayReleaseCfs": 320.7,
+      "storageCfs": 100.1,
+      "decreeDelivery": {
+        "sharp": 1.8,
+        "twoBToLeslie": 60.2,
+        "leslieToMoore": 83.9,
+        "belowMoore": 28.4
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 23.2,
+        "leslieToMoore": 25.9,
+        "belowMoore": 7.3
+      },
+      "totals": {
+        "decree": 174.3,
+        "storage": 56.4
+      },
+      "losses": {
+        "decree": 146.4,
+        "storage": 43.7
+      },
+      "deliveryFactor": {
+        "decree": 0.5435,
+        "storage": 0.5634
+      },
+      "conveyance": {
+        "leslie": 0.09,
+        "moore": 0.51,
+        "arco": 0.259
+      },
+      "rotationFactor": {
+        "leslie": 0.91,
+        "moore": 0.4459,
+        "arco": 0.3304
+      },
+      "df": {
+        "reach": 0.797,
+        "canal": 0.862,
+        "river": 0.741
+      }
+    },
+    {
+      "date": "2025-06-26",
+      "decreeDate": "1889-04-10",
+      "percentFilled": 0.24,
+      "inflowCfs": 281.1,
+      "mackayReleaseCfs": 273.0,
+      "storageCfs": 134.7,
+      "decreeDelivery": {
+        "sharp": 2.2,
+        "twoBToLeslie": 58.3,
+        "leslieToMoore": 74.9,
+        "belowMoore": 17.0
+      },
+      "storageDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 31.5,
+        "leslieToMoore": 33.3,
+        "belowMoore": 10.9
+      },
+      "totals": {
+        "decree": 152.4,
+        "storage": 76.2
+      },
+      "losses": {
+        "decree": 120.7,
+        "storage": 58.5
+      },
+      "deliveryFactor": {
+        "decree": 0.558,
+        "storage": 0.5657
+      },
+      "conveyance": {
+        "leslie": 0.09,
+        "moore": 0.51,
+        "arco": 0.208
+      },
+      "rotationFactor": {
+        "leslie": 0.91,
+        "moore": 0.4459,
+        "arco": 0.3532
+      },
+      "df": {
+        "reach": 0.825,
+        "canal": 0.897,
+        "river": 0.792
+      }
+    },
+    {
+      "date": "2025-06-27",
+      "decreeDate": "1889-06-01",
+      "percentFilled": 0.83,
+      "inflowCfs": 270.1,
+      "mackayReleaseCfs": 262.0,
+      "storageCfs": 132.7,
+      "decreeDelivery": {
+        "sharp": 2.2,
+        "twoBToLeslie": 52.1,
+        "leslieToMoore": 68.8,
+        "belowMoore": 13.9
+      },
+      "storageDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 21.2,
+        "leslieToMoore": 34.3,
+        "belowMoore": 10.4
+      },
+      "totals": {
+        "decree": 137.0,
+        "storage": 66.4
+      },
+      "losses": {
+        "decree": 124.9,
+        "storage": 66.5
+      },
+      "deliveryFactor": {
+        "decree": 0.5231,
+        "storage": 0.4996
+      },
+      "conveyance": {
+        "leslie": 0.12,
+        "moore": 0.53,
+        "arco": 0.293
+      },
+      "rotationFactor": {
+        "leslie": 0.88,
+        "moore": 0.4136,
+        "arco": 0.2924
+      },
+      "df": {
+        "reach": 0.824,
+        "canal": 0.787,
+        "river": 0.707
+      }
+    },
+    {
+      "date": "2025-06-28",
+      "decreeDate": "1889-04-10",
+      "percentFilled": 0.49,
+      "inflowCfs": 241.8,
+      "mackayReleaseCfs": 233.7,
+      "storageCfs": 152.0,
+      "decreeDelivery": {
+        "sharp": 2.2,
+        "twoBToLeslie": 49.0,
+        "leslieToMoore": 71.2,
+        "belowMoore": 13.7
+      },
+      "storageDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 24.3,
+        "leslieToMoore": 32.7,
+        "belowMoore": 18.2
+      },
+      "totals": {
+        "decree": 136.1,
+        "storage": 75.7
+      },
+      "losses": {
+        "decree": 111.3,
+        "storage": 77.0
+      },
+      "deliveryFactor": {
+        "decree": 0.5501,
+        "storage": 0.4957
+      },
+      "conveyance": {
+        "leslie": 0.12,
+        "moore": 0.54,
+        "arco": 0.287
+      },
+      "rotationFactor": {
+        "leslie": 0.88,
+        "moore": 0.4048,
+        "arco": 0.2886
+      },
+      "df": {
+        "reach": 0.823,
+        "canal": 0.794,
+        "river": 0.713
+      }
+    },
+    {
+      "date": "2025-06-29",
+      "decreeDate": "1887-03-13",
+      "percentFilled": 0.23,
+      "inflowCfs": 240.3,
+      "mackayReleaseCfs": 235.4,
+      "storageCfs": 165.6,
+      "decreeDelivery": {
+        "sharp": 4.5,
+        "twoBToLeslie": 42.9,
+        "leslieToMoore": 66.0,
+        "belowMoore": 13.2
+      },
+      "storageDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 32.4,
+        "leslieToMoore": 39.4,
+        "belowMoore": 9.9
+      },
+      "totals": {
+        "decree": 126.6,
+        "storage": 82.2
+      },
+      "losses": {
+        "decree": 120.6,
+        "storage": 80.7
+      },
+      "deliveryFactor": {
+        "decree": 0.5121,
+        "storage": 0.5046
+      },
+      "conveyance": {
+        "leslie": 0.14,
+        "moore": 0.55,
+        "arco": 0.357
+      },
+      "rotationFactor": {
+        "leslie": 0.86,
+        "moore": 0.387,
+        "arco": 0.2488
+      },
+      "df": {
+        "reach": 0.823,
+        "canal": 0.716,
+        "river": 0.643
+      }
+    },
+    {
+      "date": "2025-06-30",
+      "decreeDate": "1886-05-01",
+      "percentFilled": 0.02,
+      "inflowCfs": 228.8,
+      "mackayReleaseCfs": 223.9,
+      "storageCfs": 175.8,
+      "decreeDelivery": {
+        "sharp": 4.4,
+        "twoBToLeslie": 32.9,
+        "leslieToMoore": 54.3,
+        "belowMoore": 16.6
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 21.1,
+        "leslieToMoore": 47.1,
+        "belowMoore": 5.8
+      },
+      "totals": {
+        "decree": 108.2,
+        "storage": 74.3
+      },
+      "losses": {
+        "decree": 123.3,
+        "storage": 101.4
+      },
+      "deliveryFactor": {
+        "decree": 0.4674,
+        "storage": 0.4229
+      },
+      "conveyance": {
+        "leslie": 0.18,
+        "moore": 0.57,
+        "arco": 0.327
+      },
+      "rotationFactor": {
+        "leslie": 0.82,
+        "moore": 0.3526,
+        "arco": 0.2373
+      },
+      "df": {
+        "reach": 0.835,
+        "canal": 0.744,
+        "river": 0.673
+      }
+    },
+    {
+      "date": "2025-07-01",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.6,
+      "inflowCfs": 210.4,
+      "mackayReleaseCfs": 205.5,
+      "storageCfs": 187.2,
+      "decreeDelivery": {
+        "sharp": 4.4,
+        "twoBToLeslie": 31.0,
+        "leslieToMoore": 54.7,
+        "belowMoore": 10.9
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 19.0,
+        "leslieToMoore": 47.5,
+        "belowMoore": 11.9
+      },
+      "totals": {
+        "decree": 101.0,
+        "storage": 78.7
+      },
+      "losses": {
+        "decree": 110.7,
+        "storage": 108.6
+      },
+      "deliveryFactor": {
+        "decree": 0.4771,
+        "storage": 0.4202
+      },
+      "conveyance": {
+        "leslie": 0.16,
+        "moore": 0.57,
+        "arco": 0.242
+      },
+      "rotationFactor": {
+        "leslie": 0.84,
+        "moore": 0.3612,
+        "arco": 0.2738
+      },
+      "df": {
+        "reach": 0.829,
+        "canal": 0.838,
+        "river": 0.758
+      }
+    },
+    {
+      "date": "2025-07-02",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.5,
+      "inflowCfs": 212.7,
+      "mackayReleaseCfs": 207.8,
+      "storageCfs": 183.9,
+      "decreeDelivery": {
+        "sharp": 4.6,
+        "twoBToLeslie": 29.6,
+        "leslieToMoore": 56.3,
+        "belowMoore": 12.0
+      },
+      "storageDelivery": {
+        "sharp": 0.2,
+        "twoBToLeslie": 20.4,
+        "leslieToMoore": 45.0,
+        "belowMoore": 11.6
+      },
+      "totals": {
+        "decree": 102.5,
+        "storage": 77.2
+      },
+      "losses": {
+        "decree": 114.0,
+        "storage": 106.7
+      },
+      "deliveryFactor": {
+        "decree": 0.4734,
+        "storage": 0.4198
+      },
+      "conveyance": {
+        "leslie": 0.17,
+        "moore": 0.57,
+        "arco": 0.342
+      },
+      "rotationFactor": {
+        "leslie": 0.83,
+        "moore": 0.3569,
+        "arco": 0.2348
+      },
+      "df": {
+        "reach": 0.814,
+        "canal": 0.738,
+        "river": 0.658
+      }
+    },
+    {
+      "date": "2025-07-03",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.83,
+      "inflowCfs": 222.6,
+      "mackayReleaseCfs": 217.7,
+      "storageCfs": 181.0,
+      "decreeDelivery": {
+        "sharp": 4.4,
+        "twoBToLeslie": 30.0,
+        "leslieToMoore": 56.0,
+        "belowMoore": 18.3
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 24.0,
+        "leslieToMoore": 46.1,
+        "belowMoore": 6.9
+      },
+      "totals": {
+        "decree": 108.7,
+        "storage": 77.3
+      },
+      "losses": {
+        "decree": 125.3,
+        "storage": 99.9
+      },
+      "deliveryFactor": {
+        "decree": 0.4645,
+        "storage": 0.4362
+      },
+      "conveyance": {
+        "leslie": 0.15,
+        "moore": 0.59,
+        "arco": 0.373
+      },
+      "rotationFactor": {
+        "leslie": 0.85,
+        "moore": 0.3485,
+        "arco": 0.2185
+      },
+      "df": {
+        "reach": 0.805,
+        "canal": 0.703,
+        "river": 0.627
+      }
+    },
+    {
+      "date": "2025-07-04",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.63,
+      "inflowCfs": 221.9,
+      "mackayReleaseCfs": 217.0,
+      "storageCfs": 188.7,
+      "decreeDelivery": {
+        "sharp": 4.4,
+        "twoBToLeslie": 30.0,
+        "leslieToMoore": 59.4,
+        "belowMoore": 13.7
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 24.0,
+        "leslieToMoore": 46.3,
+        "belowMoore": 11.4
+      },
+      "totals": {
+        "decree": 107.5,
+        "storage": 82.0
+      },
+      "losses": {
+        "decree": 122.6,
+        "storage": 102.9
+      },
+      "deliveryFactor": {
+        "decree": 0.4672,
+        "storage": 0.4435
+      },
+      "conveyance": {
+        "leslie": 0.14,
+        "moore": 0.58,
+        "arco": 0.203
+      },
+      "rotationFactor": {
+        "leslie": 0.86,
+        "moore": 0.3612,
+        "arco": 0.2879
+      },
+      "df": {
+        "reach": 0.812,
+        "canal": 0.902,
+        "river": 0.797
+      }
+    },
+    {
+      "date": "2025-07-05",
+      "decreeDate": "1886-05-01",
+      "percentFilled": 0.27,
+      "inflowCfs": 238.5,
+      "mackayReleaseCfs": 233.6,
+      "storageCfs": 175.1,
+      "decreeDelivery": {
+        "sharp": 4.4,
+        "twoBToLeslie": 29.7,
+        "leslieToMoore": 63.1,
+        "belowMoore": 18.8
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 24.3,
+        "leslieToMoore": 46.2,
+        "belowMoore": 7.8
+      },
+      "totals": {
+        "decree": 116.0,
+        "storage": 78.6
+      },
+      "losses": {
+        "decree": 130.6,
+        "storage": 93.5
+      },
+      "deliveryFactor": {
+        "decree": 0.4704,
+        "storage": 0.4567
+      },
+      "conveyance": {
+        "leslie": 0.15,
+        "moore": 0.57,
+        "arco": 0.129
+      },
+      "rotationFactor": {
+        "leslie": 0.85,
+        "moore": 0.3655,
+        "arco": 0.3184
+      },
+      "df": {
+        "reach": 0.824,
+        "canal": 0.978,
+        "river": 0.871
+      }
+    },
+    {
+      "date": "2025-07-06",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 1.0,
+      "inflowCfs": 230.1,
+      "mackayReleaseCfs": 225.8,
+      "storageCfs": 185.5,
+      "decreeDelivery": {
+        "sharp": 4.4,
+        "twoBToLeslie": 31.1,
+        "leslieToMoore": 58.7,
+        "belowMoore": 17.4
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 22.9,
+        "leslieToMoore": 46.9,
+        "belowMoore": 10.6
+      },
+      "totals": {
+        "decree": 111.6,
+        "storage": 80.7
+      },
+      "losses": {
+        "decree": 126.1,
+        "storage": 101.4
+      },
+      "deliveryFactor": {
+        "decree": 0.4695,
+        "storage": 0.4432
+      },
+      "conveyance": {
+        "leslie": 0.15,
+        "moore": 0.58,
+        "arco": 0.225
+      },
+      "rotationFactor": {
+        "leslie": 0.85,
+        "moore": 0.357,
+        "arco": 0.2767
+      },
+      "df": {
+        "reach": 0.799,
+        "canal": 0.881,
+        "river": 0.775
+      }
+    },
+    {
+      "date": "2025-07-07",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.61,
+      "inflowCfs": 214.9,
+      "mackayReleaseCfs": 210.0,
+      "storageCfs": 206.7,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 31.9,
+        "leslieToMoore": 55.3,
+        "belowMoore": 13.3
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 20.1,
+        "leslieToMoore": 48.2,
+        "belowMoore": 16.4
+      },
+      "totals": {
+        "decree": 105.2,
+        "storage": 84.7
+      },
+      "losses": {
+        "decree": 210.0,
+        "storage": 206.7
+      },
+      "deliveryFactor": {
+        "decree": 0.3338,
+        "storage": 0.2907
+      },
+      "conveyance": {
+        "leslie": 0.16,
+        "moore": 0.58,
+        "arco": 0.346
+      },
+      "rotationFactor": {
+        "leslie": 0.84,
+        "moore": 0.3528,
+        "arco": 0.2307
+      },
+      "df": {
+        "reach": 0.719,
+        "canal": 0.809,
+        "river": 0.654
+      }
+    },
+    {
+      "date": "2025-07-08",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.35,
+      "inflowCfs": 209.4,
+      "mackayReleaseCfs": 204.5,
+      "storageCfs": 211.2,
+      "decreeDelivery": {
+        "sharp": 3.9,
+        "twoBToLeslie": 31.3,
+        "leslieToMoore": 56.4,
+        "belowMoore": 10.2
+      },
+      "storageDelivery": {
+        "sharp": 0.8,
+        "twoBToLeslie": 20.7,
+        "leslieToMoore": 48.9,
+        "belowMoore": 17.7
+      },
+      "totals": {
+        "decree": 101.8,
+        "storage": 88.1
+      },
+      "losses": {
+        "decree": 110.8,
+        "storage": 123.1
+      },
+      "deliveryFactor": {
+        "decree": 0.4788,
+        "storage": 0.4171
+      },
+      "conveyance": {
+        "leslie": 0.16,
+        "moore": 0.57,
+        "arco": 0.347
+      },
+      "rotationFactor": {
+        "leslie": 0.84,
+        "moore": 0.3612,
+        "arco": 0.2359
+      },
+      "df": {
+        "reach": 0.746,
+        "canal": 0.79,
+        "river": 0.653
+      }
+    },
+    {
+      "date": "2025-07-09",
+      "decreeDate": "1885-05-01",
+      "percentFilled": 0.5,
+      "inflowCfs": 199.2,
+      "mackayReleaseCfs": 194.3,
+      "storageCfs": 225.4,
+      "decreeDelivery": {
+        "sharp": 3.3,
+        "twoBToLeslie": 31.0,
+        "leslieToMoore": 55.0,
+        "belowMoore": 1.3
+      },
+      "storageDelivery": {
+        "sharp": 1.4,
+        "twoBToLeslie": 21.0,
+        "leslieToMoore": 56.8,
+        "belowMoore": 22.5
+      },
+      "totals": {
+        "decree": 90.6,
+        "storage": 101.7
+      },
+      "losses": {
+        "decree": 105.0,
+        "storage": 131.9
+      },
+      "deliveryFactor": {
+        "decree": 0.4632,
+        "storage": 0.4354
+      },
+      "conveyance": {
+        "leslie": 0.17,
+        "moore": 0.57,
+        "arco": 0.308
+      },
+      "rotationFactor": {
+        "leslie": 0.83,
+        "moore": 0.3569,
+        "arco": 0.247
+      },
+      "df": {
+        "reach": 0.809,
+        "canal": 0.793,
+        "river": 0.692
+      }
+    },
+    {
+      "date": "2025-07-10",
+      "decreeDate": "1885-02-18",
+      "percentFilled": 0.06,
+      "inflowCfs": 191.0,
+      "mackayReleaseCfs": 186.1,
+      "storageCfs": 234.6,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 26.3,
+        "leslieToMoore": 53.0,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 25.7,
+        "leslieToMoore": 52.9,
+        "belowMoore": 24.3
+      },
+      "totals": {
+        "decree": 84.2,
+        "storage": 102.9
+      },
+      "losses": {
+        "decree": 102.0,
+        "storage": 136.8
+      },
+      "deliveryFactor": {
+        "decree": 0.4522,
+        "storage": 0.4293
+      },
+      "conveyance": {
+        "leslie": 0.17,
+        "moore": 0.58,
+        "arco": 0.353
+      },
+      "rotationFactor": {
+        "leslie": 0.83,
+        "moore": 0.3486,
+        "arco": 0.2255
+      },
+      "df": {
+        "reach": 0.795,
+        "canal": 0.765,
+        "river": 0.647
+      }
+    },
+    {
+      "date": "2025-07-11",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.44,
+      "inflowCfs": 177.6,
+      "mackayReleaseCfs": 172.7,
+      "storageCfs": 247.0,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 22.8,
+        "leslieToMoore": 50.7,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 29.2,
+        "leslieToMoore": 56.1,
+        "belowMoore": 25.2
+      },
+      "totals": {
+        "decree": 78.4,
+        "storage": 110.5
+      },
+      "losses": {
+        "decree": 94.4,
+        "storage": 141.3
+      },
+      "deliveryFactor": {
+        "decree": 0.4537,
+        "storage": 0.4388
+      },
+      "conveyance": {
+        "leslie": 0.16,
+        "moore": 0.57,
+        "arco": 0.332
+      },
+      "rotationFactor": {
+        "leslie": 0.84,
+        "moore": 0.3612,
+        "arco": 0.2413
+      },
+      "df": {
+        "reach": 0.781,
+        "canal": 0.798,
+        "river": 0.668
+      }
+    },
+    {
+      "date": "2025-07-12",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.23,
+      "inflowCfs": 173.6,
+      "mackayReleaseCfs": 168.7,
+      "storageCfs": 250.0,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 22.0,
+        "leslieToMoore": 47.4,
+        "belowMoore": 2.0
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 30.0,
+        "leslieToMoore": 55.4,
+        "belowMoore": 24.1
+      },
+      "totals": {
+        "decree": 76.1,
+        "storage": 109.5
+      },
+      "losses": {
+        "decree": 94.6,
+        "storage": 146.3
+      },
+      "deliveryFactor": {
+        "decree": 0.4458,
+        "storage": 0.4281
+      },
+      "conveyance": {
+        "leslie": 0.17,
+        "moore": 0.59,
+        "arco": 0.288
+      },
+      "rotationFactor": {
+        "leslie": 0.83,
+        "moore": 0.3403,
+        "arco": 0.2423
+      },
+      "df": {
+        "reach": 0.799,
+        "canal": 0.806,
+        "river": 0.712
+      }
+    },
+    {
+      "date": "2025-07-13",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.67,
+      "inflowCfs": 175.6,
+      "mackayReleaseCfs": 170.7,
+      "storageCfs": 246.0,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 23.6,
+        "leslieToMoore": 49.1,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 28.4,
+        "leslieToMoore": 57.1,
+        "belowMoore": 26.1
+      },
+      "totals": {
+        "decree": 77.6,
+        "storage": 111.6
+      },
+      "losses": {
+        "decree": 93.3,
+        "storage": 142.0
+      },
+      "deliveryFactor": {
+        "decree": 0.4541,
+        "storage": 0.4401
+      },
+      "conveyance": {
+        "leslie": 0.17,
+        "moore": 0.57,
+        "arco": 0.271
+      },
+      "rotationFactor": {
+        "leslie": 0.83,
+        "moore": 0.3569,
+        "arco": 0.2602
+      },
+      "df": {
+        "reach": 0.797,
+        "canal": 0.824,
+        "river": 0.729
+      }
+    },
+    {
+      "date": "2025-07-14",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.7,
+      "inflowCfs": 178.8,
+      "mackayReleaseCfs": 173.9,
+      "storageCfs": 240.8,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 23.7,
+        "leslieToMoore": 50.0,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 28.3,
+        "leslieToMoore": 49.3,
+        "belowMoore": 27.4
+      },
+      "totals": {
+        "decree": 78.6,
+        "storage": 105.0
+      },
+      "losses": {
+        "decree": 95.5,
+        "storage": 139.0
+      },
+      "deliveryFactor": {
+        "decree": 0.4515,
+        "storage": 0.4303
+      },
+      "conveyance": {
+        "leslie": 0.17,
+        "moore": 0.57,
+        "arco": 0.44
+      },
+      "rotationFactor": {
+        "leslie": 0.83,
+        "moore": 0.3569,
+        "arco": 0.1999
+      },
+      "df": {
+        "reach": 0.783,
+        "canal": 0.614,
+        "river": 0.56
+      }
+    },
+    {
+      "date": "2025-07-15",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.89,
+      "inflowCfs": 178.1,
+      "mackayReleaseCfs": 173.2,
+      "storageCfs": 240.6,
+      "decreeDelivery": {
+        "sharp": 4.5,
+        "twoBToLeslie": 25.7,
+        "leslieToMoore": 50.6,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 1.3,
+        "twoBToLeslie": 25.3,
+        "leslieToMoore": 49.3,
+        "belowMoore": 27.5
+      },
+      "totals": {
+        "decree": 81.0,
+        "storage": 103.4
+      },
+      "losses": {
+        "decree": 92.3,
+        "storage": 137.2
+      },
+      "deliveryFactor": {
+        "decree": 0.4674,
+        "storage": 0.4298
+      },
+      "conveyance": {
+        "leslie": 0.16,
+        "moore": 0.56,
+        "arco": 0.388
+      },
+      "rotationFactor": {
+        "leslie": 0.84,
+        "moore": 0.3696,
+        "arco": 0.2262
+      },
+      "df": {
+        "reach": 0.795,
+        "canal": 0.67,
+        "river": 0.612
+      }
+    },
+    {
+      "date": "2025-07-16",
+      "decreeDate": "1885-02-18",
+      "percentFilled": 0.59,
+      "inflowCfs": 172.8,
+      "mackayReleaseCfs": 167.9,
+      "storageCfs": 241.9,
+      "decreeDelivery": {
+        "sharp": 4.5,
+        "twoBToLeslie": 27.3,
+        "leslieToMoore": 47.4,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 1.3,
+        "twoBToLeslie": 23.7,
+        "leslieToMoore": 55.4,
+        "belowMoore": 24.7
+      },
+      "totals": {
+        "decree": 79.4,
+        "storage": 105.1
+      },
+      "losses": {
+        "decree": 88.7,
+        "storage": 140.0
+      },
+      "deliveryFactor": {
+        "decree": 0.4723,
+        "storage": 0.4288
+      },
+      "conveyance": {
+        "leslie": 0.16,
+        "moore": 0.57,
+        "arco": 0.413
+      },
+      "rotationFactor": {
+        "leslie": 0.84,
+        "moore": 0.3612,
+        "arco": 0.212
+      },
+      "df": {
+        "reach": 0.84,
+        "canal": 0.629,
+        "river": 0.587
+      }
+    },
+    {
+      "date": "2025-07-17",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.84,
+      "inflowCfs": 184.1,
+      "mackayReleaseCfs": 179.2,
+      "storageCfs": 240.6,
+      "decreeDelivery": {
+        "sharp": 4.5,
+        "twoBToLeslie": 25.4,
+        "leslieToMoore": 50.3,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 1.3,
+        "twoBToLeslie": 25.6,
+        "leslieToMoore": 52.1,
+        "belowMoore": 24.2
+      },
+      "totals": {
+        "decree": 80.4,
+        "storage": 103.2
+      },
+      "losses": {
+        "decree": 98.9,
+        "storage": 140.8
+      },
+      "deliveryFactor": {
+        "decree": 0.4484,
+        "storage": 0.423
+      },
+      "conveyance": {
+        "leslie": 0.18,
+        "moore": 0.58,
+        "arco": 0.422
+      },
+      "rotationFactor": {
+        "leslie": 0.82,
+        "moore": 0.3444,
+        "arco": 0.1991
+      },
+      "df": {
+        "reach": 0.849,
+        "canal": 0.617,
+        "river": 0.578
+      }
+    },
+    {
+      "date": "2025-07-18",
+      "decreeDate": "1885-02-18",
+      "percentFilled": 0.51,
+      "inflowCfs": 173.5,
+      "mackayReleaseCfs": 168.6,
+      "storageCfs": 252.2,
+      "decreeDelivery": {
+        "sharp": 5.5,
+        "twoBToLeslie": 27.5,
+        "leslieToMoore": 46.1,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 23.5,
+        "leslieToMoore": 54.5,
+        "belowMoore": 27.9
+      },
+      "totals": {
+        "decree": 79.3,
+        "storage": 106.2
+      },
+      "losses": {
+        "decree": 89.5,
+        "storage": 149.0
+      },
+      "deliveryFactor": {
+        "decree": 0.4698,
+        "storage": 0.4161
+      },
+      "conveyance": {
+        "leslie": 0.17,
+        "moore": 0.57,
+        "arco": 0.372
+      },
+      "rotationFactor": {
+        "leslie": 0.83,
+        "moore": 0.3569,
+        "arco": 0.2241
+      },
+      "df": {
+        "reach": 0.881,
+        "canal": 0.665,
+        "river": 0.628
+      }
+    },
+    {
+      "date": "2025-07-19",
+      "decreeDate": "1885-05-01",
+      "percentFilled": 0.05,
+      "inflowCfs": 167.7,
+      "mackayReleaseCfs": 162.8,
+      "storageCfs": 247.0,
+      "decreeDelivery": {
+        "sharp": 4.5,
+        "twoBToLeslie": 31.2,
+        "leslieToMoore": 46.3,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 1.3,
+        "twoBToLeslie": 19.8,
+        "leslieToMoore": 55.4,
+        "belowMoore": 34.5
+      },
+      "totals": {
+        "decree": 82.2,
+        "storage": 111.0
+      },
+      "losses": {
+        "decree": 80.8,
+        "storage": 140.5
+      },
+      "deliveryFactor": {
+        "decree": 0.5043,
+        "storage": 0.4414
+      },
+      "conveyance": {
+        "leslie": 0.19,
+        "moore": 0.52,
+        "arco": 0.409
+      },
+      "rotationFactor": {
+        "leslie": 0.81,
+        "moore": 0.3888,
+        "arco": 0.2298
+      },
+      "df": {
+        "reach": 0.756,
+        "canal": 0.667,
+        "river": 0.591
+      }
+    },
+    {
+      "date": "2025-07-20",
+      "decreeDate": "1885-05-12",
+      "percentFilled": 0.76,
+      "inflowCfs": 183.8,
+      "mackayReleaseCfs": 178.9,
+      "storageCfs": 237.9,
+      "decreeDelivery": {
+        "sharp": 4.5,
+        "twoBToLeslie": 30.7,
+        "leslieToMoore": 46.4,
+        "belowMoore": 2.5
+      },
+      "storageDelivery": {
+        "sharp": 1.3,
+        "twoBToLeslie": 19.3,
+        "leslieToMoore": 52.7,
+        "belowMoore": 27.3
+      },
+      "totals": {
+        "decree": 84.1,
+        "storage": 100.6
+      },
+      "losses": {
+        "decree": 97.3,
+        "storage": 144.9
+      },
+      "deliveryFactor": {
+        "decree": 0.4636,
+        "storage": 0.4098
+      },
+      "conveyance": {
+        "leslie": 0.2,
+        "moore": 0.58,
+        "arco": 0.434
+      },
+      "rotationFactor": {
+        "leslie": 0.8,
+        "moore": 0.336,
+        "arco": 0.1902
+      },
+      "df": {
+        "reach": 0.879,
+        "canal": 0.602,
+        "river": 0.566
+      }
+    },
+    {
+      "date": "2025-07-21",
+      "decreeDate": "1885-05-01",
+      "percentFilled": 0.85,
+      "inflowCfs": 163.8,
+      "mackayReleaseCfs": 158.9,
+      "storageCfs": 252.9,
+      "decreeDelivery": {
+        "sharp": 4.5,
+        "twoBToLeslie": 28.5,
+        "leslieToMoore": 43.0,
+        "belowMoore": 1.6
+      },
+      "storageDelivery": {
+        "sharp": 1.3,
+        "twoBToLeslie": 21.5,
+        "leslieToMoore": 54.8,
+        "belowMoore": 29.3
+      },
+      "totals": {
+        "decree": 77.6,
+        "storage": 106.9
+      },
+      "losses": {
+        "decree": 82.9,
+        "storage": 148.9
+      },
+      "deliveryFactor": {
+        "decree": 0.4835,
+        "storage": 0.4179
+      },
+      "conveyance": {
+        "leslie": 0.19,
+        "moore": 0.56,
+        "arco": 0.334
+      },
+      "rotationFactor": {
+        "leslie": 0.81,
+        "moore": 0.3564,
+        "arco": 0.2374
+      },
+      "df": {
+        "reach": 0.899,
+        "canal": 0.701,
+        "river": 0.666
+      }
+    },
+    {
+      "date": "2025-07-22",
+      "decreeDate": "1885-05-31",
+      "percentFilled": 0.67,
+      "inflowCfs": 172.6,
+      "mackayReleaseCfs": 167.7,
+      "storageCfs": 242.1,
+      "decreeDelivery": {
+        "sharp": 5.5,
+        "twoBToLeslie": 29.0,
+        "leslieToMoore": 45.7,
+        "belowMoore": 1.3
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 21.0,
+        "leslieToMoore": 52.1,
+        "belowMoore": 30.4
+      },
+      "totals": {
+        "decree": 81.5,
+        "storage": 103.8
+      },
+      "losses": {
+        "decree": 87.6,
+        "storage": 142.8
+      },
+      "deliveryFactor": {
+        "decree": 0.482,
+        "storage": 0.4209
+      },
+      "conveyance": {
+        "leslie": 0.19,
+        "moore": 0.55,
+        "arco": 0.277
+      },
+      "rotationFactor": {
+        "leslie": 0.81,
+        "moore": 0.3645,
+        "arco": 0.2635
+      },
+      "df": {
+        "reach": 0.88,
+        "canal": 0.769,
+        "river": 0.723
+      }
+    },
+    {
+      "date": "2025-07-23",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.79,
+      "inflowCfs": 174.6,
+      "mackayReleaseCfs": 169.7,
+      "storageCfs": 232.1,
+      "decreeDelivery": {
+        "sharp": 5.8,
+        "twoBToLeslie": 31.7,
+        "leslieToMoore": 42.7,
+        "belowMoore": 11.4
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 18.3,
+        "leslieToMoore": 54.3,
+        "belowMoore": 20.7
+      },
+      "totals": {
+        "decree": 91.6,
+        "storage": 93.3
+      },
+      "losses": {
+        "decree": 87.6,
+        "storage": 138.8
+      },
+      "deliveryFactor": {
+        "decree": 0.5112,
+        "storage": 0.402
+      },
+      "conveyance": {
+        "leslie": 0.19,
+        "moore": 0.56,
+        "arco": 0.18
+      },
+      "rotationFactor": {
+        "leslie": 0.81,
+        "moore": 0.3564,
+        "arco": 0.2922
+      },
+      "df": {
+        "reach": 0.831,
+        "canal": 0.895,
+        "river": 0.82
+      }
+    },
+    {
+      "date": "2025-07-24",
+      "decreeDate": "1885-05-31",
+      "percentFilled": 0.86,
+      "inflowCfs": 183.3,
+      "mackayReleaseCfs": 178.4,
+      "storageCfs": 222.4,
+      "decreeDelivery": {
+        "sharp": 5.5,
+        "twoBToLeslie": 28.4,
+        "leslieToMoore": 46.6,
+        "belowMoore": 1.4
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 21.6,
+        "leslieToMoore": 46.1,
+        "belowMoore": 20.5
+      },
+      "totals": {
+        "decree": 81.9,
+        "storage": 88.5
+      },
+      "losses": {
+        "decree": 96.6,
+        "storage": 133.9
+      },
+      "deliveryFactor": {
+        "decree": 0.4588,
+        "storage": 0.3979
+      },
+      "conveyance": {
+        "leslie": 0.22,
+        "moore": 0.55,
+        "arco": 0.37
+      },
+      "rotationFactor": {
+        "leslie": 0.78,
+        "moore": 0.351,
+        "arco": 0.2211
+      },
+      "df": {
+        "reach": 0.728,
+        "canal": 0.805,
+        "river": 0.63
+      }
+    },
+    {
+      "date": "2025-07-25",
+      "decreeDate": "1885-05-12",
+      "percentFilled": 0.92,
+      "inflowCfs": 177.3,
+      "mackayReleaseCfs": 172.4,
+      "storageCfs": 233.4,
+      "decreeDelivery": {
+        "sharp": 5.5,
+        "twoBToLeslie": 27.8,
+        "leslieToMoore": 42.6,
+        "belowMoore": 1.4
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 22.2,
+        "leslieToMoore": 47.7,
+        "belowMoore": 20.6
+      },
+      "totals": {
+        "decree": 77.3,
+        "storage": 90.8
+      },
+      "losses": {
+        "decree": 95.2,
+        "storage": 142.6
+      },
+      "deliveryFactor": {
+        "decree": 0.4481,
+        "storage": 0.389
+      },
+      "conveyance": {
+        "leslie": 0.22,
+        "moore": 0.57,
+        "arco": 0.391
+      },
+      "rotationFactor": {
+        "leslie": 0.78,
+        "moore": 0.3354,
+        "arco": 0.2043
+      },
+      "df": {
+        "reach": 0.813,
+        "canal": 0.716,
+        "river": 0.609
+      }
+    },
+    {
+      "date": "2025-07-26",
+      "decreeDate": "1885-05-31",
+      "percentFilled": 0.19,
+      "inflowCfs": 181.5,
+      "mackayReleaseCfs": 176.6,
+      "storageCfs": 225.2,
+      "decreeDelivery": {
+        "sharp": 5.3,
+        "twoBToLeslie": 28.4,
+        "leslieToMoore": 43.7,
+        "belowMoore": 1.4
+      },
+      "storageDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 21.6,
+        "leslieToMoore": 43.4,
+        "belowMoore": 18.2
+      },
+      "totals": {
+        "decree": 78.8,
+        "storage": 83.7
+      },
+      "losses": {
+        "decree": 97.9,
+        "storage": 141.5
+      },
+      "deliveryFactor": {
+        "decree": 0.446,
+        "storage": 0.3717
+      },
+      "conveyance": {
+        "leslie": 0.22,
+        "moore": 0.57,
+        "arco": 0.189
+      },
+      "rotationFactor": {
+        "leslie": 0.78,
+        "moore": 0.3354,
+        "arco": 0.272
+      },
+      "df": {
+        "reach": 0.913,
+        "canal": 0.871,
+        "river": 0.811
+      }
+    },
+    {
+      "date": "2025-07-27",
+      "decreeDate": "1885-05-31",
+      "percentFilled": 0.22,
+      "inflowCfs": 193.3,
+      "mackayReleaseCfs": 190.8,
+      "storageCfs": 216.0,
+      "decreeDelivery": {
+        "sharp": 5.3,
+        "twoBToLeslie": 28.5,
+        "leslieToMoore": 47.4,
+        "belowMoore": 1.4
+      },
+      "storageDelivery": {
+        "sharp": 0.5,
+        "twoBToLeslie": 21.5,
+        "leslieToMoore": 38.2,
+        "belowMoore": 18.7
+      },
+      "totals": {
+        "decree": 82.6,
+        "storage": 78.9
+      },
+      "losses": {
+        "decree": 108.2,
+        "storage": 137.2
+      },
+      "deliveryFactor": {
+        "decree": 0.4329,
+        "storage": 0.3651
+      },
+      "conveyance": {
+        "leslie": 0.24,
+        "moore": 0.57,
+        "arco": 0.277
+      },
+      "rotationFactor": {
+        "leslie": 0.76,
+        "moore": 0.3268,
+        "arco": 0.2363
+      },
+      "df": {
+        "reach": 0.901,
+        "canal": 0.786,
+        "river": 0.723
+      }
+    },
+    {
+      "date": "2025-07-28",
+      "decreeDate": "1885-05-15",
+      "percentFilled": 0.75,
+      "inflowCfs": 182.4,
+      "mackayReleaseCfs": 182.4,
+      "storageCfs": 218.4,
+      "decreeDelivery": {
+        "sharp": 5.5,
+        "twoBToLeslie": 30.5,
+        "leslieToMoore": 44.3,
+        "belowMoore": 6.4
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 19.5,
+        "leslieToMoore": 42.8,
+        "belowMoore": 13.0
+      },
+      "totals": {
+        "decree": 86.7,
+        "storage": 75.6
+      },
+      "losses": {
+        "decree": 118.5,
+        "storage": 128.2
+      },
+      "deliveryFactor": {
+        "decree": 0.4225,
+        "storage": 0.371
+      },
+      "conveyance": {
+        "leslie": 0.25,
+        "moore": 0.58,
+        "arco": 0.435
+      },
+      "rotationFactor": {
+        "leslie": 0.75,
+        "moore": 0.315,
+        "arco": 0.178
+      },
+      "df": {
+        "reach": 0.834,
+        "canal": 0.62,
+        "river": 0.565
+      }
+    },
+    {
+      "date": "2025-07-29",
+      "decreeDate": "1886-05-01",
+      "percentFilled": 0.07,
+      "inflowCfs": 204.2,
+      "mackayReleaseCfs": 204.2,
+      "storageCfs": 203.6,
+      "decreeDelivery": {
+        "sharp": 5.8,
+        "twoBToLeslie": 50.0,
+        "leslieToMoore": 43.4,
+        "belowMoore": 5.8
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 19.5,
+        "leslieToMoore": 43.6,
+        "belowMoore": 13.5
+      },
+      "totals": {
+        "decree": 105.0,
+        "storage": 76.9
+      },
+      "losses": {
+        "decree": 111.7,
+        "storage": 126.7
+      },
+      "deliveryFactor": {
+        "decree": 0.4845,
+        "storage": 0.3777
+      },
+      "conveyance": {
+        "leslie": 0.24,
+        "moore": 0.58,
+        "arco": 0.442
+      },
+      "rotationFactor": {
+        "leslie": 0.76,
+        "moore": 0.3192,
+        "arco": 0.1781
+      },
+      "df": {
+        "reach": 0.834,
+        "canal": 0.612,
+        "river": 0.558
+      }
+    },
+    {
+      "date": "2025-07-30",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.07,
+      "inflowCfs": 186.5,
+      "mackayReleaseCfs": 186.5,
+      "storageCfs": 218.3,
+      "decreeDelivery": {
+        "sharp": 5.5,
+        "twoBToLeslie": 32.2,
+        "leslieToMoore": 44.6,
+        "belowMoore": 1.4
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 21.8,
+        "leslieToMoore": 38.9,
+        "belowMoore": 20.1
+      },
+      "totals": {
+        "decree": 83.7,
+        "storage": 81.1
+      },
+      "losses": {
+        "decree": 102.7,
+        "storage": 137.3
+      },
+      "deliveryFactor": {
+        "decree": 0.449,
+        "storage": 0.3713
+      },
+      "conveyance": {
+        "leslie": 0.23,
+        "moore": 0.57,
+        "arco": 0.355
+      },
+      "rotationFactor": {
+        "leslie": 0.77,
+        "moore": 0.3311,
+        "arco": 0.2136
+      },
+      "df": {
+        "reach": 85.4,
+        "canal": 0.689,
+        "river": 0.645
+      }
+    },
+    {
+      "date": "2025-07-31",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.54,
+      "inflowCfs": 185.9,
+      "mackayReleaseCfs": 185.9,
+      "storageCfs": 217.9,
+      "decreeDelivery": {
+        "sharp": 5.8,
+        "twoBToLeslie": 32.2,
+        "leslieToMoore": 40.7,
+        "belowMoore": 4.0
+      },
+      "storageDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 21.8,
+        "leslieToMoore": 43.8,
+        "belowMoore": 14.0
+      },
+      "totals": {
+        "decree": 82.7,
+        "storage": 79.6
+      },
+      "losses": {
+        "decree": 103.1,
+        "storage": 138.3
+      },
+      "deliveryFactor": {
+        "decree": 0.4451,
+        "storage": 0.3653
+      },
+      "conveyance": {
+        "leslie": 0.24,
+        "moore": 0.56,
+        "arco": 0.249
+      },
+      "rotationFactor": {
+        "leslie": 0.76,
+        "moore": 0.3344,
+        "arco": 0.2511
+      },
+      "df": {
+        "reach": 1.003,
+        "canal": 0.75,
+        "river": 0.751
+      }
+    },
+    {
+      "date": "2025-08-01",
+      "decreeDate": "1885-05-15",
+      "percentFilled": 0.89,
+      "inflowCfs": 176.2,
+      "mackayReleaseCfs": 176.2,
+      "storageCfs": 223.6,
+      "decreeDelivery": {
+        "sharp": 5.5,
+        "twoBToLeslie": 29.2,
+        "leslieToMoore": 42.6,
+        "belowMoore": 0.9
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 24.8,
+        "leslieToMoore": 39.0,
+        "belowMoore": 16.7
+      },
+      "totals": {
+        "decree": 78.2,
+        "storage": 80.8
+      },
+      "losses": {
+        "decree": 97.9,
+        "storage": 142.9
+      },
+      "deliveryFactor": {
+        "decree": 0.4441,
+        "storage": 0.3612
+      },
+      "conveyance": {
+        "leslie": 0.24,
+        "moore": 0.56,
+        "arco": 0.217
+      },
+      "rotationFactor": {
+        "leslie": 0.76,
+        "moore": 0.3344,
+        "arco": 0.2618
+      },
+      "df": {
+        "reach": 1.022,
+        "canal": 0.776,
+        "river": 0.783
+      }
+    },
+    {
+      "date": "2025-08-02",
+      "decreeDate": "1885-05-31",
+      "percentFilled": 0.2,
+      "inflowCfs": 176.5,
+      "mackayReleaseCfs": 176.5,
+      "storageCfs": 213.4,
+      "decreeDelivery": {
+        "sharp": 5.7,
+        "twoBToLeslie": 28.6,
+        "leslieToMoore": 43.9,
+        "belowMoore": 0.9
+      },
+      "storageDelivery": {
+        "sharp": 0.2,
+        "twoBToLeslie": 25.4,
+        "leslieToMoore": 38.2,
+        "belowMoore": 13.5
+      },
+      "totals": {
+        "decree": 79.1,
+        "storage": 77.3
+      },
+      "losses": {
+        "decree": 97.4,
+        "storage": 136.1
+      },
+      "deliveryFactor": {
+        "decree": 0.4482,
+        "storage": 0.3622
+      },
+      "conveyance": {
+        "leslie": 0.24,
+        "moore": 0.55,
+        "arco": 0.234
+      },
+      "rotationFactor": {
+        "leslie": 0.76,
+        "moore": 0.342,
+        "arco": 0.262
+      },
+      "df": {
+        "reach": 0.95,
+        "canal": 0.783,
+        "river": 0.766
+      }
+    },
+    {
+      "date": "2025-08-03",
+      "decreeDate": "1885-05-31",
+      "percentFilled": 0.5,
+      "inflowCfs": 177.0,
+      "mackayReleaseCfs": 177.0,
+      "storageCfs": 209.9,
+      "decreeDelivery": {
+        "sharp": 5.7,
+        "twoBToLeslie": 27.1,
+        "leslieToMoore": 44.9,
+        "belowMoore": 0.9
+      },
+      "storageDelivery": {
+        "sharp": 0.2,
+        "twoBToLeslie": 23.4,
+        "leslieToMoore": 42.4,
+        "belowMoore": 12.8
+      },
+      "totals": {
+        "decree": 78.6,
+        "storage": 78.8
+      },
+      "losses": {
+        "decree": 97.8,
+        "storage": 131.8
+      },
+      "deliveryFactor": {
+        "decree": 0.4456,
+        "storage": 0.3742
+      },
+      "conveyance": {
+        "leslie": 0.24,
+        "moore": 0.55,
+        "arco": 0.288
+      },
+      "rotationFactor": {
+        "leslie": 0.76,
+        "moore": 0.342,
+        "arco": 0.2435
+      },
+      "df": {
+        "reach": 0.953,
+        "canal": 0.721,
+        "river": 0.712
+      }
+    },
+    {
+      "date": "2025-08-04",
+      "decreeDate": "1885-05-15",
+      "percentFilled": 0.44,
+      "inflowCfs": 176.2,
+      "mackayReleaseCfs": 176.2,
+      "storageCfs": 210.7,
+      "decreeDelivery": {
+        "sharp": 5.6,
+        "twoBToLeslie": 25.5,
+        "leslieToMoore": 43.3,
+        "belowMoore": 0.9
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 25.0,
+        "leslieToMoore": 43.1,
+        "belowMoore": 11.7
+      },
+      "totals": {
+        "decree": 75.3,
+        "storage": 80.1
+      },
+      "losses": {
+        "decree": 99.5,
+        "storage": 132.0
+      },
+      "deliveryFactor": {
+        "decree": 0.4308,
+        "storage": 0.3777
+      },
+      "conveyance": {
+        "leslie": 0.27,
+        "moore": 0.55,
+        "arco": 0.218
+      },
+      "rotationFactor": {
+        "leslie": 0.73,
+        "moore": 0.3285,
+        "arco": 0.2569
+      },
+      "df": {
+        "reach": 0.983,
+        "canal": 0.787,
+        "river": 0.782
+      }
+    },
+    {
+      "date": "2025-08-05",
+      "decreeDate": "1885-05-15",
+      "percentFilled": 0.72,
+      "inflowCfs": 177.9,
+      "mackayReleaseCfs": 177.9,
+      "storageCfs": 205.0,
+      "decreeDelivery": {
+        "sharp": 5.6,
+        "twoBToLeslie": 24.7,
+        "leslieToMoore": 42.4,
+        "belowMoore": 0.9
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 25.8,
+        "leslieToMoore": 38.3,
+        "belowMoore": 12.2
+      },
+      "totals": {
+        "decree": 73.6,
+        "storage": 76.6
+      },
+      "losses": {
+        "decree": 102.6,
+        "storage": 130.1
+      },
+      "deliveryFactor": {
+        "decree": 0.4177,
+        "storage": 0.3706
+      },
+      "conveyance": {
+        "leslie": 0.26,
+        "moore": 0.58,
+        "arco": 0.272
+      },
+      "rotationFactor": {
+        "leslie": 0.74,
+        "moore": 0.3108,
+        "arco": 0.2263
+      },
+      "df": {
+        "reach": 0.969,
+        "canal": 0.737,
+        "river": 0.728
+      }
+    },
+    {
+      "date": "2025-08-06",
+      "decreeDate": "1885-05-12",
+      "percentFilled": 0.77,
+      "inflowCfs": 171.1,
+      "mackayReleaseCfs": 171.1,
+      "storageCfs": 210.8,
+      "decreeDelivery": {
+        "sharp": 5.6,
+        "twoBToLeslie": 24.7,
+        "leslieToMoore": 43.8,
+        "belowMoore": 0.9
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 25.8,
+        "leslieToMoore": 43.4,
+        "belowMoore": 12.6
+      },
+      "totals": {
+        "decree": 75.0,
+        "storage": 82.1
+      },
+      "losses": {
+        "decree": 95.9,
+        "storage": 128.8
+      },
+      "deliveryFactor": {
+        "decree": 0.4389,
+        "storage": 0.3893
+      },
+      "conveyance": {
+        "leslie": 0.23,
+        "moore": 0.56,
+        "arco": 0.262
+      },
+      "rotationFactor": {
+        "leslie": 0.77,
+        "moore": 0.3388,
+        "arco": 0.25
+      },
+      "df": {
+        "reach": 0.959,
+        "canal": 0.75,
+        "river": 0.738
+      }
+    },
+    {
+      "date": "2025-08-07",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.61,
+      "inflowCfs": 153.4,
+      "mackayReleaseCfs": 153.4,
+      "storageCfs": 234.5,
+      "decreeDelivery": {
+        "sharp": 5.6,
+        "twoBToLeslie": 21.6,
+        "leslieToMoore": 41.0,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 28.9,
+        "leslieToMoore": 48.5,
+        "belowMoore": 13.6
+      },
+      "totals": {
+        "decree": 68.4,
+        "storage": 91.3
+      },
+      "losses": {
+        "decree": 85.0,
+        "storage": 143.3
+      },
+      "deliveryFactor": {
+        "decree": 0.4459,
+        "storage": 0.3892
+      },
+      "conveyance": {
+        "leslie": 0.22,
+        "moore": 0.56,
+        "arco": 0.265
+      },
+      "rotationFactor": {
+        "leslie": 0.78,
+        "moore": 0.3432,
+        "arco": 0.2523
+      },
+      "df": {
+        "reach": 0.951,
+        "canal": 0.75,
+        "river": 0.735
+      }
+    },
+    {
+      "date": "2025-08-08",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.92,
+      "inflowCfs": 144.9,
+      "mackayReleaseCfs": 144.9,
+      "storageCfs": 230.0,
+      "decreeDelivery": {
+        "sharp": 5.6,
+        "twoBToLeslie": 21.8,
+        "leslieToMoore": 41.3,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 28.7,
+        "leslieToMoore": 48.3,
+        "belowMoore": 14.0
+      },
+      "totals": {
+        "decree": 68.9,
+        "storage": 91.3
+      },
+      "losses": {
+        "decree": 75.9,
+        "storage": 138.8
+      },
+      "deliveryFactor": {
+        "decree": 0.4758,
+        "storage": 0.3968
+      },
+      "conveyance": {
+        "leslie": 0.2,
+        "moore": 0.54,
+        "arco": 0.128
+      },
+      "rotationFactor": {
+        "leslie": 0.8,
+        "moore": 0.368,
+        "arco": 0.3209
+      },
+      "df": {
+        "reach": 1.023,
+        "canal": 0.864,
+        "river": 0.872
+      }
+    },
+    {
+      "date": "2025-08-09",
+      "decreeDate": "1885-05-01",
+      "percentFilled": 0.17,
+      "inflowCfs": 154.2,
+      "mackayReleaseCfs": 154.2,
+      "storageCfs": 213.7,
+      "decreeDelivery": {
+        "sharp": 5.6,
+        "twoBToLeslie": 24.8,
+        "leslieToMoore": 41.7,
+        "belowMoore": 0.4
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 25.7,
+        "leslieToMoore": 47.0,
+        "belowMoore": 12.4
+      },
+      "totals": {
+        "decree": 72.5,
+        "storage": 85.4
+      },
+      "losses": {
+        "decree": 81.7,
+        "storage": 128.3
+      },
+      "deliveryFactor": {
+        "decree": 0.4702,
+        "storage": 0.3996
+      },
+      "conveyance": {
+        "leslie": 0.2,
+        "moore": 0.55,
+        "arco": 0.11
+      },
+      "rotationFactor": {
+        "leslie": 0.8,
+        "moore": 0.36,
+        "arco": 0.3204
+      },
+      "df": {
+        "reach": 1.06,
+        "canal": 0.869,
+        "river": 0.89
+      }
+    },
+    {
+      "date": "2025-08-10",
+      "decreeDate": "1885-05-01",
+      "percentFilled": 0.07,
+      "inflowCfs": 153.2,
+      "mackayReleaseCfs": 153.2,
+      "storageCfs": 210.7,
+      "decreeDelivery": {
+        "sharp": 5.6,
+        "twoBToLeslie": 24.4,
+        "leslieToMoore": 41.0,
+        "belowMoore": 0.3
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 26.1,
+        "leslieToMoore": 47.6,
+        "belowMoore": 11.1
+      },
+      "totals": {
+        "decree": 71.3,
+        "storage": 85.1
+      },
+      "losses": {
+        "decree": 81.9,
+        "storage": 125.7
+      },
+      "deliveryFactor": {
+        "decree": 0.4654,
+        "storage": 0.4037
+      },
+      "conveyance": {
+        "leslie": 0.2,
+        "moore": 0.56,
+        "arco": 0.158
+      },
+      "rotationFactor": {
+        "leslie": 0.8,
+        "moore": 0.352,
+        "arco": 0.2964
+      },
+      "df": {
+        "reach": 1.102,
+        "canal": 0.809,
+        "river": 0.842
+      }
+    },
+    {
+      "date": "2025-08-11",
+      "decreeDate": "1885-05-01",
+      "percentFilled": 0.62,
+      "inflowCfs": 166.8,
+      "mackayReleaseCfs": 166.8,
+      "storageCfs": 201.2,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 26.7,
+        "leslieToMoore": 41.7,
+        "belowMoore": 0.4
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 28.9,
+        "leslieToMoore": 43.7,
+        "belowMoore": 6.1
+      },
+      "totals": {
+        "decree": 73.5,
+        "storage": 79.0
+      },
+      "losses": {
+        "decree": 93.3,
+        "storage": 122.1
+      },
+      "deliveryFactor": {
+        "decree": 0.4406,
+        "storage": 0.3928
+      },
+      "conveyance": {
+        "leslie": 0.21,
+        "moore": 0.58,
+        "arco": 0.463
+      },
+      "rotationFactor": {
+        "leslie": 0.79,
+        "moore": 0.3318,
+        "arco": 0.1782
+      },
+      "df": {
+        "reach": 0.784,
+        "canal": 0.577,
+        "river": 0.537
+      }
+    },
+    {
+      "date": "2025-08-12",
+      "decreeDate": "1885-05-01",
+      "percentFilled": 0.48,
+      "inflowCfs": 168.6,
+      "mackayReleaseCfs": 168.6,
+      "storageCfs": 205.4,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 26.7,
+        "leslieToMoore": 41.4,
+        "belowMoore": 0.4
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 28.9,
+        "leslieToMoore": 44.8,
+        "belowMoore": 6.4
+      },
+      "totals": {
+        "decree": 73.2,
+        "storage": 80.4
+      },
+      "losses": {
+        "decree": 95.4,
+        "storage": 125.0
+      },
+      "deliveryFactor": {
+        "decree": 0.4342,
+        "storage": 0.3914
+      },
+      "conveyance": {
+        "leslie": 0.21,
+        "moore": 0.59,
+        "arco": 0.412
+      },
+      "rotationFactor": {
+        "leslie": 0.79,
+        "moore": 0.3239,
+        "arco": 0.1905
+      },
+      "df": {
+        "reach": 0.78,
+        "canal": 0.649,
+        "river": 0.588
+      }
+    },
+    {
+      "date": "2025-08-13",
+      "decreeDate": "1885-05-01",
+      "percentFilled": 0.28,
+      "inflowCfs": 166.7,
+      "mackayReleaseCfs": 166.7,
+      "storageCfs": 209.3,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 26.7,
+        "leslieToMoore": 41.3,
+        "belowMoore": 0.3
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 28.9,
+        "leslieToMoore": 45.4,
+        "belowMoore": 5.3
+      },
+      "totals": {
+        "decree": 73.0,
+        "storage": 79.9
+      },
+      "losses": {
+        "decree": 93.7,
+        "storage": 129.4
+      },
+      "deliveryFactor": {
+        "decree": 0.4379,
+        "storage": 0.3817
+      },
+      "conveyance": {
+        "leslie": 0.2,
+        "moore": 0.59,
+        "arco": 0.398
+      },
+      "rotationFactor": {
+        "leslie": 0.8,
+        "moore": 0.328,
+        "arco": 0.1975
+      },
+      "df": {
+        "reach": 0.801,
+        "canal": 0.658,
+        "river": 0.602
+      }
+    },
+    {
+      "date": "2025-08-14",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.32,
+      "inflowCfs": 153.9,
+      "mackayReleaseCfs": 153.9,
+      "storageCfs": 218.1,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 23.1,
+        "leslieToMoore": 39.3,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 32.5,
+        "leslieToMoore": 47.3,
+        "belowMoore": 4.3
+      },
+      "totals": {
+        "decree": 67.3,
+        "storage": 84.4
+      },
+      "losses": {
+        "decree": 86.6,
+        "storage": 133.7
+      },
+      "deliveryFactor": {
+        "decree": 0.4373,
+        "storage": 0.387
+      },
+      "conveyance": {
+        "leslie": 0.19,
+        "moore": 0.59,
+        "arco": 0.378
+      },
+      "rotationFactor": {
+        "leslie": 0.81,
+        "moore": 0.3321,
+        "arco": 0.2066
+      },
+      "df": {
+        "reach": 0.823,
+        "canal": 0.673,
+        "river": 0.622
+      }
+    },
+    {
+      "date": "2025-08-15",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.73,
+      "inflowCfs": 156.7,
+      "mackayReleaseCfs": 156.7,
+      "storageCfs": 209.3,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 23.6,
+        "leslieToMoore": 39.7,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 32.0,
+        "leslieToMoore": 45.2,
+        "belowMoore": 4.6
+      },
+      "totals": {
+        "decree": 68.2,
+        "storage": 82.1
+      },
+      "losses": {
+        "decree": 88.5,
+        "storage": 127.1
+      },
+      "deliveryFactor": {
+        "decree": 0.4352,
+        "storage": 0.3924
+      },
+      "conveyance": {
+        "leslie": 0.2,
+        "moore": 0.59,
+        "arco": 0.394
+      },
+      "rotationFactor": {
+        "leslie": 0.8,
+        "moore": 0.328,
+        "arco": 0.1988
+      },
+      "df": {
+        "reach": 0.816,
+        "canal": 0.658,
+        "river": 0.606
+      }
+    },
+    {
+      "date": "2025-08-16",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.23,
+      "inflowCfs": 153.1,
+      "mackayReleaseCfs": 153.1,
+      "storageCfs": 207.9,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 22.8,
+        "leslieToMoore": 38.9,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 32.8,
+        "leslieToMoore": 46.1,
+        "belowMoore": 4.5
+      },
+      "totals": {
+        "decree": 66.6,
+        "storage": 83.7
+      },
+      "losses": {
+        "decree": 56.5,
+        "storage": 124.2
+      },
+      "deliveryFactor": {
+        "decree": 0.541,
+        "storage": 0.4026
+      },
+      "conveyance": {
+        "leslie": 0.19,
+        "moore": 0.6,
+        "arco": 0.423
+      },
+      "rotationFactor": {
+        "leslie": 0.81,
+        "moore": 0.324,
+        "arco": 0.1869
+      },
+      "df": {
+        "reach": 0.817,
+        "canal": 0.626,
+        "river": 0.577
+      }
+    },
+    {
+      "date": "2025-08-17",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.93,
+      "inflowCfs": 159.5,
+      "mackayReleaseCfs": 159.5,
+      "storageCfs": 196.5,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 24.7,
+        "leslieToMoore": 39.9,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 30.9,
+        "leslieToMoore": 43.1,
+        "belowMoore": 4.9
+      },
+      "totals": {
+        "decree": 69.5,
+        "storage": 79.2
+      },
+      "losses": {
+        "decree": 90.0,
+        "storage": 117.4
+      },
+      "deliveryFactor": {
+        "decree": 0.4357,
+        "storage": 0.4028
+      },
+      "conveyance": {
+        "leslie": 0.19,
+        "moore": 0.6,
+        "arco": 0.425
+      },
+      "rotationFactor": {
+        "leslie": 0.81,
+        "moore": 0.324,
+        "arco": 0.1863
+      },
+      "df": {
+        "reach": 0.811,
+        "canal": 0.626,
+        "river": 0.575
+      }
+    },
+    {
+      "date": "2025-08-18",
+      "decreeDate": "1885-05-31",
+      "percentFilled": 0.89,
+      "inflowCfs": 170.5,
+      "mackayReleaseCfs": 170.5,
+      "storageCfs": 186.5,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 28.0,
+        "leslieToMoore": 42.0,
+        "belowMoore": 0.5
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 28.6,
+        "leslieToMoore": 42.5,
+        "belowMoore": 3.0
+      },
+      "totals": {
+        "decree": 75.2,
+        "storage": 74.4
+      },
+      "losses": {
+        "decree": 95.2,
+        "storage": 112.1
+      },
+      "deliveryFactor": {
+        "decree": 0.4413,
+        "storage": 0.3989
+      },
+      "conveyance": {
+        "leslie": 0.19,
+        "moore": 0.59,
+        "arco": 0.358
+      },
+      "rotationFactor": {
+        "leslie": 0.81,
+        "moore": 0.3321,
+        "arco": 0.2132
+      },
+      "df": {
+        "reach": 0.818,
+        "canal": 0.703,
+        "river": 0.642
+      }
+    },
+    {
+      "date": "2025-08-19",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.75,
+      "inflowCfs": 166.7,
+      "mackayReleaseCfs": 166.7,
+      "storageCfs": 191.3,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 25.5,
+        "leslieToMoore": 41.2,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 31.1,
+        "leslieToMoore": 42.8,
+        "belowMoore": 3.6
+      },
+      "totals": {
+        "decree": 71.6,
+        "storage": 77.8
+      },
+      "losses": {
+        "decree": 95.1,
+        "storage": 113.5
+      },
+      "deliveryFactor": {
+        "decree": 0.4295,
+        "storage": 0.4067
+      },
+      "conveyance": {
+        "leslie": 0.2,
+        "moore": 0.6,
+        "arco": 0.38
+      },
+      "rotationFactor": {
+        "leslie": 0.8,
+        "moore": 0.32,
+        "arco": 0.1984
+      },
+      "df": {
+        "reach": 0.812,
+        "canal": 0.682,
+        "river": 0.62
+      }
+    },
+    {
+      "date": "2025-08-20",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.8,
+      "inflowCfs": 168.5,
+      "mackayReleaseCfs": 168.5,
+      "storageCfs": 190.5,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 24.6,
+        "leslieToMoore": 41.0,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 32.0,
+        "leslieToMoore": 43.5,
+        "belowMoore": 3.6
+      },
+      "totals": {
+        "decree": 70.5,
+        "storage": 79.4
+      },
+      "losses": {
+        "decree": 98.1,
+        "storage": 112.0
+      },
+      "deliveryFactor": {
+        "decree": 0.4181,
+        "storage": 0.4148
+      },
+      "conveyance": {
+        "leslie": 0.2,
+        "moore": 0.62,
+        "arco": 0.426
+      },
+      "rotationFactor": {
+        "leslie": 0.8,
+        "moore": 0.304,
+        "arco": 0.1745
+      },
+      "df": {
+        "reach": 0.814,
+        "canal": 0.63,
+        "river": 0.574
+      }
+    },
+    {
+      "date": "2025-08-21",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.4,
+      "inflowCfs": 161.7,
+      "mackayReleaseCfs": 161.7,
+      "storageCfs": 197.3,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 23.7,
+        "leslieToMoore": 38.8,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 32.9,
+        "leslieToMoore": 46.4,
+        "belowMoore": 3.5
+      },
+      "totals": {
+        "decree": 67.4,
+        "storage": 83.1
+      },
+      "losses": {
+        "decree": 94.4,
+        "storage": 116.6
+      },
+      "deliveryFactor": {
+        "decree": 0.4166,
+        "storage": 0.4161
+      },
+      "conveyance": {
+        "leslie": 0.2,
+        "moore": 0.62,
+        "arco": 0.46
+      },
+      "rotationFactor": {
+        "leslie": 0.8,
+        "moore": 0.304,
+        "arco": 0.1642
+      },
+      "df": {
+        "reach": 0.815,
+        "canal": 0.592,
+        "river": 0.54
+      }
+    },
+    {
+      "date": "2025-08-22",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.87,
+      "inflowCfs": 167.1,
+      "mackayReleaseCfs": 167.1,
+      "storageCfs": 190.9,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 24.5,
+        "leslieToMoore": 39.0,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 32.1,
+        "leslieToMoore": 44.7,
+        "belowMoore": 3.9
+      },
+      "totals": {
+        "decree": 68.4,
+        "storage": 81.0
+      },
+      "losses": {
+        "decree": 98.8,
+        "storage": 114.0
+      },
+      "deliveryFactor": {
+        "decree": 0.4091,
+        "storage": 0.4154
+      },
+      "conveyance": {
+        "leslie": 0.2,
+        "moore": 0.63,
+        "arco": 0.483
+      },
+      "rotationFactor": {
+        "leslie": 0.8,
+        "moore": 0.296,
+        "arco": 0.153
+      },
+      "df": {
+        "reach": 0.806,
+        "canal": 0.57,
+        "river": 0.517
+      }
+    },
+    {
+      "date": "2025-08-23",
+      "decreeDate": "1885-05-01",
+      "percentFilled": 0.06,
+      "inflowCfs": 167.8,
+      "mackayReleaseCfs": 167.8,
+      "storageCfs": 186.2,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 24.4,
+        "leslieToMoore": 39.6,
+        "belowMoore": 0.2
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 32.2,
+        "leslieToMoore": 44.1,
+        "belowMoore": 4.5
+      },
+      "totals": {
+        "decree": 68.9,
+        "storage": 81.1
+      },
+      "losses": {
+        "decree": 99.1,
+        "storage": 110.2
+      },
+      "deliveryFactor": {
+        "decree": 0.4101,
+        "storage": 0.4239
+      },
+      "conveyance": {
+        "leslie": 0.21,
+        "moore": 0.62,
+        "arco": 0.494
+      },
+      "rotationFactor": {
+        "leslie": 0.79,
+        "moore": 0.3002,
+        "arco": 0.1519
+      },
+      "df": {
+        "reach": 0.796,
+        "canal": 0.561,
+        "river": 0.506
+      }
+    },
+    {
+      "date": "2025-08-24",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.51,
+      "inflowCfs": 160.8,
+      "mackayReleaseCfs": 160.8,
+      "storageCfs": 187.2,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 21.0,
+        "leslieToMoore": 38.2,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 35.6,
+        "leslieToMoore": 43.2,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 63.9,
+        "storage": 79.1
+      },
+      "losses": {
+        "decree": 96.8,
+        "storage": 109.6
+      },
+      "deliveryFactor": {
+        "decree": 0.3976,
+        "storage": 0.4192
+      },
+      "conveyance": {
+        "leslie": 0.22,
+        "moore": 0.62,
+        "arco": 0.444
+      },
+      "rotationFactor": {
+        "leslie": 0.78,
+        "moore": 0.2964,
+        "arco": 0.1648
+      },
+      "df": {
+        "reach": 0.813,
+        "canal": 0.61,
+        "river": 0.556
+      }
+    },
+    {
+      "date": "2025-08-25",
+      "decreeDate": "1885-02-18",
+      "percentFilled": 0.09,
+      "inflowCfs": 161.4,
+      "mackayReleaseCfs": 161.4,
+      "storageCfs": 180.6,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 22.2,
+        "leslieToMoore": 34.7,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 34.4,
+        "leslieToMoore": 40.4,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 61.6,
+        "storage": 75.1
+      },
+      "losses": {
+        "decree": 99.8,
+        "storage": 109.0
+      },
+      "deliveryFactor": {
+        "decree": 0.3817,
+        "storage": 0.4079
+      },
+      "conveyance": {
+        "leslie": 0.2,
+        "moore": 0.66,
+        "arco": 0.42
+      },
+      "rotationFactor": {
+        "leslie": 0.8,
+        "moore": 0.272,
+        "arco": 0.1578
+      },
+      "df": {
+        "reach": 0.798,
+        "canal": 0.668,
+        "river": 0.58
+      }
+    },
+    {
+      "date": "2025-08-26",
+      "decreeDate": "1885-02-18",
+      "percentFilled": 0.37,
+      "inflowCfs": 163.0,
+      "mackayReleaseCfs": 163.0,
+      "storageCfs": 174.0,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 24.7,
+        "leslieToMoore": 34.3,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 32.9,
+        "leslieToMoore": 39.1,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 63.7,
+        "storage": 72.3
+      },
+      "losses": {
+        "decree": 99.3,
+        "storage": 105.0
+      },
+      "deliveryFactor": {
+        "decree": 0.3908,
+        "storage": 0.4078
+      },
+      "conveyance": {
+        "leslie": 0.18,
+        "moore": 0.67,
+        "arco": 0.46
+      },
+      "rotationFactor": {
+        "leslie": 0.82,
+        "moore": 0.2706,
+        "arco": 0.1461
+      },
+      "df": {
+        "reach": 0.801,
+        "canal": 0.618,
+        "river": 0.54
+      }
+    },
+    {
+      "date": "2025-08-27",
+      "decreeDate": "1885-05-12",
+      "percentFilled": 0.63,
+      "inflowCfs": 173.5,
+      "mackayReleaseCfs": 173.5,
+      "storageCfs": 157.5,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 28.6,
+        "leslieToMoore": 38.0,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 29.0,
+        "leslieToMoore": 35.5,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 71.3,
+        "storage": 64.8
+      },
+      "losses": {
+        "decree": 101.8,
+        "storage": 95.5
+      },
+      "deliveryFactor": {
+        "decree": 0.4119,
+        "storage": 0.4042
+      },
+      "conveyance": {
+        "leslie": 0.15,
+        "moore": 0.67,
+        "arco": 0.4
+      },
+      "rotationFactor": {
+        "leslie": 0.85,
+        "moore": 0.2805,
+        "arco": 0.1683
+      },
+      "df": {
+        "reach": 0.825,
+        "canal": 0.675,
+        "river": 0.6
+      }
+    },
+    {
+      "date": "2025-08-28",
+      "decreeDate": "1886-05-01",
+      "percentFilled": 0.79,
+      "inflowCfs": 192.9,
+      "mackayReleaseCfs": 192.9,
+      "storageCfs": 123.1,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 30.4,
+        "leslieToMoore": 42.3,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 27.2,
+        "leslieToMoore": 26.4,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 77.4,
+        "storage": 53.9
+      },
+      "losses": {
+        "decree": 109.9,
+        "storage": 77.3
+      },
+      "deliveryFactor": {
+        "decree": 0.4132,
+        "storage": 0.4108
+      },
+      "conveyance": {
+        "leslie": 0.13,
+        "moore": 0.68,
+        "arco": 0.369
+      },
+      "rotationFactor": {
+        "leslie": 0.87,
+        "moore": 0.2784,
+        "arco": 0.1757
+      },
+      "df": {
+        "reach": 0.828,
+        "canal": 0.709,
+        "river": 0.631
+      }
+    },
+    {
+      "date": "2025-08-29",
+      "decreeDate": "1885-05-31",
+      "percentFilled": 0.72,
+      "inflowCfs": 170.6,
+      "mackayReleaseCfs": 170.6,
+      "storageCfs": 131.4,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 28.5,
+        "leslieToMoore": 38.4,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 29.1,
+        "leslieToMoore": 32.1,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 71.6,
+        "storage": 61.5
+      },
+      "losses": {
+        "decree": 98.6,
+        "storage": 74.0
+      },
+      "deliveryFactor": {
+        "decree": 0.4207,
+        "storage": 0.4539
+      },
+      "conveyance": {
+        "leslie": 0.14,
+        "moore": 0.66,
+        "arco": 0.311
+      },
+      "rotationFactor": {
+        "leslie": 0.86,
+        "moore": 0.2924,
+        "arco": 0.2015
+      },
+      "df": {
+        "reach": 0.849,
+        "canal": 0.763,
+        "river": 0.689
+      }
+    },
+    {
+      "date": "2025-08-30",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.3,
+      "inflowCfs": 166.8,
+      "mackayReleaseCfs": 166.8,
+      "storageCfs": 125.2,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 30.3,
+        "leslieToMoore": 36.4,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 27.3,
+        "leslieToMoore": 31.2,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 71.4,
+        "storage": 58.8
+      },
+      "losses": {
+        "decree": 94.8,
+        "storage": 70.6
+      },
+      "deliveryFactor": {
+        "decree": 0.4296,
+        "storage": 0.4544
+      },
+      "conveyance": {
+        "leslie": 0.15,
+        "moore": 0.65,
+        "arco": 0.283
+      },
+      "rotationFactor": {
+        "leslie": 0.85,
+        "moore": 0.2975,
+        "arco": 0.2133
+      },
+      "df": {
+        "reach": 0.942,
+        "canal": 0.738,
+        "river": 0.717
+      }
+    },
+    {
+      "date": "2025-08-31",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.69,
+      "inflowCfs": 172.5,
+      "mackayReleaseCfs": 172.5,
+      "storageCfs": 113.5,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 30.3,
+        "leslieToMoore": 34.9,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 27.3,
+        "leslieToMoore": 29.6,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 69.9,
+        "storage": 57.2
+      },
+      "losses": {
+        "decree": 99.5,
+        "storage": 62.6
+      },
+      "deliveryFactor": {
+        "decree": 0.4126,
+        "storage": 0.4775
+      },
+      "conveyance": {
+        "leslie": 0.16,
+        "moore": 0.66,
+        "arco": 0.113
+      },
+      "rotationFactor": {
+        "leslie": 0.84,
+        "moore": 0.2856,
+        "arco": 0.2533
+      },
+      "df": {
+        "reach": 0.952,
+        "canal": 0.909,
+        "river": 0.887
+      }
+    },
+    {
+      "date": "2025-09-01",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.33,
+      "inflowCfs": 171.3,
+      "mackayReleaseCfs": 171.3,
+      "storageCfs": 109.7,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 34.4,
+        "leslieToMoore": 39.6,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 23.2,
+        "leslieToMoore": 30.7,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 78.7,
+        "storage": 54.2
+      },
+      "losses": {
+        "decree": 92.0,
+        "storage": 60.1
+      },
+      "deliveryFactor": {
+        "decree": 0.461,
+        "storage": 0.4742
+      },
+      "conveyance": {
+        "leslie": 0.16,
+        "moore": 0.62,
+        "arco": 0.202
+      },
+      "rotationFactor": {
+        "leslie": 0.84,
+        "moore": 0.3192,
+        "arco": 0.2547
+      },
+      "df": {
+        "reach": 0.967,
+        "canal": 0.881,
+        "river": 0.798
+      }
+    },
+    {
+      "date": "2025-09-02",
+      "decreeDate": "1885-05-31",
+      "percentFilled": 0.27,
+      "inflowCfs": 176.8,
+      "mackayReleaseCfs": 176.8,
+      "storageCfs": 102.2,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 28.3,
+        "leslieToMoore": 33.2,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 29.3,
+        "leslieToMoore": 14.4,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 66.2,
+        "storage": 44.0
+      },
+      "losses": {
+        "decree": 110.6,
+        "storage": 56.7
+      },
+      "deliveryFactor": {
+        "decree": 0.3744,
+        "storage": 0.4369
+      },
+      "conveyance": {
+        "leslie": 0.18,
+        "moore": 0.71,
+        "arco": 0.208
+      },
+      "rotationFactor": {
+        "leslie": 0.82,
+        "moore": 0.2378,
+        "arco": 0.1883
+      },
+      "df": {
+        "reach": 0.908,
+        "canal": 0.872,
+        "river": 0.792
+      }
+    },
+    {
+      "date": "2025-09-03",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.65,
+      "inflowCfs": 176.0,
+      "mackayReleaseCfs": 176.0,
+      "storageCfs": 106.0,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 23.4,
+        "leslieToMoore": 31.1,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 34.2,
+        "leslieToMoore": 16.4,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 59.2,
+        "storage": 50.9
+      },
+      "losses": {
+        "decree": 116.5,
+        "storage": 55.2
+      },
+      "deliveryFactor": {
+        "decree": 0.3369,
+        "storage": 0.4797
+      },
+      "conveyance": {
+        "leslie": 0.18,
+        "moore": 0.71,
+        "arco": -0.041
+      },
+      "rotationFactor": {
+        "leslie": 0.82,
+        "moore": 0.2378,
+        "arco": 0.2475
+      },
+      "df": {
+        "reach": 1.072,
+        "canal": 0.971,
+        "river": 1.041
+      }
+    },
+    {
+      "date": "2025-09-04",
+      "decreeDate": "1885-05-31",
+      "percentFilled": 0.23,
+      "inflowCfs": 169.9,
+      "mackayReleaseCfs": 169.9,
+      "storageCfs": 109.1,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 27.9,
+        "leslieToMoore": 31.2,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 29.7,
+        "leslieToMoore": 15.3,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 63.8,
+        "storage": 45.3
+      },
+      "losses": {
+        "decree": 106.1,
+        "storage": 64.5
+      },
+      "deliveryFactor": {
+        "decree": 0.3755,
+        "storage": 0.4126
+      },
+      "conveyance": {
+        "leslie": 0.17,
+        "moore": 0.71,
+        "arco": -0.182
+      },
+      "rotationFactor": {
+        "leslie": 0.83,
+        "moore": 0.2407,
+        "arco": 0.2845
+      },
+      "df": {
+        "reach": 1.092,
+        "canal": 1.083,
+        "river": 1.182
+      }
+    },
+    {
+      "date": "2025-09-05",
+      "decreeDate": "1885-05-31",
+      "percentFilled": 0.88,
+      "inflowCfs": 175.3,
+      "mackayReleaseCfs": 175.3,
+      "storageCfs": 105.7,
+      "decreeDelivery": {
+        "sharp": 4.7,
+        "twoBToLeslie": 32.1,
+        "leslieToMoore": 30.2,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.3,
+        "twoBToLeslie": 24.0,
+        "leslieToMoore": 15.2,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 67.0,
+        "storage": 39.5
+      },
+      "losses": {
+        "decree": 108.3,
+        "storage": 67.1
+      },
+      "deliveryFactor": {
+        "decree": 0.3822,
+        "storage": 0.3705
+      },
+      "conveyance": {
+        "leslie": 0.19,
+        "moore": 0.71,
+        "arco": -0.276
+      },
+      "rotationFactor": {
+        "leslie": 0.81,
+        "moore": 0.2349,
+        "arco": 0.2997
+      },
+      "df": {
+        "reach": 1.096,
+        "canal": 1.165,
+        "river": 1.276
+      }
+    },
+    {
+      "date": "2025-09-06",
+      "decreeDate": "1885-06-01",
+      "percentFilled": 0.92,
+      "inflowCfs": 177.8,
+      "mackayReleaseCfs": 177.8,
+      "storageCfs": 100.2,
+      "decreeDelivery": {
+        "sharp": 2.5,
+        "twoBToLeslie": 31.1,
+        "leslieToMoore": 29.6,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 2.5,
+        "twoBToLeslie": 16.8,
+        "leslieToMoore": 14.1,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 63.2,
+        "storage": 33.4
+      },
+      "losses": {
+        "decree": 114.4,
+        "storage": 64.2
+      },
+      "deliveryFactor": {
+        "decree": 0.3559,
+        "storage": 0.3422
+      },
+      "conveyance": {
+        "leslie": 0.22,
+        "moore": 0.72,
+        "arco": -0.156
+      },
+      "rotationFactor": {
+        "leslie": 0.78,
+        "moore": 0.2184,
+        "arco": 0.2525
+      },
+      "df": {
+        "reach": 0.959,
+        "canal": 1.206,
+        "river": 1.156
+      }
+    },
+    {
+      "date": "2025-09-07",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.27,
+      "inflowCfs": 185.9,
+      "mackayReleaseCfs": 185.9,
+      "storageCfs": 90.7,
+      "decreeDelivery": {
+        "sharp": 2.0,
+        "twoBToLeslie": 31.8,
+        "leslieToMoore": 29.6,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.6,
+        "twoBToLeslie": 13.6,
+        "leslieToMoore": 14.1,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 63.4,
+        "storage": 28.3
+      },
+      "losses": {
+        "decree": 121.4,
+        "storage": 60.9
+      },
+      "deliveryFactor": {
+        "decree": 0.3431,
+        "storage": 0.3173
+      },
+      "conveyance": {
+        "leslie": 0.21,
+        "moore": 0.73,
+        "arco": 0.169
+      },
+      "rotationFactor": {
+        "leslie": 0.79,
+        "moore": 0.2133,
+        "arco": 0.1773
+      },
+      "df": {
+        "reach": 69.2,
+        "canal": 120.1,
+        "river": 0.831
+      }
+    },
+    {
+      "date": "2025-09-08",
+      "decreeDate": "1886-06-01",
+      "percentFilled": 0.3,
+      "inflowCfs": 192.7,
+      "mackayReleaseCfs": 192.7,
+      "storageCfs": 83.9,
+      "decreeDelivery": {
+        "sharp": 2.0,
+        "twoBToLeslie": 32.3,
+        "leslieToMoore": 30.8,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.6,
+        "twoBToLeslie": 13.1,
+        "leslieToMoore": 17.9,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 65.1,
+        "storage": 31.6
+      },
+      "losses": {
+        "decree": 122.9,
+        "storage": 54.3
+      },
+      "deliveryFactor": {
+        "decree": 0.3463,
+        "storage": 0.3679
+      },
+      "conveyance": {
+        "leslie": 0.22,
+        "moore": 0.7,
+        "arco": 0.199
+      },
+      "rotationFactor": {
+        "leslie": 0.697,
+        "moore": 0.22,
+        "arco": 0.1762
+      },
+      "df": {
+        "reach": 0.697,
+        "canal": 1.149,
+        "river": 0.801
+      }
+    },
+    {
+      "date": "2025-09-09",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.33,
+      "inflowCfs": 173.6,
+      "mackayReleaseCfs": 173.6,
+      "storageCfs": 102.0,
+      "decreeDelivery": {
+        "sharp": 2.0,
+        "twoBToLeslie": 30.8,
+        "leslieToMoore": 29.8,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.6,
+        "twoBToLeslie": 14.6,
+        "leslieToMoore": 17.5,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 62.6,
+        "storage": 32.7
+      },
+      "losses": {
+        "decree": 110.7,
+        "storage": 68.0
+      },
+      "deliveryFactor": {
+        "decree": 0.3612,
+        "storage": 0.3247
+      },
+      "conveyance": {
+        "leslie": 0.23,
+        "moore": 0.7,
+        "arco": 0.414
+      },
+      "rotationFactor": {
+        "leslie": 0.77,
+        "moore": 0.231,
+        "arco": 0.1354
+      },
+      "df": {
+        "reach": 0.609,
+        "canal": 0.963,
+        "river": 0.586
+      }
+    },
+    {
+      "date": "2025-09-10",
+      "decreeDate": "1885-06-01",
+      "percentFilled": 0.8,
+      "inflowCfs": 176.6,
+      "mackayReleaseCfs": 176.6,
+      "storageCfs": 97.0,
+      "decreeDelivery": {
+        "sharp": 1.3,
+        "twoBToLeslie": 29.4,
+        "leslieToMoore": 29.1,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 1.3,
+        "twoBToLeslie": 16.0,
+        "leslieToMoore": 14.4,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 59.8,
+        "storage": 31.7
+      },
+      "losses": {
+        "decree": 116.7,
+        "storage": 63.8
+      },
+      "deliveryFactor": {
+        "decree": 0.3388,
+        "storage": 0.3319
+      },
+      "conveyance": {
+        "leslie": 0.23,
+        "moore": 0.73,
+        "arco": 0.428
+      },
+      "rotationFactor": {
+        "leslie": 0.77,
+        "moore": 0.2079,
+        "arco": 0.1189
+      },
+      "df": {
+        "reach": 0.599,
+        "canal": 0.955,
+        "river": 0.572
+      }
+    },
+    {
+      "date": "2025-09-11",
+      "decreeDate": "1885-06-01",
+      "percentFilled": 0.33,
+      "inflowCfs": 179.4,
+      "mackayReleaseCfs": 179.4,
+      "storageCfs": 100.2,
+      "decreeDelivery": {
+        "sharp": 1.5,
+        "twoBToLeslie": 29.8,
+        "leslieToMoore": 29.4,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 1.1,
+        "twoBToLeslie": 15.6,
+        "leslieToMoore": 14.7,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 60.7,
+        "storage": 31.4
+      },
+      "losses": {
+        "decree": 118.8,
+        "storage": 66.8
+      },
+      "deliveryFactor": {
+        "decree": 0.3382,
+        "storage": 0.3198
+      },
+      "conveyance": {
+        "leslie": 0.23,
+        "moore": 0.73,
+        "arco": 0.379
+      },
+      "rotationFactor": {
+        "leslie": 0.77,
+        "moore": 0.2079,
+        "arco": 0.1291
+      },
+      "df": {
+        "reach": 0.598,
+        "canal": 1.039,
+        "river": 0.621
+      }
+    },
+    {
+      "date": "2025-09-12",
+      "decreeDate": "1886-05-12",
+      "percentFilled": 0.04,
+      "inflowCfs": 181.7,
+      "mackayReleaseCfs": 181.7,
+      "storageCfs": 99.9,
+      "decreeDelivery": {
+        "sharp": 2.0,
+        "twoBToLeslie": 30.8,
+        "leslieToMoore": 29.7,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.6,
+        "twoBToLeslie": 14.6,
+        "leslieToMoore": 14.7,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 62.5,
+        "storage": 29.9
+      },
+      "losses": {
+        "decree": 119.2,
+        "storage": 67.6
+      },
+      "deliveryFactor": {
+        "decree": 0.344,
+        "storage": 0.3067
+      },
+      "conveyance": {
+        "leslie": 0.21,
+        "moore": 0.73,
+        "arco": -0.03
+      },
+      "rotationFactor": {
+        "leslie": 0.79,
+        "moore": 0.2133,
+        "arco": 0.2197
+      },
+      "df": {
+        "reach": 0.941,
+        "canal": 1.094,
+        "river": 1.03
+      }
+    },
+    {
+      "date": "2025-09-13",
+      "decreeDate": "1887-06-30",
+      "percentFilled": 0.17,
+      "inflowCfs": 186.6,
+      "mackayReleaseCfs": 186.6,
+      "storageCfs": 100.0,
+      "decreeDelivery": {
+        "sharp": 2.0,
+        "twoBToLeslie": 30.4,
+        "leslieToMoore": 32.5,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.6,
+        "twoBToLeslie": 15.0,
+        "leslieToMoore": 15.9,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 64.9,
+        "storage": 31.5
+      },
+      "losses": {
+        "decree": 121.6,
+        "storage": 69.2
+      },
+      "deliveryFactor": {
+        "decree": 0.348,
+        "storage": 0.3128
+      },
+      "conveyance": {
+        "leslie": 0.2,
+        "moore": 0.72,
+        "arco": 0.561
+      },
+      "rotationFactor": {
+        "leslie": 0.8,
+        "moore": 0.224,
+        "arco": 0.0983
+      },
+      "df": {
+        "reach": 0.446,
+        "canal": 0.985,
+        "river": 0.439
+      }
+    },
+    {
+      "date": "2025-09-14",
+      "decreeDate": "1884-10-12",
+      "percentFilled": 0.75,
+      "inflowCfs": 133.9,
+      "mackayReleaseCfs": 133.9,
+      "storageCfs": 100.1,
+      "decreeDelivery": {
+        "sharp": 1.2,
+        "twoBToLeslie": 18.1,
+        "leslieToMoore": 30.6,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.8,
+        "twoBToLeslie": 23.2,
+        "leslieToMoore": 17.8,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 49.9,
+        "storage": 41.8
+      },
+      "losses": {
+        "decree": 84.0,
+        "storage": 56.1
+      },
+      "deliveryFactor": {
+        "decree": 0.3727,
+        "storage": 0.427
+      },
+      "conveyance": {
+        "leslie": 0.09,
+        "moore": 0.7,
+        "arco": 0.015
+      },
+      "rotationFactor": {
+        "leslie": 0.91,
+        "moore": 0.273,
+        "arco": 0.2689
+      },
+      "df": {
+        "reach": 1.023,
+        "canal": 0.963,
+        "river": 0.985
+      }
+    },
+    {
+      "date": "2025-09-15",
+      "decreeDate": "1888-06-01",
+      "percentFilled": 0.52,
+      "inflowCfs": 120.8,
+      "mackayReleaseCfs": 119.1,
+      "storageCfs": 41.9,
+      "decreeDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 27.1,
+        "leslieToMoore": 27.6,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 2.0,
+        "twoBToLeslie": 14.2,
+        "leslieToMoore": 9.8,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 54.7,
+        "storage": 26.0
+      },
+      "losses": {
+        "decree": 63.6,
+        "storage": 17.3
+      },
+      "deliveryFactor": {
+        "decree": 0.4624,
+        "storage": 0.6005
+      },
+      "conveyance": {
+        "leslie": 0.0,
+        "moore": 0.67,
+        "arco": -0.041
+      },
+      "rotationFactor": {
+        "leslie": 1.0,
+        "moore": 0.33,
+        "arco": 0.3435
+      },
+      "df": {
+        "reach": 1.068,
+        "canal": 0.975,
+        "river": 1.041
+      }
+    },
+    {
+      "date": "2025-09-16",
+      "decreeDate": "1896-09-28",
+      "percentFilled": 0.63,
+      "inflowCfs": 166.5,
+      "mackayReleaseCfs": 156.9,
+      "storageCfs": 9.1,
+      "decreeDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 30.5,
+        "leslieToMoore": 9.8,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 2.0,
+        "twoBToLeslie": 10.9,
+        "leslieToMoore": 3.5,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 40.3,
+        "storage": 16.4
+      },
+      "losses": {
+        "decree": 109.2,
+        "storage": 0.9
+      },
+      "deliveryFactor": {
+        "decree": 0.2696,
+        "storage": 0.948
+      },
+      "conveyance": {
+        "leslie": 0.21,
+        "moore": 0.84,
+        "arco": -0.371
+      },
+      "rotationFactor": {
+        "leslie": 0.79,
+        "moore": 0.1264,
+        "arco": 0.1733
+      },
+      "df": {
+        "reach": 1.074,
+        "canal": 1.277,
+        "river": 1.371
+      }
+    },
+    {
+      "date": "2025-09-17",
+      "decreeDate": "1902-01-15",
+      "percentFilled": 0.31,
+      "inflowCfs": 166.4,
+      "mackayReleaseCfs": 156.8,
+      "storageCfs": 9.2,
+      "decreeDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 31.5,
+        "leslieToMoore": 10.2,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 2.0,
+        "twoBToLeslie": 9.8,
+        "leslieToMoore": 6.2,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 41.7,
+        "storage": 18.0
+      },
+      "losses": {
+        "decree": 107.9,
+        "storage": 0.9
+      },
+      "deliveryFactor": {
+        "decree": 0.2787,
+        "storage": 0.9524
+      },
+      "conveyance": {
+        "leslie": 0.13,
+        "moore": 0.83,
+        "arco": 0.573
+      },
+      "rotationFactor": {
+        "leslie": 0.87,
+        "moore": 0.1479,
+        "arco": 0.0632
+      },
+      "df": {
+        "reach": 1.065,
+        "canal": 1.159,
+        "river": 0.427
+      }
+    },
+    {
+      "date": "2025-09-18",
+      "decreeDate": "2018-01-01",
+      "percentFilled": 1.0,
+      "inflowCfs": 170.5,
+      "mackayReleaseCfs": 121.0,
+      "storageCfs": 0.49,
+      "decreeDelivery": {
+        "sharp": 0.0,
+        "twoBToLeslie": 23.5,
+        "leslieToMoore": 5.4,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 2.0,
+        "twoBToLeslie": 3.5,
+        "leslieToMoore": 2.0,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 28.9,
+        "storage": 7.5
+      },
+      "losses": {
+        "decree": 92.1,
+        "storage": 42.4
+      },
+      "deliveryFactor": {
+        "decree": 0.2388,
+        "storage": 0.1503
+      },
+      "conveyance": {
+        "leslie": 0.31,
+        "moore": 0.91,
+        "arco": 0.366
+      },
+      "rotationFactor": {
+        "leslie": 0.69,
+        "moore": 0.0621,
+        "arco": 0.0394
+      },
+      "df": {
+        "reach": 1.072,
+        "canal": 0.591,
+        "river": 0.634
+      }
+    },
+    {
+      "date": "2025-09-19",
+      "decreeDate": "2018-01-01",
+      "percentFilled": 1.0,
+      "inflowCfs": 183.0,
+      "mackayReleaseCfs": 89.5,
+      "storageCfs": 93.0,
+      "decreeDelivery": {
+        "sharp": 2.4,
+        "twoBToLeslie": 22.2,
+        "leslieToMoore": 5.4,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.1,
+        "twoBToLeslie": 3.5,
+        "leslieToMoore": 4.5,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 30.0,
+        "storage": 8.1
+      },
+      "losses": {
+        "decree": 46.0,
+        "storage": 95.3
+      },
+      "deliveryFactor": {
+        "decree": 0.3947,
+        "storage": 0.0783
+      },
+      "conveyance": {
+        "leslie": 0.25,
+        "moore": 0.87,
+        "arco": 0.794
+      },
+      "rotationFactor": {
+        "leslie": 0.75,
+        "moore": 0.0975,
+        "arco": 0.0201
+      },
+      "df": {
+        "reach": 1.056,
+        "canal": 0.0,
+        "river": 0.206
+      }
+    },
+    {
+      "date": "2025-09-20",
+      "decreeDate": "2018-01-01",
+      "percentFilled": 1.0,
+      "inflowCfs": 170.0,
+      "mackayReleaseCfs": 83.5,
+      "storageCfs": 86.0,
+      "decreeDelivery": {
+        "sharp": 2.4,
+        "twoBToLeslie": 22.2,
+        "leslieToMoore": 5.4,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.1,
+        "twoBToLeslie": 3.5,
+        "leslieToMoore": 5.6,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 30.0,
+        "storage": 9.2
+      },
+      "losses": {
+        "decree": 53.6,
+        "storage": 77.8
+      },
+      "deliveryFactor": {
+        "decree": 0.3589,
+        "storage": 0.1057
+      },
+      "conveyance": {
+        "leslie": 0.27,
+        "moore": 0.86,
+        "arco": 0.885
+      },
+      "rotationFactor": {
+        "leslie": 1.082,
+        "moore": 0.0,
+        "arco": 0.329
+      },
+      "df": {
+        "reach": 0.378,
+        "canal": 0.0,
+        "river": 0.115
+      }
+    },
+    {
+      "date": "2025-09-21",
+      "decreeDate": "1896-09-28",
+      "percentFilled": 0.29,
+      "inflowCfs": 168.9,
+      "mackayReleaseCfs": 159.3,
+      "storageCfs": 9.2,
+      "decreeDelivery": {
+        "sharp": 2.4,
+        "twoBToLeslie": 21.2,
+        "leslieToMoore": 5.4,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.1,
+        "twoBToLeslie": 4.5,
+        "leslieToMoore": 5.4,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 29.0,
+        "storage": 10.0
+      },
+      "losses": {
+        "decree": 138.2,
+        "storage": 0.5
+      },
+      "deliveryFactor": {
+        "decree": 0.1734,
+        "storage": 0.9524
+      },
+      "conveyance": {
+        "leslie": 0.27,
+        "moore": 0.92,
+        "arco": 1.0
+      },
+      "rotationFactor": {
+        "leslie": 0.73,
+        "moore": 0.0584,
+        "arco": 0.0
+      },
+      "df": {
+        "reach": 1.102,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-09-22",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.75,
+      "inflowCfs": 174.8,
+      "mackayReleaseCfs": 174.8,
+      "storageCfs": 0.0,
+      "decreeDelivery": {
+        "sharp": 2.4,
+        "twoBToLeslie": 19.7,
+        "leslieToMoore": 6.5,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.1,
+        "twoBToLeslie": 6.0,
+        "leslieToMoore": 3.2,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 28.6,
+        "storage": 9.3
+      },
+      "losses": {
+        "decree": 142.4,
+        "storage": 0.4
+      },
+      "deliveryFactor": {
+        "decree": 0.1673,
+        "storage": 0.9588
+      },
+      "conveyance": {
+        "leslie": 0.27,
+        "moore": 0.9,
+        "arco": 1.0
+      },
+      "rotationFactor": {
+        "leslie": 0.73,
+        "moore": 0.073,
+        "arco": 0.0
+      },
+      "df": {
+        "reach": 0.799,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-09-23",
+      "decreeDate": "1894-06-01",
+      "percentFilled": 0.12,
+      "inflowCfs": 170.9,
+      "mackayReleaseCfs": 167.7,
+      "storageCfs": 2.8,
+      "decreeDelivery": {
+        "sharp": 2.4,
+        "twoBToLeslie": 20.8,
+        "leslieToMoore": 7.3,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.1,
+        "twoBToLeslie": 4.9,
+        "leslieToMoore": 6.7,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 30.5,
+        "storage": 11.7
+      },
+      "losses": {
+        "decree": 130.1,
+        "storage": 0.5
+      },
+      "deliveryFactor": {
+        "decree": 0.1899,
+        "storage": 0.959
+      },
+      "conveyance": {
+        "leslie": 0.23,
+        "moore": 0.86,
+        "arco": 1.0
+      },
+      "rotationFactor": {
+        "leslie": 0.77,
+        "moore": 0.1078,
+        "arco": 0.0
+      },
+      "df": {
+        "reach": 0.767,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-09-24",
+      "decreeDate": "1894-06-01",
+      "percentFilled": 0.5,
+      "inflowCfs": 170.9,
+      "mackayReleaseCfs": 167.7,
+      "storageCfs": 2.8,
+      "decreeDelivery": {
+        "sharp": 2.4,
+        "twoBToLeslie": 20.8,
+        "leslieToMoore": 7.3,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.1,
+        "twoBToLeslie": 4.9,
+        "leslieToMoore": 6.7,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 30.5,
+        "storage": 11.7
+      },
+      "losses": {
+        "decree": 130.1,
+        "storage": 0.5
+      },
+      "deliveryFactor": {
+        "decree": 0.1899,
+        "storage": 0.959
+      },
+      "conveyance": {
+        "leslie": 0.24,
+        "moore": 0.86,
+        "arco": 1.0
+      },
+      "rotationFactor": {
+        "leslie": 0.76,
+        "moore": 0.1064,
+        "arco": 0.0
+      },
+      "df": {
+        "reach": 0.714,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-09-25",
+      "decreeDate": "1894-06-01",
+      "percentFilled": 0.43,
+      "inflowCfs": 170.0,
+      "mackayReleaseCfs": 166.8,
+      "storageCfs": 2.7,
+      "decreeDelivery": {
+        "sharp": 2.4,
+        "twoBToLeslie": 20.8,
+        "leslieToMoore": 7.3,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.1,
+        "twoBToLeslie": 4.9,
+        "leslieToMoore": 6.5,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 30.5,
+        "storage": 11.5
+      },
+      "losses": {
+        "decree": 129.3,
+        "storage": 0.6
+      },
+      "deliveryFactor": {
+        "decree": 0.1909,
+        "storage": 0.9504
+      },
+      "conveyance": {
+        "leslie": 0.24,
+        "moore": 0.86,
+        "arco": 1.0
+      },
+      "rotationFactor": {
+        "leslie": 0.76,
+        "moore": 0.1064,
+        "arco": 0.0
+      },
+      "df": {
+        "reach": 0.714,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-09-26",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.75,
+      "inflowCfs": 167.2,
+      "mackayReleaseCfs": 167.2,
+      "storageCfs": 0.0,
+      "decreeDelivery": {
+        "sharp": 2.4,
+        "twoBToLeslie": 18.4,
+        "leslieToMoore": 6.5,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.1,
+        "twoBToLeslie": 1.3,
+        "leslieToMoore": 3.4,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 27.3,
+        "storage": 4.8
+      },
+      "losses": {
+        "decree": 136.2,
+        "storage": 0.0
+      },
+      "deliveryFactor": {
+        "decree": 0.167,
+        "storage": 1.0
+      },
+      "conveyance": {
+        "leslie": 0.28,
+        "moore": 0.9,
+        "arco": 1.0
+      },
+      "rotationFactor": {
+        "leslie": 0.72,
+        "moore": 0.072,
+        "arco": 0.0
+      },
+      "df": {
+        "reach": 0.612,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-09-27",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.52,
+      "inflowCfs": 164.0,
+      "mackayReleaseCfs": 164.0,
+      "storageCfs": 0.0,
+      "decreeDelivery": {
+        "sharp": 2.4,
+        "twoBToLeslie": 18.4,
+        "leslieToMoore": 6.5,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.1,
+        "twoBToLeslie": 1.3,
+        "leslieToMoore": 2.2,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 27.3,
+        "storage": 3.6
+      },
+      "losses": {
+        "decree": 134.2,
+        "storage": 0.0
+      },
+      "deliveryFactor": {
+        "decree": 0.169,
+        "storage": 1.0
+      },
+      "conveyance": {
+        "leslie": 0.25,
+        "moore": 0.0,
+        "arco": 1.0
+      },
+      "rotationFactor": {
+        "leslie": 0.75,
+        "moore": 0.75,
+        "arco": 0.0
+      },
+      "df": {
+        "reach": 0.458,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    },
+    {
+      "date": "2025-09-28",
+      "decreeDate": "1885-10-02",
+      "percentFilled": 0.23,
+      "inflowCfs": 164.8,
+      "mackayReleaseCfs": 164.8,
+      "storageCfs": 0.0,
+      "decreeDelivery": {
+        "sharp": 2.4,
+        "twoBToLeslie": 18.4,
+        "leslieToMoore": 6.5,
+        "belowMoore": 0.0
+      },
+      "storageDelivery": {
+        "sharp": 0.1,
+        "twoBToLeslie": 1.3,
+        "leslieToMoore": 0.8,
+        "belowMoore": 0.0
+      },
+      "totals": {
+        "decree": 27.3,
+        "storage": 2.2
+      },
+      "losses": {
+        "decree": 136.5,
+        "storage": 0.0
+      },
+      "deliveryFactor": {
+        "decree": 0.1667,
+        "storage": 1.0
+      },
+      "conveyance": {
+        "leslie": 0.28,
+        "moore": 0.92,
+        "arco": 1.0
+      },
+      "rotationFactor": {
+        "leslie": 0.72,
+        "moore": 0.0576,
+        "arco": 0.0
+      },
+      "df": {
+        "reach": 0.463,
+        "canal": 0.0,
+        "river": 0.0
+      }
+    }
+  ],
+  "canals": [
+    {
+      "canal": "Sharp",
+      "wraUsedAf": 151.3,
+      "sbwAllocationIn": 4806.0,
+      "sbwRemainingIn": 4278.0,
+      "sbwUsedAf": 20.9458
+    },
+    {
+      "canal": "Swauger",
+      "wraUsedAf": 153.3,
+      "sbwAllocationIn": 12314.0,
+      "sbwRemainingIn": 3031.0,
+      "sbwUsedAf": 368.2566
+    },
+    {
+      "canal": "Darlington",
+      "wraUsedAf": 1475.1,
+      "sbwAllocationIn": 45090.0,
+      "sbwRemainingIn": 5185.0,
+      "sbwUsedAf": 1583.0313
+    },
+    {
+      "canal": "Burnett",
+      "wraUsedAf": 1366.7,
+      "sbwAllocationIn": 111259.0,
+      "sbwRemainingIn": 72235.0,
+      "sbwUsedAf": 1548.0821
+    },
+    {
+      "canal": "Beck",
+      "wraUsedAf": 173.4,
+      "sbwAllocationIn": 26636.0,
+      "sbwRemainingIn": 17419.0,
+      "sbwUsedAf": 365.6384
+    },
+    {
+      "canal": "Pherson",
+      "wraUsedAf": 8.6,
+      "sbwAllocationIn": 0.0,
+      "sbwRemainingIn": 819.0,
+      "sbwUsedAf": -32.4897
+    },
+    {
+      "canal": "Crawford Pump",
+      "wraUsedAf": 89.5,
+      "sbwAllocationIn": 1992.0,
+      "sbwRemainingIn": 1992.0,
+      "sbwUsedAf": 0.0
+    },
+    {
+      "canal": "Dennis Moss Pump",
+      "wraUsedAf": 117.2,
+      "sbwAllocationIn": 3528.0,
+      "sbwRemainingIn": 2668.0,
+      "sbwUsedAf": 34.1162
+    },
+    {
+      "canal": "Robert Moss",
+      "wraUsedAf": 10.5,
+      "sbwAllocationIn": 2554.0,
+      "sbwRemainingIn": -2980.0,
+      "sbwUsedAf": 219.5338
+    },
+    {
+      "canal": "Mike Webb",
+      "wraUsedAf": 65.3,
+      "sbwAllocationIn": 0.0,
+      "sbwRemainingIn": 0.0,
+      "sbwUsedAf": 0.0
+    },
+    {
+      "canal": "Moore",
+      "wraUsedAf": 3674.3,
+      "sbwAllocationIn": 71746.0,
+      "sbwRemainingIn": 11731.0,
+      "sbwUsedAf": 2380.7951
+    },
+    {
+      "canal": "Westside",
+      "wraUsedAf": null,
+      "sbwAllocationIn": 75993.0,
+      "sbwRemainingIn": 7583.0,
+      "sbwUsedAf": 2713.8247
+    },
+    {
+      "canal": "Eastside",
+      "wraUsedAf": 1143.6,
+      "sbwAllocationIn": 44360.0,
+      "sbwRemainingIn": 26528.0,
+      "sbwUsedAf": 707.3954
+    },
+    {
+      "canal": "Island",
+      "wraUsedAf": null,
+      "sbwAllocationIn": 35620.0,
+      "sbwRemainingIn": 21741.0,
+      "sbwUsedAf": 550.5799
+    },
+    {
+      "canal": "Arco",
+      "wraUsedAf": 264.1,
+      "sbwAllocationIn": 52311.0,
+      "sbwRemainingIn": 29019.0,
+      "sbwUsedAf": 923.9936
+    },
+    {
+      "canal": "Munsey",
+      "wraUsedAf": 1712.4,
+      "sbwAllocationIn": 33836.0,
+      "sbwRemainingIn": -36468.0,
+      "sbwUsedAf": 2788.9597
+    }
+  ]
+}

@@ -71,6 +71,12 @@
       "count": 1128,
       "description": "USFWS National Wetlands Inventory riparian polygons (forested / scrub-shrub / emergent) \u2014 the natural riparian corridor of the Big Lost River down to the sinks near Howe.",
       "notes": "Geometries simplified for map performance (Douglas-Peucker)."
+    },
+    "wd34-accounting": {
+      "source": "https://idwr.idaho.gov/wr-administration/water-rights-accounting/wd34/",
+      "asOf": "2025",
+      "count": 151,
+      "description": "Published WD34 storage-results daily accounting (inflow, reach deliveries, losses, delivery factors) plus named-canal season totals. Values as published."
     }
   }
 }

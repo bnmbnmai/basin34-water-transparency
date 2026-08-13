@@ -1,4 +1,5 @@
 import { CONFLICT_CORRIDOR_KM, type DataStore } from './data'
+import { toCsv } from './csv'
 import type { PodRecord } from './types'
 
 /** Moore diversion — surface flow often ends near here in recent years (USGS 13132100). */
@@ -66,27 +67,13 @@ export function listDryReachSeniors(store: DataStore): DryReachSeniorRow[] {
 }
 
 export function dryReachSeniorsToCsv(rows: DryReachSeniorRow[]): string {
-  const esc = (v: string | number) => {
-    const s = String(v)
-    return /["',\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
-  }
-  const header = ['water_right', 'owner', 'priority_year', 'max_diversion_cfs', 'source', 'lat', 'lon', 'corridor_km']
-  const lines = [header.join(',')]
-  for (const r of rows) {
-    lines.push([
-      esc(r.wr), esc(r.owner), r.year, r.rate, esc(r.source),
+  return toCsv(
+    ['water_right', 'owner', 'priority_year', 'max_diversion_cfs', 'source', 'lat', 'lon', 'corridor_km'],
+    rows.map(r => [
+      r.wr, r.owner, r.year, r.rate, r.source,
       r.lat.toFixed(5), r.lon.toFixed(5), r.corridorKm.toFixed(2),
-    ].join(','))
-  }
-  return lines.join('\n')
+    ]),
+  )
 }
 
-export function downloadCsv(filename: string, csv: string) {
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = filename
-  a.click()
-  URL.revokeObjectURL(url)
-}
+export { downloadCsv } from './csv'

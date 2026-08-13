@@ -7,7 +7,7 @@ import {
   type ImageryMode,
 } from './map/historicalImagery'
 import { defaultState, state } from './state'
-import { isHighlightMode, type Basemap, type FlowEra, type PodColorMode } from './types'
+import { isHighlightMode, type Basemap, type FlowEra, type PodColorMode, type WellColorMode } from './types'
 
 /**
  * Shareable views: the URL hash mirrors AppState + map view + basemap, so any
@@ -57,6 +57,7 @@ export function encodeHash(basemap: Basemap, map: L.Map): string {
   if (state.yearMin !== d.yearMin) p.set('y0', String(state.yearMin))
   if (state.yearMax !== d.yearMax) p.set('y1', String(state.yearMax))
   if (state.podColorMode !== d.podColorMode) p.set('cm', state.podColorMode)
+  if (state.wellColorMode !== d.wellColorMode) p.set('wcm', state.wellColorMode)
   if (state.flowEra !== d.flowEra) p.set('fe', state.flowEra)
   if (state.ownerHighlight) p.set('o', state.ownerHighlight)
   if (state.selectedWRs.size > 0) p.set('sel', [...state.selectedWRs].join(','))
@@ -104,6 +105,8 @@ export function applyHashToState(): RestoredView {
   if (isFinite(y1)) state.yearMax = y1
   const cm = p.get('cm')
   if (cm === 'source' || cm === 'priority') state.podColorMode = cm as PodColorMode
+  const wcm = p.get('wcm')
+  if (wcm === 'use' || wcm === 'era' || wcm === 'swl') state.wellColorMode = wcm as WellColorMode
   const fe = p.get('fe')
   if (fe === 'historical' || fe === 'recent') state.flowEra = fe as FlowEra
   if (p.get('o')) state.ownerHighlight = p.get('o')

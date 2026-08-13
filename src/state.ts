@@ -9,6 +9,7 @@ export function defaultState(): AppState {
     showGW: true,
     showSurface: true,
     hideDomestic: true,
+    wellColorMode: 'use',
     focusIrrigation: false,
     highRateThreshold: 5,
     highlightMode: 'none',

@@ -64,6 +64,7 @@ cd /path/to/basin34-water-transparency
 python3 scripts/etl/fetch_idwr_pods_wells.py   # PODs, wells, POU (IDWR)
 python3 scripts/etl/fetch_nwi_riparian.py      # FWS NWI riparian polygons
 python3 scripts/etl/fetch_nhd_mainstem.py      # Big Lost mainstem + sinks (NHD)
+python3 scripts/etl/fetch_wd34_accounting.py   # WD34 storage-results tables (as published)
 python3 scripts/etl/simplify_geometries.py    # Douglas-Peucker POU/NWI/canals for map FPS
 ```
 
@@ -73,7 +74,7 @@ Note: the FWS NWI *Riparian* dataset was never mapped along the lower channel (A
 
 Current committed extracts: `wd34-pods.geojson` (7,066), `wd34-wells.geojson` (4,323), `wd34-pou.geojson` (5,786), `nwi-riparian.geojson` (1,128), `nhd-mainstem.geojson` (348), `nhd-sinks.geojson` (50), plus separately produced `nhd-canals-pipelines.geojson` (718), `wd34-admin-reaches.geojson` (6), `basin-boundary.geojson`, `gages.geojson` (5) and `flow-extent-indicators.geojson` (2, kept only as a fallback for the mainstem layer). `wd34-admin-reaches.geojson` is **manually digitized** (no refresh script) — treat it as a maintained overlay, not an ETL product.
 
-For other layers (NHD, custom reaches, gage summaries) or future accounting data (WD34 accounting XLSX/PDFs + ditch rider logs — the deferred Phase 1 curtailment work), add scripts following the same pattern. Re-run the main script when you want fresh public extracts.
+For other layers (NHD, custom reaches, gage summaries), add scripts following the same pattern. Re-run the main script when you want fresh public extracts. WD34 storage-results are copied by `fetch_wd34_accounting.py` (daily delivery/loss columns + named canals, values as published). Ditch rider logs / a shutoff roster remain future work if those tables become public.
 
 Keep this README + the root README in sync with actual steps and data vintage.
 

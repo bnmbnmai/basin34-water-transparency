@@ -16,6 +16,7 @@ export function emptyStore(over: Partial<DataStore> = {}): DataStore {
     reaches: [],
     reachSouthLat: new Map(),
     owners: [],
+    mainstemPts: [],
     ...over,
   }
 }
@@ -36,6 +37,8 @@ export function pod(over: Partial<PodRecord> = {}): PodRecord {
     lon: -113.30,
     isTransfer: false,
     corridorDistKm: 0.5,
+    uses: 'IRRIGATION',
+    diversionName: '',
     ...over,
   }
   rec.ownerLc = rec.owner.toLowerCase()

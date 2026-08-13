@@ -1,5 +1,6 @@
+import { toCsv } from './csv'
 import { NEW_GROUND_KM, TRANSFER_DIST_KM, type DataStore } from './data'
-import { downloadCsv } from './dryReach'
+import { sideOfMainstem, type ChannelSide } from './sideOfChannel'
 
 /**
  * Water moved farther — geometric proxy (not a transfer filing or liner inventory).
@@ -19,6 +20,7 @@ export interface MovedFartherRow {
   podPouKm: number
   corridorKm: number | null
   offCorridor: boolean
+  pouSide: ChannelSide
 }
 
 export const MOVED_FARTHER_METHODOLOGY =
@@ -27,8 +29,9 @@ export const MOVED_FARTHER_METHODOLOGY =
   'from IDWR POD + POU geometry. “Off corridor” means the POU center sits more than ' +
   `${NEW_GROUND_KM} km from both the NHD Big Lost mainstem and any NWI riparian polygon — ` +
   'a geometric signal that water is authorized away from the natural river corridor, not proof ' +
-  'of a lined canal or of recent breakout. Lined canals / east–west-of-river new ground are ' +
-  'visible on satellite; NHD does not mark liners. Sorted by POD↔POU distance.'
+  'of a lined canal or of recent breakout. East/west of channel is longitude vs the nearest NHD ' +
+  'mainstem vertex (the river generally flows south). Lined canals are visible on satellite; NHD does not mark liners. ' +
+  'Sorted by POD↔POU distance.'
 
 export function listMovedFarther(store: DataStore): MovedFartherRow[] {
   const rows: MovedFartherRow[] = []
@@ -36,6 +39,10 @@ export function listMovedFarther(store: DataStore): MovedFartherRow[] {
     const rec = store.podsByWR.get(wr)?.[0]
     const corridorKm = store.corridorDistKm.get(wr) ?? null
     const offCorridor = store.newGroundWRs.has(wr)
+    const center = store.pouCenter.get(wr)
+    const pouSide = center
+      ? sideOfMainstem(center[0], center[1], store.mainstemPts)
+      : 'unknown'
     rows.push({
       wr,
       owner: rec?.owner || '',
@@ -45,34 +52,26 @@ export function listMovedFarther(store: DataStore): MovedFartherRow[] {
       podPouKm,
       corridorKm,
       offCorridor,
+      pouSide,
     })
   }
   return rows.sort((a, b) => b.podPouKm - a.podPouKm || (a.year ?? 9999) - (b.year ?? 9999))
 }
 
 export function movedFartherToCsv(rows: MovedFartherRow[]): string {
-  const esc = (v: string | number) => {
-    const s = String(v)
-    return /["',\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
-  }
-  const header = [
-    'water_right', 'owner', 'priority_year', 'max_diversion_cfs', 'source',
-    'pod_pou_km', 'corridor_km', 'off_corridor',
-  ]
-  const lines = [header.join(',')]
-  for (const r of rows) {
-    lines.push([
-      esc(r.wr),
-      esc(r.owner),
-      r.year ?? '',
-      r.rate,
-      esc(r.source),
+  return toCsv(
+    [
+      'water_right', 'owner', 'priority_year', 'max_diversion_cfs', 'source',
+      'pod_pou_km', 'corridor_km', 'off_corridor', 'pou_side_of_channel',
+    ],
+    rows.map(r => [
+      r.wr, r.owner, r.year ?? '', r.rate, r.source,
       r.podPouKm.toFixed(2),
       r.corridorKm != null ? r.corridorKm.toFixed(2) : '',
       r.offCorridor ? 'yes' : 'no',
-    ].join(','))
-  }
-  return lines.join('\n')
+      r.pouSide,
+    ]),
+  )
 }
 
-export { downloadCsv }
+export { downloadCsv } from './csv'

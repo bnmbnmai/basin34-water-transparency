@@ -49,6 +49,8 @@ export interface DataStore {
   reachSouthLat: Map<string, number>
   /** Unique owner names (from PODs) for search. */
   owners: string[]
+  /** NHD mainstem vertices [lat, lon] for east/west-of-channel geometry. */
+  mainstemPts: Array<[number, number]>
 }
 
 /**
@@ -176,6 +178,7 @@ function emptyStore(): DataStore {
     podsByWR: new Map(), pousByWR: new Map(), geomKeyToWRs: new Map(),
     transferDistKm: new Map(), corridorDistKm: new Map(), newGroundWRs: new Set(),
     pouCenter: new Map(), reaches: [], reachSouthLat: new Map(), owners: [],
+    mainstemPts: [],
   }
 }
 
@@ -214,6 +217,8 @@ export async function loadDataStoreLight(
         lon: f.geometry.coordinates[0],
         isTransfer: false,
         corridorDistKm: Infinity,
+        uses: p.Uses || '',
+        diversionName: (p.DiversionName || '').trim(),
       }
     })
 
@@ -228,6 +233,9 @@ export async function loadDataStoreLight(
         year: epochMsToYear(p.ConstructionDate),
         rate: typeof p.ProductionRate === 'number' ? p.ProductionRate : 0,
         lat: f.geometry.coordinates[1],
+        lon: f.geometry.coordinates[0],
+        depth: typeof p.TotalDepth === 'number' ? p.TotalDepth : null,
+        swl: typeof p.StaticWaterLevel === 'number' ? p.StaticWaterLevel : null,
       }
     })
 
@@ -240,6 +248,18 @@ export async function loadDataStoreLight(
   }
 
   applyCorridorDistances(pods, buildCorridorPts(mainstemFeats, []))
+
+  const mainstemPts: Array<[number, number]> = []
+  for (const f of mainstemFeats) {
+    const g = f.geometry
+    if (!g?.coordinates) continue
+    const lines: number[][][] =
+      g.type === 'LineString' ? [g.coordinates] :
+      g.type === 'MultiLineString' ? g.coordinates : []
+    for (const line of lines) {
+      for (const [lon, lat] of line) mainstemPts.push([lat, lon])
+    }
+  }
 
   const reachSouthLat = new Map<string, number>()
   for (const f of reachFeats) {
@@ -258,6 +278,7 @@ export async function loadDataStoreLight(
     podsByWR,
     reaches: reachFeats, reachSouthLat,
     owners,
+    mainstemPts,
   }
 }
 

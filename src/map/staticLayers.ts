@@ -1,6 +1,7 @@
 import L from 'leaflet'
 import type { FlowEra, GeoFeature } from '../types'
 import { fetchJsonCached } from '../fetchCache'
+import { collectMainstemPts, lineMidpoint, sideOfMainstem } from '../sideOfChannel'
 
 export interface StaticLayers {
   groups: Record<string, L.LayerGroup>
@@ -93,22 +94,42 @@ export async function loadStaticLayers(
     canalsLoaded = true
     const canals = await fetchJsonCached('/data/nhd-canals-pipelines.geojson')
     if (!canals) return
+    const mainstemPts = collectMainstemPts((mainstem?.features || []) as GeoFeature[])
     const isPipe = (f: any) => (f?.properties?.fcode ?? 0) >= 42800
+    const featureSide = (f: any) => {
+      const mid = lineMidpoint(f?.geometry)
+      return mid ? sideOfMainstem(mid[0], mid[1], mainstemPts) : 'unknown'
+    }
     add('hydro', L.geoJSON(canals, {
-      style: (f: any) =>
-        isPipe(f)
-          ? { color: '#64748b', weight: 2, opacity: 0.8, dashArray: '2,5' }
-          : { color: '#0ea5e9', weight: 2, opacity: 0.7, dashArray: '6,3' },
+      style: (f: any) => {
+        const pipe = isPipe(f)
+        const side = featureSide(f)
+        if (pipe) {
+          return {
+            color: side === 'west' ? '#44403c' : '#64748b',
+            weight: 2.2,
+            opacity: 0.85,
+            dashArray: '2,5',
+          }
+        }
+        if (side === 'west') return { color: '#0f766e', weight: 2.4, opacity: 0.85, dashArray: '6,3' }
+        if (side === 'east') return { color: '#0369a1', weight: 2.4, opacity: 0.8, dashArray: '6,3' }
+        return { color: '#0ea5e9', weight: 2, opacity: 0.7, dashArray: '6,3' }
+      },
       onEachFeature: (feature, lyr) => {
         const p = feature.properties || {}
-        const kind = isPipe(feature) ? 'Pipeline' : 'Canal / ditch'
+        const pipe = isPipe(feature)
+        const kind = pipe ? 'Pipeline' : 'Canal / ditch'
+        const side = featureSide(feature)
+        const sideLabel = side === 'unknown' ? 'side of channel unclear' : `${side} of NHD mainstem (geometric)`
         if (p.gnis_name) {
-          lyr.bindTooltip(`${p.gnis_name} (${kind.toLowerCase()})`, { sticky: true })
+          lyr.bindTooltip(`${p.gnis_name} (${kind.toLowerCase()} · ${sideLabel})`, { sticky: true })
         }
         lyr.bindPopup(
           `<strong>${p.gnis_name || `Unnamed ${kind.toLowerCase()}`}</strong><br>` +
-          `${kind}${p.lengthkm ? ` · ${Number(p.lengthkm).toFixed(1)} km segment` : ''}<br>` +
-          `<small>USGS National Hydrography Dataset (high resolution). Geometry only — authorized rates come from the Diversions layer.</small>`,
+          `${kind} · ${sideLabel}` +
+          `${p.lengthkm ? ` · ${Number(p.lengthkm).toFixed(1)} km segment` : ''}<br>` +
+          `<small>USGS National Hydrography Dataset (high resolution). East/west is longitude vs the nearest Big Lost mainstem vertex — not a liner inventory. Authorized rates come from the Diversions layer.</small>`,
         )
         lyr.on('click', () => callbacks.onFeatureClick(feature as GeoFeature, 'hydro'))
       },

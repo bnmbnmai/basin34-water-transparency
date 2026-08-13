@@ -41,9 +41,10 @@ describe('movedFartherToCsv', () => {
         podPouKm: 10.5,
         corridorKm: 2,
         offCorridor: true,
+        pouSide: 'unknown',
       },
     ])
     expect(csv).toMatch(/off_corridor/)
-    expect(csv).toMatch(/,yes$/)
+    expect(csv).toMatch(/,yes,unknown$/)
   })
 })

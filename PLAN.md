@@ -28,7 +28,7 @@ A **public accountability / transparency tool** for Water District 34 (Big Lost 
 1. **One workspace:** Explore is always on. No Story | Explore mode toggle.
 2. **Thin Guide:** “Walk the receipts” is a dismissible coach that flies the map and opens inspector receipts — not a second control panel (no duplicate basemap / then-now / jump grid).
 3. **Map + inspector only:** Feature detail and receipts (tables, charts, gages) open in `#details`. **No full-screen lightbox** for product flows.
-4. **Three primary receipts:** Downstream seniors · Water moved farther · River shrink. Everything else is Advanced.
+4. **Three primary receipts:** Downstream seniors · Water moved farther · River shrink. Everything else is Advanced (below-Moore surface ranking, owner concentration, well logs, WD34 accounting).
 5. **Zoom completes the sacred path:** CSV/table Zoom selects the right, paints purple POD↔POU lines, keeps the map visible, offers **← Back to list**.
 6. **Close model:** Esc and ✕ always close the inspector. Map click clears selection but does not dismiss a pinned receipt.
 
@@ -36,15 +36,17 @@ A **public accountability / transparency tool** for Water District 34 (Big Lost 
 
 ---
 
-## Current state (2026-08-12)
+## Current state (2026-08-13)
 
 - [x] F0 data refresh (`asOf` 2026-07-22)
 - [x] F1–F5 receipts roadmap (moved farther CSV, sidebar nest, story trim → now Guide, live USGS CFS)
 - [x] Guide not dual-mode + inspector unification
 - [x] Map perf + Landsat/Wayback imagery (phone-usable paint, simplified GeoJSON)
-- [x] Receipt unit tests (`npm test`: epoch dates, dry-reach, moved-farther, USGS RDB, permalink)
-- [ ] Curtailment / “who shut off when” (hardest data — later)
-- [ ] General export of currently filtered PODs/wells (CSV/GeoJSON)
+- [x] Receipt unit tests (`npm test`: epoch dates, dry-reach, moved-farther, USGS RDB, permalink, lower-valley, owners, well logs, side-of-channel)
+- [x] Advanced observer receipts: surface irrigation below Moore; authorized cfs by owner; lower-valley well logs; WD34 published accounting
+- [x] NHD canals vs pipelines styled east/west of the mainstem (geometric)
+- [x] General export of currently filtered PODs/wells (CSV/GeoJSON)
+- [ ] Curtailment / “who shut off when” (accounting extract has daily delivery/loss columns as published — not a shutoff roster)
 
 ---
 
@@ -72,7 +74,7 @@ G1. Drop Story mode; thin Guide + inspector UX   ← DONE
 
 ### F4 evidence note (unchanged)
 
-No clean public east/west designation polygons — lined-canal claim stays Guide/satellite narrative. Geometric off-corridor ≠ “last 10–15 years.”
+No clean public east/west designation polygons — lined-canal claim stays Guide/satellite narrative. Geometric off-corridor ≠ “last 10–15 years.” NHD canals/pipelines now carry a **geometric** east/west-of-mainstem label (longitude vs nearest Big Lost vertex). WD34 storage-results names (Eastside, Westside, Island, …) appear only in the published-accounting receipt, copied from the IDWR workbook.
 
 ---
 

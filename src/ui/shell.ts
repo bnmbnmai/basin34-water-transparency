@@ -90,6 +90,9 @@ export function renderShell() {
           </div>
           <div class="layer-item"><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="layer-flowExtent" checked /> <span>River channel &amp; sinks (NHD)</span></label></div>
           <div class="layer-item"><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="layer-hydro" checked /> <span>Canals &amp; pipelines (NHD)</span></label></div>
+          <div class="ml-4 -mt-1 mb-1 text-[10px] leading-tight text-[var(--text-muted)]">
+            Dashed cyan = canal/ditch east of mainstem; teal = west; dotted slate = pipeline. Geometric side-of-channel, not a named-canal inventory.
+          </div>
 
           <h2>Insight receipts</h2>
           <div class="insight-grid">
@@ -136,9 +139,39 @@ export function renderShell() {
               <button id="appropriation-btn" class="text-xs px-2 py-1 mt-1 w-full border border-[var(--border)] rounded hover:bg-[var(--border)]">
                 Appropriation vs. supply over time
               </button>
+              <button type="button" id="lower-valley-btn" class="text-xs px-2 py-1 mt-1 w-full border border-[var(--border)] rounded hover:bg-[var(--border)]">
+                Surface irrigation below Moore + CSV
+              </button>
+              <button type="button" id="owner-conc-btn" class="text-xs px-2 py-1 mt-1 w-full border border-[var(--border)] rounded hover:bg-[var(--border)]">
+                Authorized cfs by owner
+              </button>
+              <button type="button" id="well-pressure-btn" class="text-xs px-2 py-1 mt-1 w-full border border-[var(--border)] rounded hover:bg-[var(--border)]">
+                Lower-valley well logs
+              </button>
+              <button type="button" id="accounting-btn" class="text-xs px-2 py-1 mt-1 w-full border border-[var(--border)] rounded hover:bg-[var(--border)]">
+                WD34 published accounting
+              </button>
+              <button type="button" id="watchlist-btn" class="text-xs px-2 py-1 mt-1 w-full border border-[var(--border)] rounded hover:bg-[var(--border)] hidden">
+                Local watchlist (dev)
+              </button>
               <button id="timeline-btn" class="text-xs px-2 py-1 mt-1 w-full border border-[var(--border)] rounded hover:bg-[var(--border)]">
                 Development through time
               </button>
+
+              <h3 class="adv-h">Export current filters</h3>
+              <div class="flex flex-col gap-1 mb-2">
+                <button type="button" id="export-pods-csv" class="text-xs px-2 py-1 w-full border border-[var(--border)] rounded hover:bg-[var(--border)]">Visible PODs CSV</button>
+                <button type="button" id="export-pods-geojson" class="text-xs px-2 py-1 w-full border border-[var(--border)] rounded hover:bg-[var(--border)]">Visible PODs GeoJSON</button>
+                <button type="button" id="export-wells-csv" class="text-xs px-2 py-1 w-full border border-[var(--border)] rounded hover:bg-[var(--border)]">Visible wells CSV</button>
+              </div>
+              <div class="text-xs mb-2">
+                Well color:
+                <select id="well-color-mode" class="text-xs border border-[var(--border)] rounded">
+                  <option value="use">Use class</option>
+                  <option value="era">Construction era</option>
+                  <option value="swl">Static water level</option>
+                </select>
+              </div>
 
               <h3 class="adv-h">More layers</h3>
               <div class="layer-item"><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="layer-boundary" checked /> <span>Basin boundary</span></label></div>
