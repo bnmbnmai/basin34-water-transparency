@@ -289,8 +289,13 @@ export function syncImageryControls(): void {
 
   const landsatRange = input('landsat-year')
   const landsatLabel = $('landsat-year-label')
+  const landsatHintEl = $('landsat-year-hint')
   if (landsatRange) landsatRange.value = String(s.landsatYear)
-  if (landsatLabel) landsatLabel.textContent = String(s.landsatYear)
+  if (landsatLabel) {
+    landsatLabel.textContent =
+      s.landsatShownYear !== s.landsatYear ? `${s.landsatYear} → ${s.landsatShownYear}` : String(s.landsatYear)
+  }
+  if (landsatHintEl) landsatHintEl.textContent = s.landsatHint
 
   const waybackRange = input('wayback-year')
   const waybackLabel = $('wayback-year-label')

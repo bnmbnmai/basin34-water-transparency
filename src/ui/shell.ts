@@ -70,7 +70,7 @@ export function renderShell() {
                 <span>Year <strong id="landsat-year-label">2000</strong></span>
                 <input type="range" id="landsat-year" min="1984" max="2026" step="1" value="2000" />
               </label>
-              <p class="imagery-hint">~30&nbsp;m Landsat summer mosaic (1984+). Good for crop patterns over decades.</p>
+              <p class="imagery-hint" id="landsat-year-hint">Cloudless mosaics (Sentinel-2 2016+, Landsat before that). Gaps stay transparent instead of black.</p>
             </div>
             <div id="imagery-wayback-controls" class="imagery-controls" hidden>
               <label class="imagery-year-field">

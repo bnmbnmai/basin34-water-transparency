@@ -1,4 +1,9 @@
 import L from 'leaflet'
+import {
+  landsatHint,
+  resolveLandsatSource,
+  type LandsatSource,
+} from './landsatYears'
 
 export type ImageryMode = 'current' | 'landsat' | 'wayback'
 
@@ -13,6 +18,15 @@ export interface ImageryState {
   landsatYear: number
   waybackReleaseNum: number | null
   waybackDate: string | null
+  /** Year actually painted (slider may snap). */
+  landsatShownYear: number
+  landsatKind: LandsatSource['kind']
+  landsatHint: string
+}
+
+export interface LandsatIndex {
+  bounds: { south: number; west: number; north: number; east: number }
+  years: Record<string, { file: string }>
 }
 
 type Listener = (state: ImageryState) => void
@@ -26,25 +40,58 @@ const WAYBACK_CONFIG =
 const LANDSAT_EXPORT =
   'https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer/exportImage'
 
-const LANDSAT_MIN_YEAR = 1984
 const LANDSAT_RENDERING = JSON.stringify({ rasterFunction: 'Natural Color with DRA' })
+const LANDSAT_MOSAIC = JSON.stringify({
+  mosaicMethod: 'esriMosaicAttribute',
+  sortField: 'Best',
+  sortValue: '0',
+  mosaicOperation: 'MT_FIRST',
+})
+
+/** 1×1 transparent PNG — failed tiles must not paint black. */
+const TRANSPARENT_PIXEL =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
+
+const LANDSAT_MIN_YEAR = 1984
 
 let mapRef: L.Map | null = null
 let baseLayer: L.TileLayer | null = null
 let landsatOverlay: L.ImageOverlay | null = null
+let landsatTiles: L.GridLayer | null = null
 let active = false
 let mode: ImageryMode = 'current'
 let landsatYear = Math.min(new Date().getFullYear() - 1, 2024)
 let waybackReleases: WaybackRelease[] = []
 let waybackReleaseNum: number | null = null
 let waybackLoaded = false
-let moveTimer: ReturnType<typeof setTimeout> | null = null
-let landsatToken = 0
+let landsatIndex: LandsatIndex | null = null
+let landsatIndexLoaded = false
 const listeners = new Set<Listener>()
 
 function notify(): void {
   const state = getImageryState()
   for (const fn of listeners) fn(state)
+}
+
+function localYears(): number[] {
+  if (!landsatIndex) return []
+  return Object.keys(landsatIndex.years).map(Number).filter(n => Number.isFinite(n)).sort((a, b) => a - b)
+}
+
+function shownSource(): LandsatSource {
+  return resolveLandsatSource(landsatYear, localYears())
+}
+
+function removeLandsatExtras(): void {
+  if (!mapRef) return
+  if (landsatOverlay) {
+    mapRef.removeLayer(landsatOverlay)
+    landsatOverlay = null
+  }
+  if (landsatTiles) {
+    mapRef.removeLayer(landsatTiles)
+    landsatTiles = null
+  }
 }
 
 function removeBase(): void {
@@ -53,15 +100,15 @@ function removeBase(): void {
     mapRef.removeLayer(baseLayer)
     baseLayer = null
   }
-  if (landsatOverlay) {
-    mapRef.removeLayer(landsatOverlay)
-    landsatOverlay = null
-  }
+  removeLandsatExtras()
 }
 
 function addCurrentImagery(): void {
   if (!mapRef) return
-  removeBase()
+  if (baseLayer) {
+    mapRef.removeLayer(baseLayer)
+    baseLayer = null
+  }
   baseLayer = L.tileLayer(ESRI_IMAGERY, {
     maxZoom: 22,
     maxNativeZoom: 19,
@@ -83,90 +130,119 @@ function addWaybackImagery(releaseNum: number): void {
     maxZoom: 22,
     maxNativeZoom: 19,
     attribution: 'Esri World Imagery Wayback',
+    errorTileUrl: TRANSPARENT_PIXEL,
+  }).addTo(mapRef)
+}
+
+function s2TileUrl(layer: string): string {
+  return `https://tiles.maps.eox.at/wmts/1.0.0/${layer}/default/GoogleMapsCompatible/{z}/{y}/{x}.jpg`
+}
+
+function addS2Cloudless(layer: string): void {
+  if (!mapRef) return
+  removeBase()
+  baseLayer = L.tileLayer(s2TileUrl(layer), {
+    maxZoom: 18,
+    maxNativeZoom: 14,
+    attribution: 'Sentinel-2 cloudless © EOX / contains modified Copernicus Sentinel data',
+    errorTileUrl: TRANSPARENT_PIXEL,
   }).addTo(mapRef)
 }
 
 function summerEpochRange(year: number): [number, number] {
-  return [Date.UTC(year, 5, 1), Date.UTC(year, 8, 30, 23, 59, 59)]
+  // GLS composites sit near the epoch year, not a June scene date.
+  if (year <= 2010) {
+    return [Date.UTC(year - 1, 0, 1), Date.UTC(year + 1, 11, 31, 23, 59, 59)]
+  }
+  return [Date.UTC(year, 0, 1), Date.UTC(year, 11, 31, 23, 59, 59)]
 }
 
-function landsatExportUrl(
-  bounds: L.LatLngBounds,
-  width: number,
-  height: number,
-  year: number,
-): string {
+function esriTileExportUrl(bounds: L.LatLngBounds, year: number): string {
   const [t0, t1] = summerEpochRange(year)
   const params = new URLSearchParams({
     bbox: `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`,
     bboxSR: '4326',
     imageSR: '4326',
-    size: `${width},${height}`,
-    format: 'jpg',
+    size: '256,256',
+    format: 'png32',
     pixelType: 'U8',
+    noData: '0',
+    noDataInterpretation: 'esriNoDataMatchAny',
     interpolation: 'RSP_BilinearInterpolation',
     time: `${t0},${t1}`,
     renderingRule: LANDSAT_RENDERING,
-    mosaicRule: JSON.stringify({
-      mosaicMethod: 'esriMosaicAttribute',
-      sortField: 'best',
-      sortValue: '0',
-    }),
+    mosaicRule: LANDSAT_MOSAIC,
     f: 'image',
   })
   return `${LANDSAT_EXPORT}?${params}`
 }
 
-async function refreshLandsatOverlay(): Promise<void> {
-  if (!mapRef || !active || mode !== 'landsat') return
-  const map = mapRef
-  const token = ++landsatToken
-  const size = map.getSize()
-  const bounds = map.getBounds().pad(0.02)
-  const maxEdge = 1280
-  let w = Math.max(256, Math.round(size.x * 1.05))
-  let h = Math.max(256, Math.round(size.y * 1.05))
-  const scale = Math.max(w / maxEdge, h / maxEdge, 1)
-  w = Math.round(w / scale)
-  h = Math.round(h / scale)
+function addEsriLandsatTiles(year: number): void {
+  if (!mapRef) return
+  addCurrentImagery()
+  removeLandsatExtras()
+  const Grid = L.GridLayer.extend({
+    createTile(coords: L.Coords, done: L.DoneCallback) {
+      const img = document.createElement('img')
+      img.alt = ''
+      img.decoding = 'async'
+      const bounds = (this as any)._tileCoordsToBounds(coords) as L.LatLngBounds
+      img.onload = () => done(undefined, img)
+      img.onerror = () => {
+        img.src = TRANSPARENT_PIXEL
+        done(undefined, img)
+      }
+      img.src = esriTileExportUrl(bounds, year)
+      return img
+    },
+  })
+  const tiles: L.GridLayer = new (Grid as any)({
+    tileSize: 256,
+    minZoom: 7,
+    maxZoom: 15,
+    maxNativeZoom: 13,
+    opacity: 1,
+    className: 'landsat-tiles',
+  })
+  tiles.addTo(mapRef)
+  landsatTiles = tiles
+}
 
-  const url = landsatExportUrl(bounds, w, h, landsatYear)
-  try {
-    await new Promise<void>((resolve, reject) => {
-      const img = new Image()
-      img.crossOrigin = 'anonymous'
-      img.onload = () => resolve()
-      img.onerror = () => reject(new Error('Landsat image failed'))
-      img.src = url
-    })
-  } catch (err) {
-    console.warn('Landsat refresh failed', err)
-    return
-  }
-  if (!mapRef || !active || mode !== 'landsat' || token !== landsatToken) return
-
-  if (baseLayer) {
-    mapRef.removeLayer(baseLayer)
-    baseLayer = null
-  }
-  if (landsatOverlay) {
-    mapRef.removeLayer(landsatOverlay)
-    landsatOverlay = null
-  }
-  landsatOverlay = L.imageOverlay(url, bounds, {
+function addLocalLandsatOverlay(year: number): void {
+  if (!mapRef || !landsatIndex) return
+  const rec = landsatIndex.years[String(year)]
+  if (!rec) return
+  addCurrentImagery()
+  removeLandsatExtras()
+  const b = landsatIndex.bounds
+  const bounds = L.latLngBounds([b.south, b.west], [b.north, b.east])
+  landsatOverlay = L.imageOverlay(`/data/landsat/${rec.file}`, bounds, {
     opacity: 1,
     interactive: false,
     className: 'landsat-overlay',
     zIndex: 200,
+    errorOverlayUrl: TRANSPARENT_PIXEL,
   }).addTo(mapRef)
 }
 
-function onMapMove(): void {
-  if (!active || mode !== 'landsat') return
-  if (moveTimer) clearTimeout(moveTimer)
-  moveTimer = setTimeout(() => {
-    void refreshLandsatOverlay()
-  }, 280)
+function paintLandsat(): void {
+  if (!mapRef || !active || mode !== 'landsat') return
+  const src = shownSource()
+  if (src.kind === 's2' && src.layer) addS2Cloudless(src.layer)
+  else if (src.kind === 'local') addLocalLandsatOverlay(src.year)
+  else addEsriLandsatTiles(src.year)
+}
+
+async function loadLandsatIndex(): Promise<void> {
+  if (landsatIndexLoaded) return
+  landsatIndexLoaded = true
+  try {
+    const res = await fetch('/data/landsat/index.json', { cache: 'force-cache' })
+    if (!res.ok) return
+    landsatIndex = (await res.json()) as LandsatIndex
+  } catch {
+    landsatIndex = null
+  }
 }
 
 export function getLandsatYearRange(): { min: number; max: number } {
@@ -176,11 +252,15 @@ export function getLandsatYearRange(): { min: number; max: number } {
 
 export function getImageryState(): ImageryState {
   const rel = waybackReleases.find(r => r.releaseNum === waybackReleaseNum)
+  const shown = shownSource()
   return {
     mode,
     landsatYear,
     waybackReleaseNum,
     waybackDate: rel?.date ?? null,
+    landsatShownYear: shown.year,
+    landsatKind: shown.kind,
+    landsatHint: landsatHint(landsatYear, shown),
   }
 }
 
@@ -235,9 +315,11 @@ export async function loadWaybackCatalog(): Promise<WaybackRelease[]> {
 
 export function initHistoricalImagery(map: L.Map): void {
   mapRef = map
-  map.on('moveend', onMapMove)
-  map.on('zoomend', onMapMove)
   void loadWaybackCatalog().catch(err => console.warn('Wayback catalog failed', err))
+  void loadLandsatIndex().then(() => {
+    if (active && mode === 'landsat') paintLandsat()
+    notify()
+  })
 }
 
 /** Show imagery plane (Current / Landsat / Wayback). */
@@ -249,11 +331,6 @@ export async function enableHistoricalImagery(): Promise<void> {
 /** Tear down imagery tiles/overlays (e.g. when switching to OSM). */
 export function disableHistoricalImagery(): void {
   active = false
-  if (moveTimer) {
-    clearTimeout(moveTimer)
-    moveTimer = null
-  }
-  landsatToken++
   removeBase()
 }
 
@@ -264,6 +341,7 @@ export async function setImageryMode(next: ImageryMode): Promise<void> {
     return
   }
   if (next === 'current') {
+    removeLandsatExtras()
     addCurrentImagery()
   } else if (next === 'wayback') {
     if (!waybackLoaded) await loadWaybackCatalog()
@@ -274,8 +352,8 @@ export async function setImageryMode(next: ImageryMode): Promise<void> {
       addWaybackImagery(num)
     }
   } else {
-    removeBase()
-    await refreshLandsatOverlay()
+    await loadLandsatIndex()
+    paintLandsat()
   }
   notify()
 }
@@ -284,7 +362,7 @@ export function setLandsatYear(year: number): void {
   const { min, max } = getLandsatYearRange()
   landsatYear = Math.max(min, Math.min(max, Math.round(year)))
   notify()
-  if (active && mode === 'landsat') void refreshLandsatOverlay()
+  if (active && mode === 'landsat') paintLandsat()
 }
 
 export function setWaybackRelease(releaseNum: number): void {
