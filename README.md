@@ -6,6 +6,8 @@ Interactive public web map for Water District 34 (Big Lost River Basin / Basin 3
 
 The tool is strictly neutral and data-driven. All visualizations cite public sources and "as of" dates. It complements (does not replace) official IDWR viewers and WD34 accounting reports.
 
+**Two layers:** this repository is the public observer (IDWR owner names in search/tables/CSV; no case captions, no injury findings). Local notes and pin lists live in `private/` (gitignored) — copy [`private.example/`](private.example/) and [`watchlist.example.json`](watchlist.example.json). Production builds never fetch or ship that folder.
+
 ## Quick Start
 
 ```bash
@@ -49,7 +51,7 @@ Advanced (still not a seventh map-emphasis mode):
 - **WD34 published accounting** — daily inflow / losses / below-Moore delivery and named-canal season totals copied from IDWR’s storage-results workbook (values as published). PDFs are linked, not parsed. This is not a curtailment roster.
 - **Export current filters** — visible PODs (CSV + GeoJSON) and visible wells (CSV).
 
-Optional local pins: copy [`watchlist.example.json`](watchlist.example.json) to `private/watchlist.json` (gitignored) and run `npm run dev`. Production builds never fetch or ship that file.
+Optional local pins: copy [`watchlist.example.json`](watchlist.example.json) to `private/watchlist.json` (gitignored) and run `npm run dev`. See [`private.example/`](private.example/) for what else belongs only on a local machine. Production builds never fetch or ship that file.
 
 ### Exploring rights and places of use
 

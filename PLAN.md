@@ -1,10 +1,17 @@
 # Basin 34 Water Transparency — Plan
 
-**Repo:** `qasrnexe/basin34-water-transparency`  
-**Live:** https://water.bnm.farm (private — same family Caddy login as farm.bnm.farm)  
+**Repo:** `bnmbnmai/basin34-water-transparency`  
+**Live:** https://water.bnm.farm (Caddy basic auth — same login as farm.bnm.farm)  
 **Deploy:** rebuild `dist/` only on the media box (`npm run build`). See `tv-remote/homelab/AGENT_COORDINATION.md`.
 
 **Purpose:** Single source of truth. On the media-box agent say: “read PLAN.md and do the next build slice.”
+
+---
+
+## Two layers (do not mix)
+
+1. **Public observer (this repo + the live map).** IDWR + USGS receipts. Owner names from the IDWR GIS stay in search, tables, and CSV. Geometric / priority / gage proxies — not court findings, not injury claims, not a case caption. Guide copy is geography-only. Do not ship a private briefing or a named lawsuit into `src/`, `public/`, or Guide.
+2. **Private binder (`private/`, gitignored).** Local notes, PDFs, watchlist pins, anything about a specific case. Production builds never fetch that folder. Copy [`private.example/`](private.example/) to `private/` on a machine that should have it.
 
 ---
 
@@ -46,6 +53,7 @@ A **public accountability / transparency tool** for Water District 34 (Big Lost 
 - [x] Advanced observer receipts: surface irrigation below Moore; authorized cfs by owner; lower-valley well logs; WD34 published accounting
 - [x] NHD canals vs pipelines styled east/west of the mainstem (geometric)
 - [x] General export of currently filtered PODs/wells (CSV/GeoJSON)
+- [x] Repo origin docs: `bnmbnmai/basin34-water-transparency`; public observer vs gitignored `private/` binder
 - [ ] Curtailment / “who shut off when” (accounting extract has daily delivery/loss columns as published — not a shutoff roster)
 
 ---
