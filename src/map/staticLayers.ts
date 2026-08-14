@@ -2,6 +2,7 @@ import L from 'leaflet'
 import type { FlowEra, GeoFeature } from '../types'
 import { fetchJsonCached } from '../fetchCache'
 import { collectMainstemPts, lineMidpoint, sideOfMainstem } from '../sideOfChannel'
+import { gageMarkerStyle, gageRoleFromProps, gageRoleLabel } from './gageRoles'
 
 export interface StaticLayers {
   groups: Record<string, L.LayerGroup>
@@ -59,7 +60,6 @@ export async function loadStaticLayers(
   reaches: GeoFeature[],
   callbacks: {
     onFeatureClick: (feature: GeoFeature, group: string) => void
-    onReachSelect: (reachId: string) => void
   },
   opts: { deferHeavy?: boolean } = { deferHeavy: true },
 ): Promise<StaticLayers> {
@@ -87,7 +87,7 @@ export async function loadStaticLayers(
   let riparianLayer: L.GeoJSON | null = null
   let canalsLoaded = false
   let riparianLoaded = false
-  let currentEra: FlowEra = 'historical'
+  let currentEra: FlowEra = 'recent'
 
   const loadCanals = async () => {
     if (canalsLoaded) return
@@ -163,20 +163,18 @@ export async function loadStaticLayers(
 
   if (gages) {
     add('gages', L.geoJSON(gages, {
-      pointToLayer: (_f: any, latlng) =>
-        L.circleMarker(latlng, {
-          pane: 'gagePane',
-          radius: 7,
-          color: '#dc2626',
-          fillColor: '#dc2626',
-          fillOpacity: 0.9,
-          weight: 1.5,
-        }),
+      pointToLayer: (f: any, latlng) => {
+        const p = f?.properties || {}
+        const role = gageRoleFromProps(p.site_no, p)
+        return L.circleMarker(latlng, { pane: 'gagePane', ...gageMarkerStyle(role) })
+      },
       onEachFeature: (feature, lyr) => {
         const p = feature.properties || {}
+        const role = gageRoleFromProps(p.site_no, p)
         let html = `<strong>${p.name || p.site_no || 'Gage'}</strong><br>`
         if (p.site_no) html += `USGS ${p.site_no}<br>`
-        if (p.historical_summary) html += `<em>${p.historical_summary}</em><br>`
+        html += `<em>${gageRoleLabel(role)}</em><br>`
+        if (p.historical_summary) html += `${p.historical_summary}<br>`
         if (p.url) html += `<a href="${p.url}" target="_blank" rel="noopener">View full record at USGS NWIS</a>`
         lyr.bindPopup(html)
         lyr.on('click', () => callbacks.onFeatureClick(feature as GeoFeature, 'gages'))
@@ -192,7 +190,7 @@ export async function loadStaticLayers(
   if (mainstem) {
     if (sinks) {
       sinksLayer = L.geoJSON(sinks, {
-        style: () => sinksStyle('historical'),
+        style: () => sinksStyle(currentEra),
         onEachFeature: (feature, lyr) => {
           const p = feature.properties || {}
           const kind = p.FCODE === 46600 ? 'marsh' : 'playa'
@@ -209,7 +207,7 @@ export async function loadStaticLayers(
       add('flowExtent', sinksLayer)
     }
     mainstemLayer = L.geoJSON(mainstem, {
-      style: (f: any) => mainstemStyle(f?.properties?.reach || 'above-moore', 'historical'),
+      style: (f: any) => mainstemStyle(f?.properties?.reach || 'above-moore', currentEra),
       onEachFeature: (feature, lyr) => {
         const below = feature.properties?.reach === 'below-moore'
         lyr.bindTooltip(
@@ -260,9 +258,9 @@ export async function loadStaticLayers(
         lyr.bindPopup(
           `<strong>${p.name}</strong><br>${p.description || ''}<br>` +
           `<small>Source: ${p.source || ''}</small><br>` +
-          `<em>Click to focus PODs at/downstream of this reach.</em>`,
+          `<em>WD34 admin reach (NHD / district description).</em>`,
         )
-        lyr.on('click', () => callbacks.onReachSelect(p.reach_id || ''))
+        lyr.on('click', () => callbacks.onFeatureClick(feature as GeoFeature, 'reaches'))
       },
     }))
   }

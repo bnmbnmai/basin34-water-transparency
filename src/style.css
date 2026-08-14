@@ -407,9 +407,9 @@ main {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #faf5ff;
-  color: #6b21a8;
-  border: 1.5px solid #a855f7;
+  background: #ecfeff;
+  color: #155e75;
+  border: 1.5px solid #22d3ee;
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 0.75rem;
@@ -426,7 +426,7 @@ main {
 #selection-banner button {
   border: none;
   background: none;
-  color: #7c3aed;
+  color: #0e7490;
   cursor: pointer;
   font-size: 0.7rem;
   font-weight: 700;
@@ -434,6 +434,27 @@ main {
 }
 #selection-banner button:hover {
   text-decoration: underline;
+}
+
+.pod-focus-label {
+  background: #ecfeff !important;
+  color: #155e75 !important;
+  border: 2px solid #0891b2 !important;
+  border-radius: 4px !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  padding: 3px 8px !important;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.4);
+  white-space: nowrap;
+}
+.pod-focus-label::before {
+  border-top-color: #0891b2 !important;
+}
+#details-content tr.is-focused-right td {
+  background: #ecfeff;
+}
+#details-content tr.is-focused-right td:first-child {
+  box-shadow: inset 3px 0 0 #0891b2;
 }
 
 .basin-pod-star {
@@ -453,7 +474,7 @@ main {
   height: 180%;
   margin-left: -90%;
   margin-top: -90%;
-  border: 2px solid #c084fc;
+  border: 2px solid #22d3ee;
   border-radius: 50%;
   pointer-events: none;
   animation: basin-pod-ring 1.5s ease-out 4;
@@ -468,77 +489,6 @@ main {
     opacity: 0.85;
     transform: scale(1);
   }
-}
-
-/* Timeline bar (development through time) */
-#timeline-bar {
-  position: absolute;
-  bottom: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-  width: 384px;
-  max-width: calc(100% - 20px);
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 12px;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.3);
-  font-size: 0.75rem;
-}
-#timeline-bar.hidden {
-  display: none;
-}
-#timeline-chart-wrap {
-  color: var(--text-muted);
-}
-#timeline-cursor {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 0;
-  border-left: 1.5px solid #dc2626;
-  pointer-events: none;
-}
-.timeline-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-}
-.timeline-controls input[type='range'] {
-  flex: 1;
-  accent-color: var(--accent);
-}
-#timeline-play,
-#timeline-close {
-  border: 1px solid var(--border);
-  background: none;
-  color: var(--text);
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.7rem;
-  padding: 2px 7px;
-}
-#timeline-play:hover,
-#timeline-close:hover {
-  background: var(--border);
-}
-#timeline-year {
-  font-weight: 700;
-  font-size: 0.95rem;
-  min-width: 38px;
-  text-align: center;
-}
-#timeline-stats {
-  color: var(--text-muted);
-  font-size: 0.65rem;
-  white-space: nowrap;
-}
-.timeline-hint {
-  margin-top: 3px;
-  font-size: 0.6rem;
-  color: var(--text-muted);
 }
 
 /* First-load progress overlay */
@@ -858,14 +808,6 @@ main {
     padding: 0.45rem 0.65rem;
   }
 
-  #timeline-bar {
-    bottom: calc(var(--sheet-peek) + 8px);
-    width: calc(100% - 16px);
-  }
-  body.sheet-expanded #timeline-bar {
-    bottom: calc(min(72vh, 560px) + 8px);
-  }
-
   .sheet-handle {
     display: flex;
     flex-direction: column;
@@ -946,10 +888,8 @@ main {
   #guide-start-btn,
   #dry-reach-btn,
   #moved-farther-btn,
-  #conjunctive-btn,
   #appropriation-btn,
   #river-shrink-btn,
-  #timeline-btn,
   #reset-all {
     min-height: 40px;
   }
@@ -1118,6 +1058,71 @@ main {
 }
 #owner-summary {
   font-size: 0.7rem;
+  max-height: 18rem;
+  overflow: auto;
+}
+.owner-rights-hint {
+  margin: 4px 0 2px;
+  color: var(--text-muted);
+  font-size: 0.62rem;
+  line-height: 1.3;
+}
+.owner-show-all {
+  display: block;
+  width: 100%;
+  margin: 2px 0 4px;
+  padding: 2px 6px;
+  font-size: 0.62rem;
+  color: var(--accent);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+}
+.owner-show-all:hover {
+  background: var(--border);
+}
+.owner-rights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.owner-right-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  width: 100%;
+  padding: 3px 6px;
+  border: none;
+  border-left: 3px solid transparent;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.owner-right-row:hover {
+  background: var(--border);
+}
+.owner-right-row.is-selected {
+  border-left-color: #0891b2;
+  background: #ecfeff;
+}
+.owner-right-id {
+  font-weight: 700;
+  font-size: 0.68rem;
+  color: var(--text);
+}
+.owner-right-meta {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  line-height: 1.25;
+}
+.owner-rights-more {
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 0.6rem;
 }
 
 /* Named diversion markers (canal/ditch systems aggregated from POD data) */

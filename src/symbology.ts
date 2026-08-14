@@ -44,15 +44,10 @@ export function wellColor(use: string): string {
 
 // Emphasis accent colors (also used by the legend, so the two never drift)
 export const EMPHASIS_COLORS: Record<string, { stroke: string; fill: string; label: string }> = {
-  selected: { stroke: '#a855f7', fill: '#e9d5ff', label: 'Selected right(s)' },
+  selected: { stroke: '#0891b2', fill: '#ecfeff', label: 'Selected right(s)' },
   owner: { stroke: '#f59e0b', fill: '#f59e0b', label: 'Owner match' },
   senior: { stroke: '#eab308', fill: '#fef08c', label: 'Senior (pre-1950) downstream' },
-  junior: { stroke: '#f97316', fill: '#fed7aa', label: 'Post-1980 high-rate development' },
   transfer: { stroke: '#a855f7', fill: '#e9d5ff', label: 'Potential transfer (POD far from POU)' },
-  'conflict-senior': { stroke: '#eab308', fill: '#fef08c', label: 'Senior (pre-1970) downstream' },
-  'conflict-junior': { stroke: '#f97316', fill: '#fed7aa', label: 'Newer (post-1980) upstream' },
-  'conjunctive-gw': { stroke: '#7c3aed', fill: '#ddd6fe', label: 'Post-1950 groundwater development' },
-  'high-rate': { stroke: '#dc2626', fill: '#fca5a5', label: 'High diversion rate' },
 }
 
 // ---------- Sizes ----------
@@ -98,8 +93,8 @@ export function podIconSpec(rec: PodRecord, baseColor: string, emphasis: PodEmph
   switch (emphasis) {
     case 'selected':
       pulse = true
-      maxSize = 28
-      radius = Math.max(radius * 2.2, 7)
+      maxSize = 32
+      radius = Math.max(radius * 2.6, 9)
       stroke = accent.stroke
       fill = accent.fill
       fillOpacity = 0.95
@@ -113,21 +108,11 @@ export function podIconSpec(rec: PodRecord, baseColor: string, emphasis: PodEmph
       strokeWidth = 1.4
       break
     case 'senior':
-    case 'conflict-senior':
       radius = Math.max(radius * 1.45, 4)
       stroke = accent.stroke
       fill = accent.fill
       fillOpacity = 0.8
       strokeWidth = 1.6
-      break
-    case 'junior':
-    case 'conflict-junior':
-    case 'conjunctive-gw':
-      radius = Math.max(radius * 1.35, 3.8)
-      stroke = accent.stroke
-      fill = accent.fill
-      fillOpacity = 0.8
-      strokeWidth = 1.4
       break
     case 'transfer':
       radius = Math.max(radius * 1.3, 3.6)
@@ -135,13 +120,6 @@ export function podIconSpec(rec: PodRecord, baseColor: string, emphasis: PodEmph
       fill = accent.fill
       fillOpacity = 0.75
       strokeWidth = 1.4
-      break
-    case 'high-rate':
-      radius = Math.max(radius, 3.2) * 1.2
-      stroke = accent.stroke
-      fill = accent.fill
-      fillOpacity = 0.8
-      strokeWidth = 1.2
       break
     case 'subdued':
       radius *= 0.55
@@ -198,11 +176,7 @@ export function wellStyle(rec: WellRecord, emphasis: WellEmphasis): L.CircleMark
   let fillOpacity = 0.65
   if (state.wellColorMode === 'era') color = wellEraColor(rec.year)
   else if (state.wellColorMode === 'swl') color = wellSwlColor(rec.swl)
-  if (emphasis === 'junior' || emphasis === 'conjunctive-gw') {
-    radius *= 1.7
-    color = EMPHASIS_COLORS[emphasis].stroke
-    fillOpacity = 0.95
-  } else if (emphasis === 'subdued') {
+  if (emphasis === 'subdued') {
     color = '#64748b'
     fillOpacity = 0.18
   }

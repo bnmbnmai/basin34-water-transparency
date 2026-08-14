@@ -1,8 +1,11 @@
 import { DISTRICT_POU_KM2, NEW_GROUND_KM, CONFLICT_CORRIDOR_KM, TRANSFER_DIST_KM, type DataStore } from '../data'
 import type { GeoFeature, PodRecord, WellRecord } from '../types'
-import { conflictJunior, conflictSenior } from '../filters'
-import { state } from '../state'
-import { fetchAnnualMeans, fetchGageFlowHistory, fetchInstantaneousCfs, mergedYearSeries, type AnnualMean, type GageFlowHistory } from '../usgs'
+import { ACCOUNTING_METHODOLOGY, loadAccounting, type AccountingExtract } from '../accounting'
+import { gageChartsStory, gageRoleFromProps, gageRoleLabel } from '../map/gageRoles'
+import {
+  fetchDailyYear, fetchGageFlowHistory, fetchInstantaneousCfs,
+  mergedYearSeries, pickOverlayYears, type GageFlowHistory,
+} from '../usgs'
 import { enhanceCharts, seriesFromPointsWithGaps, svgChart } from './chart'
 import {
   DRY_REACH_METHODOLOGY,
@@ -16,6 +19,11 @@ import {
   listMovedFarther,
   movedFartherToCsv,
 } from '../movedFarther'
+import {
+  LOWER_VALLEY_METHODOLOGY,
+  listLowerValleySurface,
+  lowerValleyToCsv,
+} from '../lowerValley'
 import { TRANSFER_SEARCH_URL } from '../wrLinks'
 
 /** Chart width from the open inspector (map-adjacent, not a lightbox). */
@@ -25,7 +33,7 @@ function inspectorChartW(): number {
   return Math.max(240, Math.min(560, w - 28))
 }
 
-export type ReceiptKind = 'dry-reach' | 'moved-farther' | 'river-shrink' | 'conjunctive' | 'appropriation' | 'conflict' | 'lower-valley' | 'owners' | 'well-pressure' | 'accounting' | 'watchlist' | null
+export type ReceiptKind = 'dry-reach' | 'moved-farther' | 'river-shrink' | 'appropriation' | 'lower-valley' | 'owners' | 'well-pressure' | 'accounting' | 'watchlist' | null
 
 let activeReceipt: ReceiptKind = null
 let receiptReopen: (() => void) | null = null
@@ -47,6 +55,14 @@ export function isDetailsOpen(): boolean {
   return !!document.getElementById('details')?.classList.contains('open')
 }
 
+export function highlightReceiptZoomRow(wr: string) {
+  document.querySelectorAll<HTMLTableRowElement>('#details-content tr').forEach(tr => {
+    const btn = tr.querySelector<HTMLElement>('[data-zoom-wr]')
+    tr.classList.toggle('is-focused-right', !!btn && btn.dataset.zoomWr === wr)
+  })
+  document.querySelector('#details-content tr.is-focused-right')?.scrollIntoView({ block: 'nearest' })
+}
+
 /** Main-stem gages used in the Mackay → Moore → Arco step-down story (USGS NWIS coords). */
 export const FLOW_STEP_GAGES = {
   mackay: { site: '13127000', name: 'Below Mackay Reservoir', lat: 43.93916667, lon: -113.6483333 },
@@ -55,15 +71,6 @@ export const FLOW_STEP_GAGES = {
   arco: { site: '13132500', name: 'Near Arco', lat: 43.5822222, lon: -113.2705556 },
   sinks: { site: '13132565', name: 'Above Big Lost River Sinks', lat: 43.7233333, lon: -112.875 },
 } as const
-
-const EXTENT_CHAIN_SITES = new Set([
-  FLOW_STEP_GAGES.mackay.site,
-  FLOW_STEP_GAGES.moore.site,
-  FLOW_STEP_GAGES.mooreNear.site,
-  FLOW_STEP_GAGES.arco.site,
-  FLOW_STEP_GAGES.sinks.site,
-  '13132580',
-])
 
 const ZERO_CFS = 0.5
 
@@ -117,7 +124,7 @@ export function showPodDetails(rec: PodRecord, store: DataStore, opts?: { fromRe
   if (rec.year != null) html += priorityBadge(rec.year)
   if (store.transferDistKm.has(rec.wr)) html += transferBadge(store.transferDistKm.get(rec.wr)!)
   if (rec.mainstemDistKm > CONFLICT_CORRIDOR_KM) {
-    html += `<span class="badge" title="POD is ${rec.mainstemDistKm.toFixed(1)} km from the NHD Big Lost mainstem — excluded from Potential conflicts / dry-reach views">${rec.mainstemDistKm.toFixed(1)} km off Big Lost mainstem</span>`
+    html += `<span class="badge" title="POD is ${rec.mainstemDistKm.toFixed(1)} km from the NHD Big Lost mainstem — excluded from the dry-reach seniors table">${rec.mainstemDistKm.toFixed(1)} km off Big Lost mainstem</span>`
   }
   html += `<div style="margin-top:6px">`
   if (rec.owner) html += `<div><strong>Owner:</strong> ${rec.owner}</div>`
@@ -130,7 +137,7 @@ export function showPodDetails(rec: PodRecord, store: DataStore, opts?: { fromRe
   html += `</div>`
   const pouCount = (store.pousByWR.get(rec.wr) || []).length
   if (pouCount > 0) {
-    html += `<div style="margin-top:4px;font-size:0.85em">${pouCount} Place of Use polygon${pouCount > 1 ? 's' : ''} — purple outline + dashed line on map.</div>`
+    html += `<div style="margin-top:4px;font-size:0.85em">${pouCount} Place of Use polygon${pouCount > 1 ? 's' : ''} — cyan outline + dashed line on map.</div>`
     html += `<button class="zoom-btn" data-zoom-wr="${rec.wr}">Zoom to right (POD + place of use)</button>`
   }
   if (p.WRReport) html += `<div style="margin-top:4px"><a href="${p.WRReport}" target="_blank" rel="noopener">Official Water Right Report →</a></div>`
@@ -203,29 +210,40 @@ export function showPouGroupDetails(wrs: Set<string>, clicked: GeoFeature, store
     if (p.WRReport) html += ` <a href="${p.WRReport}" target="_blank" rel="noopener">Full report →</a>`
     html += `</div></div>`
   }
-  html += `${FOOT}Dashed purple lines connect this field to its point(s) of diversion. Click the map background or press Esc to clear.</div>`
+  html += `${FOOT}Dashed cyan lines connect this field to its point(s) of diversion. Click the map background or press Esc to clear.</div>`
   open(html)
 }
 
-/** Gage details: live instantaneous CFS (when available) + annual flow-history chart. */
+/** Gage details: live CFS + role-based chart (or redirect to river shrink). */
 export function showGageDetails(feature: GeoFeature) {
   const p = feature.properties || {}
+  const role = gageRoleFromProps(p.site_no, p)
   let html = `<h3 style="margin-top:0">${p.name || 'Stream gage'}</h3>`
-  if (p.site_no) html += `<div class="badge">USGS ${p.site_no}</div>`
+  if (p.site_no) html += `<div class="badge">USGS ${p.site_no}</div> `
+  html += `<div class="badge">${gageRoleLabel(role)}</div>`
   if (p.notes) html += `<div style="margin:6px 0;font-size:0.85em">${p.notes}</div>`
   if (p.historical_summary) html += `<div style="margin:6px 0;font-size:0.85em"><em>${p.historical_summary}</em></div>`
-  html += `<div id="gage-live" style="margin:8px 0;padding:8px 10px;border-left:3px solid #0ea5e9;background:rgba(14,165,233,0.08);font-size:0.9em">Loading current flow…</div>`
-  html += `<div id="gage-chart" style="margin:8px 0;font-size:0.8em;color:var(--text-muted)">Loading annual flow history from USGS NWIS…</div>`
-  if (p.site_no && EXTENT_CHAIN_SITES.has(p.site_no)) {
-    html += `<button class="zoom-btn" data-show-shrink style="margin:4px 0">View step-down: Mackay → Moore → Arco</button><br>`
+
+  if (gageChartsStory(role)) {
+    html += `<div id="gage-live" style="margin:8px 0;padding:8px 10px;border-left:3px solid #0ea5e9;background:rgba(14,165,233,0.08);font-size:0.9em">Loading current flow…</div>`
+    html += `<div id="gage-chart" style="margin:8px 0;font-size:0.8em;color:var(--text-muted)">Loading days-with-flow from USGS NWIS…</div>`
+  } else {
+    html += `<div style="margin:8px 0;padding:8px 10px;border-left:3px solid #d97706;background:rgba(217,119,06,0.08);font-size:0.85em">`
+    if (role === 'archive') {
+      html += `<strong>Record ends 2018 — gage discontinued.</strong> This site is a historical waypoint (water sometimes reached the sinks limb), not a current hydrograph.`
+    } else {
+      html += `<strong>No useful annual discharge series here.</strong> NWIS has a one-year statistic, stage-only, or no public 00060 record. This pin is geography — the story chart is river shrink.`
+    }
+    html += `</div>`
   }
+  html += `<button class="zoom-btn" data-show-shrink style="margin:4px 0">Open river shrink: Mackay → Moore → Arco</button><br>`
   if (p.url) html += `<a href="${p.url}" target="_blank" rel="noopener">Open full USGS page →</a>`
-  html += `${FOOT}Current flow is the latest USGS NWIS instantaneous discharge (00060) when the site reports it. Annual chart uses approved calendar-year means. Neutral visualization only.</div>`
+  html += `${FOOT}Gages are waypoints. Days-with-flow (not calendar-year mean) is the lead series so a two-week pulse does not look like year-round water. Neutral visualization only.</div>`
   open(html, { wide: true, heading: p.name || 'Stream gage', pinned: false })
 
-  if (!p.site_no) {
+  if (!gageChartsStory(role) || !p.site_no) {
     const live = document.getElementById('gage-live')
-    if (live) live.textContent = 'No USGS site number on this gage.'
+    if (live && !p.site_no) live.textContent = 'No USGS site number on this gage.'
     return
   }
 
@@ -234,7 +252,7 @@ export function showGageDetails(feature: GeoFeature) {
       const el = document.getElementById('gage-live')
       if (!el) return
       if (!iv) {
-        el.innerHTML = `No instantaneous discharge reported right now — check the <a href="${p.url || `https://waterdata.usgs.gov/nwis/uv?site_no=${p.site_no}`}" target="_blank" rel="noopener">USGS page</a> or the annual chart below.`
+        el.innerHTML = `No instantaneous discharge reported right now — check the <a href="${p.url || `https://waterdata.usgs.gov/nwis/uv?site_no=${p.site_no}`}" target="_blank" rel="noopener">USGS page</a> or the chart below.`
         return
       }
       const when = iv.dateTime
@@ -253,7 +271,7 @@ export function showGageDetails(feature: GeoFeature) {
     })
 
   fetchGageFlowHistory(p.site_no)
-    .then(history => renderGageChart(p.site_no, history, p))
+    .then(history => renderGageChart(role, history))
     .catch(() => {
       const el = document.getElementById('gage-chart')
       if (el) el.innerHTML = `Could not load NWIS statistics right now — <a href="${p.url || `https://waterdata.usgs.gov/nwis/uv?site_no=${p.site_no}`}" target="_blank" rel="noopener">view on USGS</a>.`
@@ -261,9 +279,8 @@ export function showGageDetails(feature: GeoFeature) {
 }
 
 function renderGageChart(
-  _siteNo: string,
+  role: ReturnType<typeof gageRoleFromProps>,
   history: GageFlowHistory,
-  props?: GeoFeature['properties'],
 ) {
   const el = document.getElementById('gage-chart')
   if (!el) return
@@ -274,180 +291,82 @@ function renderGageChart(
     el.style.color = 'inherit'
     el.innerHTML =
       `<div style="font-size:0.85rem;padding:6px 10px;border-left:3px solid #d97706;background:rgba(217,119,6,0.08)">` +
-      `<strong style="color:#b45309">No annual flow statistics in USGS NWIS for this site.</strong> ` +
-      `The gage may report stage only, have a very short record, or use a different parameter. ` +
-      (props?.notes ? `${props.notes} ` : '') +
-      `</div>` +
-      (props?.historical_summary
-        ? `<div style="font-size:0.85rem;margin-top:6px"><em>${props.historical_summary}</em></div>`
-        : '')
+      `<strong style="color:#b45309">No daily or annual discharge in USGS NWIS for this site.</strong> ` +
+      `Open river shrink for the Mackay → Moore → Arco record.` +
+      `</div>`
     return
   }
 
   const firstY = series[0].year
   const lastY = series[series.length - 1].year
   const discontinued = lastY < currentYear - 2
-  const gapYears = series.some((d, i) => i > 0 && d.year - series[i - 1].year > 2)
   const sparse = series.length < 5
-
   const zeroYears = series.filter(d => d.cfs <= ZERO_CFS)
-  const zeroPct = Math.round((zeroYears.length / series.length) * 100)
-  const peak = series.reduce((best, d) => (d.cfs > best.cfs ? d : best), series[0])
-  const lastPt = series[series.length - 1]
-  const lossFromPeak = peak.cfs > 0 ? ((peak.cfs - lastPt.cfs) / peak.cfs) * 100 : 0
-
-  // First vs final period of record (adapt window to short records).
-  const n = Math.max(1, Math.min(5, Math.floor(series.length / 2), series.length))
-  const earlySlice = series.slice(0, n)
-  const lateSlice = series.slice(-n)
-  const earlyYears = `${earlySlice[0].year}${earlySlice.length > 1 ? `–${earlySlice[earlySlice.length - 1].year}` : ''}`
-  const lateYears = `${lateSlice[0].year}${lateSlice.length > 1 ? `–${lateSlice[lateSlice.length - 1].year}` : ''}`
-  const mean = (xs: typeof series) => xs.reduce((s, d) => s + d.cfs, 0) / xs.length
-  const earlyMean = mean(earlySlice)
-  const lateMean = mean(lateSlice)
-  const periodPct = earlyMean > 0 ? ((lateMean - earlyMean) / earlyMean) * 100 : 0
+  const daysSeries = series.filter(d => d.daysWithFlow != null)
+  const irrigSeries = series.filter(d => d.irrigationDaysWithFlow != null)
 
   let html = ''
-
-  if (sparse) {
-    html += `<div style="font-size:0.85rem;margin-bottom:4px;color:var(--text-muted)">` +
-      `Short record — only <strong>${series.length}</strong> year${series.length === 1 ? '' : 's'} with flow statistics ` +
-      `(${firstY}${series.length > 1 ? `–${lastY}` : ''}). Chart shows all available data.</div>`
-  }
-
-  if (discontinued || zeroPct >= 40 || lastPt.cfs <= ZERO_CFS) {
-    html += `<div style="font-size:0.85rem;margin-bottom:4px;padding:4px 8px;border-left:3px solid #dc2626;background:rgba(220,38,38,0.08)">` +
-      `<strong style="color:#dc2626">${zeroYears.length} of ${series.length} years (${zeroPct}%) had zero annual mean flow</strong>` +
-      (discontinued ? ` — gage discontinued, record ends <strong>${lastY}</strong>.` : '.') +
-      (peak.cfs > 0 && lastPt.cfs < peak.cfs
-        ? ` Peak year ${peak.year} (${peak.cfs.toFixed(0)} cfs) → final year ${lastPt.cfs.toFixed(1)} cfs` +
-          ` (<strong>${lossFromPeak.toFixed(0)}% loss</strong> from peak to end of record).`
-        : '') +
-      (lastPt.daysWithFlow != null && lastPt.daysWithData
-        ? ` Final year ${lastY}: flow on <strong>${lastPt.daysWithFlow} of ${lastPt.daysWithData} days</strong> only` +
-          ` (calendar mean ${lastPt.cfs.toFixed(1)} cfs — brief pulse, not sustained flow).`
-        : '') +
+  if (role === 'remnant') {
+    const zeroPct = Math.round((zeroYears.length / series.length) * 100)
+    html += `<div style="font-size:0.85rem;margin-bottom:6px;padding:4px 8px;border-left:3px solid #dc2626;background:rgba(220,38,38,0.08)">` +
+      `<strong style="color:#dc2626">${zeroYears.length} of ${series.length} years (${zeroPct}%) had a near-zero annual mean</strong> ` +
+      `(${firstY}–${lastY}). Days-with-flow below is the honest series — a brief pulse still plots as a few days, not “a little water all year.”` +
       `</div>`
-  } else if (series.length >= 2) {
-    const declineColor = periodPct < 0 ? '#dc2626' : '#16a34a'
-    html += `<div style="font-size:0.85rem;color:var(--text)"><strong style="color:${declineColor}">${periodPct < 0 ? '▼' : '▲'} ${Math.abs(periodPct).toFixed(0)}%</strong> ` +
-      `mean ${lateYears} (${lateMean.toFixed(0)} cfs) vs ${earlyYears} (${earlyMean.toFixed(0)} cfs)</div>`
+  } else if (role === 'terminus' || sparse) {
+    html += `<div style="font-size:0.85rem;margin-bottom:4px;color:var(--text-muted)">` +
+      `${sparse ? `Short record — ${series.length} year${series.length === 1 ? '' : 's'} (${firstY}–${lastY}). ` : ''}` +
+      `This is the terminus gage: days-with-flow shows when surface water still passed Moore, not a long annual-mean story.` +
+      `</div>`
   } else {
-    html += `<div style="font-size:0.85rem;color:var(--text)">Single year of record: <strong>${firstY}</strong> — ${series[0].cfs.toFixed(1)} cfs annual mean.</div>`
+    html += `<div style="font-size:0.85rem;margin-bottom:4px;color:var(--text-muted)">` +
+      `Mackay is basin yield. Days-with-flow and irrigation-season (Apr–Oct) days sit above calendar-year mean so wet pulses are not mistaken for sustained flow.` +
+      `</div>`
   }
-
-  if (discontinued && series.length >= 2) {
+  if (discontinued) {
     html += `<div style="font-size:0.85rem;margin:4px 0;padding:4px 8px;border-left:3px solid #d97706;background:rgba(217,119,6,0.08)">` +
-      `<strong style="color:#b45309">Record ends ${lastY} — gage discontinued.</strong> ` +
-      `Comparisons use the first and final ${n}-year period(s) of the record, not calendar "recent" years.</div>`
+      `<strong style="color:#b45309">Record ends ${lastY} — gage discontinued.</strong></div>`
   }
 
-  if (gapYears) {
-    html += `<div style="font-size:0.85rem;margin:4px 0;color:var(--text-muted)">` +
-      `Multi-year gaps in the record — lines break where years are missing (dry periods are not drawn as false ramps).</div>`
+  if (daysSeries.length) {
+    html += svgChart({
+      width: inspectorChartW(),
+      height: role === 'remnant' ? 260 : 220,
+      series: [
+        ...seriesFromPointsWithGaps(
+          daysSeries.map(d => ({ x: d.year, y: d.daysWithFlow! })),
+          { color: '#0ea5e9', label: 'days with flow', kind: 'line', width: 2 },
+        ),
+        ...(irrigSeries.length
+          ? seriesFromPointsWithGaps(
+            irrigSeries.map(d => ({ x: d.year, y: d.irrigationDaysWithFlow! })),
+            { color: '#c2410c', label: 'Apr–Oct days with flow', kind: 'line' },
+          )
+          : []),
+      ],
+      yLabel: 'days',
+      yMax: 366,
+    })
   }
 
-  const chartSeries = seriesFromPointsWithGaps(
-    series.map(d => ({ x: d.year, y: d.cfs })),
-    {
-      color: '#0ea5e9',
-      label: `flow ${firstY}–${lastY}${discontinued ? ' (discontinued)' : ''}`,
-      kind: 'line',
-      width: 1.8,
-    },
-  )
-
-  const refLines = series.length >= 2 && (earlyMean !== lateMean || earlySlice[0].year !== lateSlice[0].year)
-    ? [
-        { y: earlyMean, color: '#16a34a', label: `${earlyYears} mean ${earlyMean.toFixed(0)}` },
-        { y: lateMean, color: '#dc2626', label: `${lateYears} mean ${lateMean.toFixed(0)}` },
-      ]
-    : peak.cfs > 0
-      ? [{ y: peak.cfs, color: '#64748b', label: `peak ${peak.year} ${peak.cfs.toFixed(0)} cfs` }]
-      : []
-
+  html += `<p style="font-size:0.75em;color:var(--text-muted);margin:8px 0 4px">Calendar-year mean (secondary — a two-week pulse still averages near zero).</p>`
   html += svgChart({
     width: inspectorChartW(),
-    height: 280,
-    series: chartSeries,
-    refLines,
-    markers: [
-      ...zeroYears.map(d => ({
-        x: d.year,
-        y: d.cfs,
-        color: '#dc2626',
-        title: `${d.year}: ${d.cfs} cfs${d.daysWithFlow != null ? ` — flow on ${d.daysWithFlow}/${d.daysWithData} days` : ''}`,
-      })),
-      ...(series.length === 1 ? [{ x: series[0].year, y: series[0].cfs, color: '#0ea5e9', title: `${series[0].year}: ${series[0].cfs} cfs` }] : []),
-    ],
+    height: 160,
+    series: seriesFromPointsWithGaps(
+      series.map(d => ({ x: d.year, y: d.cfs })),
+      { color: '#64748b', label: `annual mean ${firstY}–${lastY}`, kind: 'area' },
+    ),
+    markers: zeroYears.map(d => ({
+      x: d.year,
+      y: d.cfs,
+      color: '#dc2626',
+      title: `${d.year}: ${d.cfs} cfs${d.daysWithFlow != null ? ` — flow on ${d.daysWithFlow}/${d.daysWithData} days` : ''}`,
+    })),
     yLabel: 'cfs (calendar-year mean)',
   })
   el.innerHTML = html
   el.style.color = 'inherit'
   enhanceCharts(el)
-}
-
-/** Ranked list of on-corridor senior-downstream vs junior-upstream rights. */
-export function showConflictsOverview(store: DataStore) {
-  const senior = new Map<string, PodRecord>()
-  const junior = new Map<string, PodRecord>()
-  let excluded = 0
-  for (const rec of store.pods) {
-    if (rec.year == null) continue
-    const down = rec.lat < 43.62
-    const wouldMatchOld =
-      (rec.year < 1970 && down) || (rec.year >= 1980 && !down)
-    if (wouldMatchOld && rec.mainstemDistKm > CONFLICT_CORRIDOR_KM) excluded++
-    if (conflictSenior(rec, state, store) && !senior.has(rec.wr)) senior.set(rec.wr, rec)
-    if (conflictJunior(rec, state, store) && !junior.has(rec.wr)) junior.set(rec.wr, rec)
-  }
-
-  const byRate = (a: PodRecord, b: PodRecord) => b.rate - a.rate || (a.year ?? 9999) - (b.year ?? 9999)
-  const seniorList = [...senior.values()].sort(byRate)
-  const juniorList = [...junior.values()].sort(byRate)
-
-  let html = `<h3 style="margin-top:0">Potential conflicts (river corridor)</h3>`
-  html += `<div style="font-size:0.85em;margin-bottom:6px">` +
-    `Senior (pre-1970) rights on the valley-floor river path downstream vs newer (post-1980) upstream development — ` +
-    `POD within <strong>${CONFLICT_CORRIDOR_KM} km</strong> of the NHD Big Lost mainstem (tributary wetlands such as Antelope Creek are excluded). ` +
-    `Mountain springs and tributary PODs far from the channel are excluded (${excluded} PODs dropped from the old latitude-only rule).</div>`
-
-  html += `<div style="font-size:0.85em;margin:8px 0"><strong style="color:#eab308">Senior downstream</strong> — ${seniorList.length} rights</div>`
-  for (const rec of seniorList.slice(0, 15)) {
-    html += conflictCard(rec)
-  }
-  if (seniorList.length > 15) {
-    html += `<div style="font-size:0.75em;color:var(--text-muted)">Top 15 of ${seniorList.length} by max diversion rate.</div>`
-  }
-
-  html += `<div style="font-size:0.85em;margin:12px 0 8px"><strong style="color:#f97316">Newer upstream</strong> — ${juniorList.length} rights</div>`
-  for (const rec of juniorList.slice(0, 15)) {
-    html += conflictCard(rec)
-  }
-  if (juniorList.length > 15) {
-    html += `<div style="font-size:0.75em;color:var(--text-muted)">Top 15 of ${juniorList.length} by max diversion rate.</div>`
-  }
-
-  html += `${FOOT}Geometric + priority-date proxy for rights that plausibly share the same connected surface-water path — not a legal injury finding. ` +
-    `Springs and creeks in the Lost River Range may be hydrologically separate even when filed under Basin 34. Verify with IDWR reports and WD34 accounting.</div>`
-  open(html, {
-    wide: true,
-    receipt: 'conflict',
-    heading: 'Potential conflicts',
-    reopen: () => showConflictsOverview(store),
-  })
-}
-
-function conflictCard(rec: PodRecord): string {
-  let html = `<div class="wr-card"><div class="wr-card-head"><strong>${rec.wr}</strong>`
-  if (rec.year != null) html += priorityBadge(rec.year)
-  html += ` <span class="badge" title="Distance from POD to NHD Big Lost mainstem">${rec.mainstemDistKm.toFixed(1)} km to mainstem</span>`
-  if (rec.rate > 0) html += ` <span class="badge">${rec.rate} cfs</span>`
-  html += `</div>`
-  if (rec.owner) html += `${rec.owner}<br>`
-  if (rec.source) html += `<span style="color:var(--text-muted)">${rec.source}</span><br>`
-  html += `<button class="zoom-btn" data-zoom-wr="${rec.wr}">Zoom to POD</button></div>`
-  return html
 }
 
 /** Ranked table + CSV: water moved farther (geometric POD↔POU / off-corridor proxy). */
@@ -478,7 +397,7 @@ export function showTransfersOverview(store: DataStore) {
 
   if (!rows.length) {
     html += `<p>No POD↔POU distance flags yet. Wait for Place of Use enrichment to finish, then retry.</p>`
-    open(html, { wide: true })
+    open(html, { wide: true, receipt: 'moved-farther', heading: 'Water moved farther', reopen: () => showTransfersOverview(store) })
     return
   }
 
@@ -532,7 +451,7 @@ export function showTransfersOverview(store: DataStore) {
     `IDWR serves current POU geometry only. Original (pre-change) places of use need IDWR transfer records (linked from each right’s report). ` +
     `Threshold: &gt;${TRANSFER_DIST_KM} km POD↔POU; off-corridor &gt;${NEW_GROUND_KM} km.</p>`
 
-  open(html, { wide: true })
+  open(html, { wide: true, receipt: 'moved-farther', heading: 'Water moved farther', reopen: () => showTransfersOverview(store) })
 
   document.getElementById('moved-farther-csv')?.addEventListener('click', () => {
     const q = (document.getElementById('moved-farther-owner-filter') as HTMLInputElement | null)?.value.trim().toLowerCase() || ''
@@ -628,33 +547,54 @@ export async function showAppropriationPanel(store: DataStore) {
     yLabel: 'authorized cfs (cumulative)',
   })
   html += `</div>`
-  html += `<div id="appropriation-supply" style="font-size:0.8em;color:var(--text-muted);margin-top:6px">Loading measured supply at the Arco gage (USGS 13132500)…</div>`
-  html += `${FOOT}Authorized maximum rates are not the same as actual use (rights are limited by supply, priority administration, and season), but the gap between paper rights and measured flow is the standard first-order view of overappropriation. Hover the charts for per-year values. Data: IDWR PriorityDate + OverallMaxDiversionRate; USGS NWIS.</div>`
+  html += `<div id="appropriation-supply" style="font-size:0.8em;color:var(--text-muted);margin-top:6px">Loading measured yield at Mackay (USGS 13127000)…</div>`
+  html += `${FOOT}Authorized maximum rates are not the same as actual use (rights are limited by supply, priority administration, and season). Mackay is basin yield; Arco is the remnant that still arrives downstream — not a second copy of the same comparison. Data: IDWR PriorityDate + OverallMaxDiversionRate; USGS NWIS.</div>`
   open(html, { wide: true })
 
   try {
-    const flow = await fetchAnnualMeans('13132500')
+    const [mackayH, arcoH] = await Promise.all([
+      fetchGageFlowHistory(FLOW_STEP_GAGES.mackay.site),
+      fetchGageFlowHistory(FLOW_STEP_GAGES.arco.site),
+    ])
     const el = document.getElementById('appropriation-supply')
-    if (!el || flow.length === 0) return
-    const meanFlow = flow.reduce((s, d) => s + d.cfs, 0) / flow.length
-    const ratio = tot / meanFlow
+    if (!el) return
+    const mackayS = mergedYearSeries(mackayH)
+    const arcoS = mergedYearSeries(arcoH)
+    if (!mackayS.length) {
+      el.textContent = 'Could not load Mackay yield statistics right now.'
+      return
+    }
+    const mackayMean = mackayS.reduce((s, d) => s + d.cfs, 0) / mackayS.length
     el.style.color = 'inherit'
     el.innerHTML =
-      `<div style="font-size:0.85rem"><strong style="color:#dc2626">${ratio.toFixed(0)}×</strong> ` +
-      `total authorized rights (${Math.round(tot).toLocaleString()} cfs) vs the long-term mean flow at Arco ` +
-      `(${meanFlow.toFixed(0)} cfs, ${flow[0].year}–${flow[flow.length - 1].year}).</div>` +
+      `<div style="font-size:0.85rem">Paper rights vs <strong>Mackay yield</strong> (the water that exists), not vs Arco remnant. ` +
+      `Long-term Mackay mean ${mackayMean.toFixed(0)} cfs (${mackayS[0].year}–${mackayS[mackayS.length - 1].year}). ` +
+      `Authorized max is a different quantity from measured flow.</div>` +
       svgChart({
         width: inspectorChartW(),
         height: 170,
         series: [{
-          points: flow.map(d => ({ x: d.year, y: d.cfs })),
+          points: mackayS.map(d => ({ x: d.year, y: d.cfs })),
           color: '#0ea5e9',
-          label: 'annual mean flow at Arco (cfs)',
+          label: 'Mackay annual mean (cfs)',
           kind: 'area',
         }],
-        refLines: [{ y: meanFlow, color: '#64748b', label: `mean ${meanFlow.toFixed(0)} cfs` }],
+        refLines: [{ y: mackayMean, color: '#64748b', label: `Mackay mean ${mackayMean.toFixed(0)}` }],
         yLabel: 'cfs',
-      })
+      }) +
+      (arcoS.length
+        ? `<p style="font-size:0.8em;margin:10px 0 4px">What still arrives at Arco (days with flow — remnant, not supply):</p>` +
+          svgChart({
+            width: inspectorChartW(),
+            height: 150,
+            series: seriesFromPointsWithGaps(
+              arcoS.filter(d => d.daysWithFlow != null).map(d => ({ x: d.year, y: d.daysWithFlow! })),
+              { color: '#dc2626', label: 'Arco days with flow', kind: 'line', width: 1.8 },
+            ),
+            yLabel: 'days',
+            yMax: 366,
+          })
+        : '')
     enhanceCharts(el)
   } catch {
     const el = document.getElementById('appropriation-supply')
@@ -667,9 +607,9 @@ export async function showReachLossPanel() {
   const { mackay, moore, arco } = FLOW_STEP_GAGES
 
   let html = `<h3 style="margin-top:0">River shrink: Mackay → Moore → Arco</h3>`
-  html += `<div style="font-size:0.85em;margin-bottom:6px">Full historical records from USGS NWIS — calendar-year means from daily values where needed ` +
-    `(Moore gage ${moore.site} daily data from 2019; published annual stats only from 2020). ` +
-    `The step-down shows where flow disappears: most loss occurs before Arco; the Arco gage often reads zero in recent years.</div>`
+  html += `<div style="font-size:0.85em;margin-bottom:6px">Days-with-flow at Arco vs yield at Mackay is the honest shrink story — calendar-year mean hides brief pulses. ` +
+    `Moore below diversion has a short daily record (2019+). This-season WD34 accounting (below-Moore delivery) sits at the bottom.` +
+    `</div>`
   html += `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;font-size:0.75em">` +
     `<button class="zoom-btn" data-zoom-gage="${mackay.site}">Zoom: Mackay</button>` +
     `<button class="zoom-btn" data-zoom-gage="${moore.site}">Zoom: Moore div</button>` +
@@ -677,8 +617,9 @@ export async function showReachLossPanel() {
     `<button class="zoom-btn" data-zoom-gage="${FLOW_STEP_GAGES.sinks.site}">Zoom: Sinks (Howe)</button>` +
     `</div>`
   html += `<div id="shrink-chart" style="font-size:0.8em;color:var(--text-muted)">Loading full gage histories from USGS NWIS (daily + annual)…</div>`
-  html += `${FOOT}Calendar-year mean cfs (daily values averaged over all days, dry days = 0). ` +
-    `Reach % = downstream ÷ Mackay that year. Lines break at multi-year gaps so missing years are not drawn as false ramps. Neutral mass-balance view.</div>`
+  html += `<div id="shrink-overlay"></div>`
+  html += `<div id="shrink-accounting"></div>`
+  html += `${FOOT}Days-with-flow and irrigation-season days from USGS NWIS daily values. Calendar-year mean is secondary. WD34 figures are as published in the storage-results workbook — not a shutoff roster. Neutral mass-balance view.</div>`
   open(html, { wide: true })
 
   try {
@@ -826,93 +767,144 @@ export async function showReachLossPanel() {
         ),
         yLabel: 'cfs',
       }) +
+      svgChart({
+        width: inspectorChartW(),
+        height: 180,
+        series: [
+          ...seriesFromPointsWithGaps(
+            mackayS.filter(d => d.daysWithFlow != null).map(d => ({ x: d.year, y: d.daysWithFlow! })),
+            { color: '#0ea5e9', label: 'Mackay days with flow', kind: 'line', width: 1.8 },
+          ),
+          ...seriesFromPointsWithGaps(
+            arcoS.filter(d => d.daysWithFlow != null).map(d => ({ x: d.year, y: d.daysWithFlow! })),
+            { color: '#dc2626', label: 'Arco days with flow', kind: 'line', width: 2 },
+          ),
+        ],
+        yLabel: 'days with flow',
+        yMax: 366,
+      }) +
       `<div style="font-size:0.75rem;color:var(--text-muted);margin-top:6px">` +
       `Historic terminus: USGS ${FLOW_STEP_GAGES.sinks.site} above the sinks near Howe (discontinued 2018). ` +
       `That gage was dry most years; its final published year (2018) had flow on only ~94 days (Apr–Jul) — see that gage for detail.</div>`
     enhanceCharts(el)
+    void fillShrinkOverlay(mackayS, arcoS)
+    void fillShrinkAccounting()
   } catch {
     const el = document.getElementById('shrink-chart')
     if (el) el.textContent = 'Could not load USGS flow statistics right now.'
   }
 }
 
-/** Conjunctive management: GW development growth vs. measured surface supply. */
-export async function showConjunctivePanel(store: DataStore) {
-  // Cumulative groundwater authorized cfs by priority year (one rate per right)
-  const gwRights: Array<{ year: number; rate: number }> = []
-  store.podsByWR.forEach(pods => {
-    const r = pods[0]
-    if (r.isGW && r.year != null) gwRights.push({ year: r.year, rate: r.rate })
-  })
-  gwRights.sort((a, b) => a.year - b.year)
-  const cumGwCfs: { x: number; y: number }[] = []
-  let gwTot = 0
-  for (const r of gwRights) cumGwCfs.push({ x: r.year, y: gwTot += r.rate })
-
-  // Cumulative irrigation wells by construction year
-  const wellYears = store.wells
-    .filter(w => w.year != null && w.use.includes('IRRIG'))
-    .map(w => w.year!)
-    .sort((a, b) => a - b)
-  const cumWells = wellYears.map((y, i) => ({ x: y, y: i + 1 }))
-
-  const post1950Rights = gwRights.filter(r => r.year >= 1950)
-  const post1950Cfs = post1950Rights.reduce((s, r) => s + r.rate, 0)
-  const post1950Wells = wellYears.filter(y => y >= 1950).length
-
-  let html = `<h3 style="margin-top:0">Conjunctive management view</h3>`
-  html += `<div style="font-size:0.85em;margin-bottom:4px">Groundwater and the river are one connected supply here. Since 1950, ` +
-    `<strong>${post1950Rights.length.toLocaleString()} groundwater rights</strong> ` +
-    `(${Math.round(post1950Cfs).toLocaleString()} cfs authorized) and ` +
-    `<strong>${post1950Wells.toLocaleString()} irrigation wells</strong> were added in Basin 34 — ` +
-    `shown in violet on the map, above the senior (pre-1950) surface rights downstream in yellow.</div>`
-  html += svgChart({
-    width: inspectorChartW(),
-    height: 210,
-    series: [
-      { points: cumGwCfs, color: '#7c3aed', label: 'cumulative GW authorized cfs', kind: 'step', width: 2 },
-      { points: cumWells, color: '#0f766e', label: 'cumulative irrigation wells (count)', kind: 'step' },
-    ],
-    yLabel: 'cumulative (cfs / well count)',
-  })
-  html += `<div id="conjunctive-supply" style="font-size:0.8em;color:var(--text-muted);margin-top:6px">Loading measured flow at the Arco gage (USGS 13132500)…</div>`
-  html += `${FOOT}GW rights from IDWR PriorityDate + OverallMaxDiversionRate; well construction years from IDWR Wells. Hover the charts for per-year values. Correlation shown for context, not causation — see USGS SIR reports for the basin's groundwater/surface-water connection studies.</div>`
-  open(html, { wide: true })
-
+async function fillShrinkOverlay(
+  mackayS: ReturnType<typeof mergedYearSeries>,
+  arcoS: ReturnType<typeof mergedYearSeries>,
+) {
+  const el = document.getElementById('shrink-overlay')
+  if (!el) return
+  const picked = pickOverlayYears(mackayS, arcoS, ZERO_CFS)
+  if (!picked) return
+  el.innerHTML = `<p style="font-size:0.8em;color:var(--text-muted)">Loading daily overlay (${picked.wetYear} vs ${picked.recentYear})…</p>`
   try {
-    const flow = await fetchAnnualMeans('13132500')
-    const el = document.getElementById('conjunctive-supply')
-    if (!el || flow.length < 6) return
-    const n = Math.max(5, Math.min(15, Math.floor(flow.length / 3)))
-    const mean = (xs: AnnualMean[]) => xs.reduce((s, d) => s + d.cfs, 0) / xs.length
-    const early = mean(flow.slice(0, n))
-    const recent = mean(flow.slice(-n))
-    const pct = ((recent - early) / early) * 100
-    el.style.color = 'inherit'
+    const [mackayWet, mackayDry, arcoWet, arcoDry] = await Promise.all([
+      fetchDailyYear(FLOW_STEP_GAGES.mackay.site, picked.wetYear),
+      fetchDailyYear(FLOW_STEP_GAGES.mackay.site, picked.recentYear),
+      fetchDailyYear(FLOW_STEP_GAGES.arco.site, picked.wetYear),
+      fetchDailyYear(FLOW_STEP_GAGES.arco.site, picked.recentYear),
+    ])
+    if (!document.getElementById('shrink-overlay')) return
+    const toPts = (days: typeof mackayWet) => days.map(d => ({ x: d.dayOfYear, y: d.cfs }))
     el.innerHTML =
-      `<div style="font-size:0.85rem">Meanwhile at Arco, downstream of the development: ` +
-      `<strong style="color:${pct < 0 ? '#dc2626' : '#16a34a'}">${pct < 0 ? '▼' : '▲'} ${Math.abs(pct).toFixed(0)}%</strong> ` +
-      `recent ${n}-yr mean (${recent.toFixed(0)} cfs) vs first ${n} yrs of record (${early.toFixed(0)} cfs).</div>` +
+      `<h3 style="margin:12px 0 4px;font-size:0.95rem">Wet year vs recent year (daily)</h3>` +
+      `<p style="font-size:0.8em;color:var(--text-muted);margin:0 0 6px">` +
+      `Auto-picked: wettest Mackay year <strong>${picked.wetYear}</strong> vs recent Arco-zero year <strong>${picked.recentYear}</strong>. ` +
+      `Same calendar axis so a pulse is visible as days, not as a tiny annual mean.</p>` +
+      `<p style="font-size:0.8em;margin:4px 0">Mackay yield</p>` +
       svgChart({
         width: inspectorChartW(),
-        height: 170,
-        series: [{
-          points: flow.map(d => ({ x: d.year, y: d.cfs })),
-          color: '#0ea5e9',
-          label: `annual mean flow at Arco ${flow[0].year}–${flow[flow.length - 1].year}`,
-          kind: 'area',
-        }],
-        refLines: [
-          { y: early, color: '#16a34a', label: `early mean ${early.toFixed(0)}` },
-          { y: recent, color: '#dc2626', label: `recent mean ${recent.toFixed(0)}` },
+        height: 160,
+        series: [
+          { points: toPts(mackayWet), color: '#0ea5e9', label: `Mackay ${picked.wetYear}`, kind: 'line', width: 1.6 },
+          { points: toPts(mackayDry), color: '#0369a1', label: `Mackay ${picked.recentYear}`, kind: 'line' },
         ],
+        xScale: 'doy',
+        yLabel: 'cfs',
+      }) +
+      `<p style="font-size:0.8em;margin:8px 0 4px">Arco remnant</p>` +
+      svgChart({
+        width: inspectorChartW(),
+        height: 160,
+        series: [
+          { points: toPts(arcoWet), color: '#f97316', label: `Arco ${picked.wetYear}`, kind: 'line', width: 1.6 },
+          { points: toPts(arcoDry), color: '#dc2626', label: `Arco ${picked.recentYear}`, kind: 'line', width: 2 },
+        ],
+        xScale: 'doy',
         yLabel: 'cfs',
       })
     enhanceCharts(el)
   } catch {
-    const el = document.getElementById('conjunctive-supply')
-    if (el) el.textContent = 'Could not load USGS flow statistics right now.'
+    el.textContent = 'Could not load daily overlay from USGS NWIS right now.'
   }
+}
+
+function accountingSeasonHtml(data: AccountingExtract, width: number): string {
+  const inflow = data.daily
+    .map((d, i) => (d.inflowCfs != null ? { x: i + 1, y: d.inflowCfs } : null))
+    .filter((p): p is { x: number; y: number } => p != null)
+  const below = data.daily
+    .map((d, i) => (d.decreeDelivery.belowMoore != null ? { x: i + 1, y: d.decreeDelivery.belowMoore } : null))
+    .filter((p): p is { x: number; y: number } => p != null)
+  const losses = data.daily
+    .map((d, i) => (d.losses.decree != null ? { x: i + 1, y: d.losses.decree } : null))
+    .filter((p): p is { x: number; y: number } => p != null)
+  const sum = (xs: Array<number | null | undefined>) => xs.reduce<number>((s, v) => s + (v || 0), 0)
+  const belowSum = sum(data.daily.map(d => d.decreeDelivery.belowMoore))
+  const lossSum = sum(data.daily.map(d => d.losses.decree))
+  const inflowSum = sum(data.daily.map(d => d.inflowCfs))
+  let html =
+    `<h3 style="margin:14px 0 4px;font-size:0.95rem">This irrigation season (WD34 workbook)</h3>` +
+    `<p style="font-size:0.8em;color:var(--text-muted)">${ACCOUNTING_METHODOLOGY}</p>` +
+    `<p style="font-size:0.85em">Season ${data.season.start} → ${data.season.end} · ${data.season.days} days. ` +
+    `Workbook: <a href="${data.workbookUrl}" target="_blank" rel="noopener">storage results XLSX</a>.</p>` +
+    `<p style="font-size:0.9em">Season totals (cfs-days, as published): inflow <strong>${inflowSum.toFixed(0)}</strong> · ` +
+    `decree losses <strong>${lossSum.toFixed(0)}</strong> · decree delivery below Moore <strong>${belowSum.toFixed(0)}</strong></p>` +
+    svgChart({
+      width,
+      height: 200,
+      series: [
+        { points: inflow, color: '#0ea5e9', label: 'inflow (cfs)', kind: 'line', width: 1.5 },
+        { points: losses, color: '#b45309', label: 'decree losses (cfs)', kind: 'line' },
+        { points: below, color: '#15803d', label: 'decree delivery below Moore (cfs)', kind: 'line', width: 2 },
+      ],
+      yLabel: 'cfs',
+    }) +
+    `<p style="font-size:0.75em;color:var(--text-muted)">X axis is day of the published irrigation season (${data.season.start} = day 1).</p>` +
+    `<details style="margin-top:8px"><summary style="cursor:pointer;font-size:0.85em">Full workbook extract (named canals)</summary>` +
+    `<p style="font-size:0.8em;color:var(--text-muted)">Labels from the IDWR workbook. Not a liner inventory.</p>` +
+    `<div style="overflow:auto;max-height:28vh"><table style="width:100%;border-collapse:collapse;font-size:0.8em">` +
+    `<thead><tr><th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Canal</th>` +
+    `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">WRA used ac-ft</th>` +
+    `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">SBW used ac-ft</th></tr></thead><tbody>`
+  for (const c of data.canals) {
+    html += `<tr><td style="padding:4px;border-bottom:1px solid var(--border)">${c.canal}</td>` +
+      `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${c.wraUsedAf != null ? c.wraUsedAf.toFixed(1) : '—'}</td>` +
+      `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${c.sbwUsedAf != null ? c.sbwUsedAf.toFixed(1) : '—'}</td></tr>`
+  }
+  html += `</tbody></table></div></details>`
+  return html
+}
+
+async function fillShrinkAccounting() {
+  const el = document.getElementById('shrink-accounting')
+  if (!el) return
+  el.innerHTML = `<p style="font-size:0.8em;color:var(--text-muted)">Loading WD34 published accounting…</p>`
+  const data = await loadAccounting()
+  if (!document.getElementById('shrink-accounting')) return
+  if (!data) {
+    el.innerHTML = `<p style="font-size:0.85em">WD34 accounting extract not loaded. Re-run <code>python3 scripts/etl/fetch_wd34_accounting.py</code>.</p>`
+    return
+  }
+  el.innerHTML = accountingSeasonHtml(data, inspectorChartW())
+  enhanceCharts(el)
 }
 
 export function showGenericDetails(feature: GeoFeature, group: string) {
@@ -948,16 +940,21 @@ function transferBadge(distKm: number): string {
 
 /** Ranked table + CSV for downstream seniors on a dry-reach proxy. */
 export function showDryReachSeniorsPanel(store: DataStore) {
-  const rows = listDryReachSeniors(store)
-  const totalCfs = rows.reduce((s, r) => s + r.rate, 0)
+  const seniorRows = listDryReachSeniors(store)
+  const laterRows = listLowerValleySurface(store)
+  const seniorCfs = seniorRows.reduce((s, r) => s + r.rate, 0)
+
   let html =
     `<h2 style="margin-top:0">Downstream seniors on a dry reach</h2>` +
     `<p style="font-size:0.85em;line-height:1.45;color:var(--text-muted)">${DRY_REACH_METHODOLOGY}</p>` +
-    `<p style="font-size:0.9em"><strong>${rows.length}</strong> rights · ` +
-    `<strong>${totalCfs.toFixed(1)}</strong> cfs combined max diversion · priority before ${DRY_REACH_SENIOR_YEAR}</p>` +
+    `<p id="dry-reach-summary" style="font-size:0.9em"><strong>${seniorRows.length}</strong> rights · ` +
+    `<strong>${seniorCfs.toFixed(1)}</strong> cfs combined max diversion · priority before ${DRY_REACH_SENIOR_YEAR}</p>` +
     `<p style="font-size:0.8em;color:var(--text-muted);margin:6px 0 0">` +
     `Owner names come straight from the IDWR extract — nothing is scrubbed. ` +
-    `Junior rights (1950+) and PODs north of Moore are outside this lens even if the same owner has them.</p>` +
+    `The default table is pre-1950 mainstem rights at/below Moore. Toggle below to include later surface irrigation on the same reach.</p>` +
+    `<label style="font-size:0.85em;display:flex;align-items:center;gap:8px;margin:10px 0">` +
+    `<input type="checkbox" id="dry-reach-include-later" /> Include later surface irrigation below Moore</label>` +
+    `<p id="dry-reach-later-note" class="hidden" style="font-size:0.8em;color:var(--text-muted)">${LOWER_VALLEY_METHODOLOGY}</p>` +
     `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0">` +
     `<button type="button" id="dry-reach-csv" class="zoom-btn">Download CSV</button>` +
     `<label style="font-size:0.8em;display:flex;align-items:center;gap:6px;flex:1;min-width:180px">` +
@@ -968,81 +965,114 @@ export function showDryReachSeniorsPanel(store: DataStore) {
     `</div>` +
     `<p id="dry-reach-filter-status" style="font-size:0.8em;color:var(--text-muted);min-height:1.2em"></p>`
 
-  if (!rows.length) {
-    html += `<p>No matching rights with current mainstem distances loaded yet. Wait for data finish, then retry.</p>`
-    open(html, { wide: true })
-    return
-  }
-
   html += `<div style="overflow:auto;max-height:55vh"><table style="width:100%;border-collapse:collapse;font-size:0.8em">` +
-    `<thead><tr>` +
-    `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">#</th>` +
-    `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Right</th>` +
-    `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Owner</th>` +
-    `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">Year</th>` +
-    `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">cfs</th>` +
-    `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Source</th>` +
-    `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)" title="Distance to NHD Big Lost mainstem">km</th>` +
-    `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)"></th>` +
-    `</tr></thead><tbody id="dry-reach-tbody">`
+    `<thead id="dry-reach-thead"></thead><tbody id="dry-reach-tbody"></tbody></table></div>` +
+    `<p id="dry-reach-truncate-note" style="font-size:0.8em;color:var(--text-muted)"></p>`
 
-  const renderRows = (list: typeof rows) => {
-    const max = 200
-    let body = ''
-    for (let i = 0; i < Math.min(list.length, max); i++) {
-      const r = list[i]
-      // Rank is position in the full (unfiltered) sort when possible
-      const rank = rows.indexOf(r) + 1
-      const src = r.source.length > 24 ? `${r.source.slice(0, 22)}…` : r.source
-      body += `<tr>` +
-        `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right;color:var(--text-muted)">${rank}</td>` +
-        `<td style="padding:4px;border-bottom:1px solid var(--border)"><code>${r.wr}</code></td>` +
-        `<td style="padding:4px;border-bottom:1px solid var(--border)">${r.owner || '—'}</td>` +
-        `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${r.year}</td>` +
-        `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${r.rate.toFixed(2)}</td>` +
-        `<td style="padding:4px;border-bottom:1px solid var(--border)" title="${r.source}">${src || '—'}</td>` +
-        `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${r.mainstemKm.toFixed(1)}</td>` +
-        `<td style="padding:4px;border-bottom:1px solid var(--border)">` +
-        `<button type="button" class="zoom-btn" data-zoom-wr="${r.wr}">Zoom</button></td>` +
-        `</tr>`
-    }
-    if (!list.length) {
-      body = `<tr><td colspan="8" style="padding:12px;color:var(--text-muted)">No rights match that owner filter under the dry-reach rules.</td></tr>`
-    }
-    return { body, truncated: list.length > max }
-  }
+  open(html, { wide: true, receipt: 'dry-reach', heading: 'Downstream seniors', reopen: () => showDryReachSeniorsPanel(store) })
 
-  const initial = renderRows(rows)
-  html += initial.body
-  html += `</tbody></table></div>`
-  html += `<p id="dry-reach-truncate-note" class="text-[0.8em]" style="font-size:0.8em;color:var(--text-muted)">${
-    initial.truncated ? `Showing top 200 of ${rows.length}. CSV includes all.` : ''
-  }</p>`
-
-  open(html, { wide: true })
-
-  document.getElementById('dry-reach-csv')?.addEventListener('click', () => {
-    const q = (document.getElementById('dry-reach-owner-filter') as HTMLInputElement | null)?.value.trim().toLowerCase() || ''
-    const exportRows = q ? rows.filter(r => r.owner.toLowerCase().includes(q)) : rows
-    downloadCsv('basin34-downstream-seniors-dry-reach.csv', dryReachSeniorsToCsv(exportRows))
-  })
-
-  const input = document.getElementById('dry-reach-owner-filter') as HTMLInputElement | null
+  const laterToggle = document.getElementById('dry-reach-include-later') as HTMLInputElement | null
+  const laterNote = document.getElementById('dry-reach-later-note')
+  const summary = document.getElementById('dry-reach-summary')
+  const thead = document.getElementById('dry-reach-thead')
   const tbody = document.getElementById('dry-reach-tbody')
   const status = document.getElementById('dry-reach-filter-status')
   const note = document.getElementById('dry-reach-truncate-note')
-  input?.addEventListener('input', () => {
-    const q = input.value.trim().toLowerCase()
-    const filtered = q ? rows.filter(r => r.owner.toLowerCase().includes(q)) : rows
-    const rendered = renderRows(filtered)
-    if (tbody) tbody.innerHTML = rendered.body
-    if (status) {
-      status.textContent = q
-        ? `${filtered.length} right${filtered.length === 1 ? '' : 's'} matching “${input.value.trim()}” (${filtered.reduce((s, r) => s + r.rate, 0).toFixed(2)} cfs)`
-        : ''
+  const ownerInput = document.getElementById('dry-reach-owner-filter') as HTMLInputElement | null
+
+  const isLater = () => !!laterToggle?.checked
+
+  const paint = () => {
+    const q = ownerInput?.value.trim().toLowerCase() || ''
+    const later = isLater()
+    laterNote?.classList.toggle('hidden', !later)
+    if (later) {
+      const all = laterRows
+      const list = q ? all.filter(r => r.owner.toLowerCase().includes(q)) : all
+      const cfs = list.reduce((s, r) => s + r.rate, 0)
+      if (summary) {
+        summary.innerHTML = `<strong>${list.length}</strong> surface irrigation rights at/below Moore · <strong>${cfs.toFixed(1)}</strong> cfs (includes post-1950 paper)`
+      }
+      if (thead) {
+        thead.innerHTML = `<tr>` +
+          `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">#</th>` +
+          `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Right</th>` +
+          `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Owner</th>` +
+          `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">Year</th>` +
+          `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">cfs</th>` +
+          `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">Arco km</th>` +
+          `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Dry channel</th>` +
+          `<th></th></tr>`
+      }
+      const max = 250
+      let body = ''
+      for (let i = 0; i < Math.min(list.length, max); i++) {
+        const r = list[i]
+        body += `<tr>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right;color:var(--text-muted)">${i + 1}</td>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border)"><code>${r.wr}</code></td>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border)">${r.owner || '—'}</td>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${r.year ?? '—'}</td>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${r.rate.toFixed(2)}</td>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${r.arcoKm.toFixed(1)}</td>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border)">${r.onDryChannel ? 'yes' : '—'}</td>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border)"><button type="button" class="zoom-btn" data-zoom-wr="${r.wr}">Zoom</button></td></tr>`
+      }
+      if (!list.length) body = `<tr><td colspan="8" style="padding:12px;color:var(--text-muted)">No matching rights.</td></tr>`
+      if (tbody) tbody.innerHTML = body
+      if (note) note.textContent = list.length > max ? `Showing top ${max} of ${list.length}. CSV includes all.` : ''
+      if (status) status.textContent = q ? `${list.length} matching “${ownerInput?.value.trim()}”` : ''
+    } else {
+      const all = seniorRows
+      const list = q ? all.filter(r => r.owner.toLowerCase().includes(q)) : all
+      const cfs = list.reduce((s, r) => s + r.rate, 0)
+      if (summary) {
+        summary.innerHTML = `<strong>${list.length}</strong> rights · <strong>${cfs.toFixed(1)}</strong> cfs combined max diversion · priority before ${DRY_REACH_SENIOR_YEAR}`
+      }
+      if (thead) {
+        thead.innerHTML = `<tr>` +
+          `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">#</th>` +
+          `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Right</th>` +
+          `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Owner</th>` +
+          `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">Year</th>` +
+          `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">cfs</th>` +
+          `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Source</th>` +
+          `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">km</th>` +
+          `<th></th></tr>`
+      }
+      const max = 200
+      let body = ''
+      for (let i = 0; i < Math.min(list.length, max); i++) {
+        const r = list[i]
+        const src = r.source.length > 24 ? `${r.source.slice(0, 22)}…` : r.source
+        body += `<tr>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right;color:var(--text-muted)">${seniorRows.indexOf(r) + 1}</td>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border)"><code>${r.wr}</code></td>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border)">${r.owner || '—'}</td>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${r.year}</td>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${r.rate.toFixed(2)}</td>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border)" title="${r.source}">${src || '—'}</td>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${r.mainstemKm.toFixed(1)}</td>` +
+          `<td style="padding:4px;border-bottom:1px solid var(--border)"><button type="button" class="zoom-btn" data-zoom-wr="${r.wr}">Zoom</button></td></tr>`
+      }
+      if (!list.length) body = `<tr><td colspan="8" style="padding:12px;color:var(--text-muted)">No rights match that owner filter under the dry-reach rules.</td></tr>`
+      if (tbody) tbody.innerHTML = body
+      if (note) note.textContent = list.length > max ? `Showing top ${max} of ${list.length}. CSV includes all.` : ''
+      if (status) status.textContent = q ? `${list.length} matching “${ownerInput?.value.trim()}” (${cfs.toFixed(2)} cfs)` : ''
     }
-    if (note) {
-      note.textContent = rendered.truncated ? `Showing top 200 of ${filtered.length}. CSV follows the filter.` : ''
+  }
+
+  document.getElementById('dry-reach-csv')?.addEventListener('click', () => {
+    const q = ownerInput?.value.trim().toLowerCase() || ''
+    if (isLater()) {
+      const list = q ? laterRows.filter(r => r.owner.toLowerCase().includes(q)) : laterRows
+      downloadCsv('basin34-surface-irrigation-below-moore.csv', lowerValleyToCsv(list))
+    } else {
+      const list = q ? seniorRows.filter(r => r.owner.toLowerCase().includes(q)) : seniorRows
+      downloadCsv('basin34-downstream-seniors-dry-reach.csv', dryReachSeniorsToCsv(list))
     }
   })
+  laterToggle?.addEventListener('change', paint)
+  ownerInput?.addEventListener('input', paint)
+  paint()
 }

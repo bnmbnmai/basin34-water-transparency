@@ -40,6 +40,8 @@ interface ChartOpts {
   yLabel?: string
   /** Clamp the y-axis (e.g. to keep one huge series from flattening the rest). */
   yMax?: number
+  /** Year ticks (default) or day-of-year (Jan/Apr/Jul/Oct). */
+  xScale?: 'year' | 'doy'
   /** Attach hover crosshair/readout data (wired by enhanceCharts). Default true. */
   interactive?: boolean
 }
@@ -101,10 +103,20 @@ export function svgChart(opts: ChartOpts): string {
     body += `<line x1="${M.left}" y1="${y}" x2="${W - M.right}" y2="${y}" stroke="currentColor" stroke-opacity="0.15"/>`
     body += `<text x="${M.left - 4}" y="${y + 3}" text-anchor="end" font-size="8" fill="currentColor" fill-opacity="0.7">${fmt(v)}</text>`
   }
-  // X labels (first / middle / last year)
-  for (const f of [0, 0.5, 1]) {
-    const v = Math.round(xMin + (xMax - xMin) * f)
-    body += `<text x="${sx(v)}" y="${H - 5}" text-anchor="middle" font-size="8" fill="currentColor" fill-opacity="0.7">${v}</text>`
+  // X labels
+  if (opts.xScale === 'doy') {
+    const ticks: Array<{ x: number; label: string }> = [
+      { x: 1, label: 'Jan' }, { x: 91, label: 'Apr' }, { x: 182, label: 'Jul' }, { x: 274, label: 'Oct' },
+    ]
+    for (const t of ticks) {
+      if (t.x < xMin - 5 || t.x > xMax + 5) continue
+      body += `<text x="${sx(t.x)}" y="${H - 5}" text-anchor="middle" font-size="8" fill="currentColor" fill-opacity="0.7">${t.label}</text>`
+    }
+  } else {
+    for (const f of [0, 0.5, 1]) {
+      const v = Math.round(xMin + (xMax - xMin) * f)
+      body += `<text x="${sx(v)}" y="${H - 5}" text-anchor="middle" font-size="8" fill="currentColor" fill-opacity="0.7">${v}</text>`
+    }
   }
 
   for (const s of opts.series) {
@@ -151,6 +163,7 @@ export function svgChart(opts: ChartOpts): string {
   if (opts.interactive !== false) {
     const payload: HoverPayload = {
       W, H, m: M, xMin, xMax, yTop,
+      xScale: opts.xScale || 'year',
       series: opts.series
         .filter(s => s.points.length)
         .map(s => ({
@@ -175,6 +188,7 @@ interface HoverPayload {
   xMin: number
   xMax: number
   yTop: number
+  xScale: 'year' | 'doy'
   series: Array<{ label: string; color: string; pts: number[][] }>
 }
 
@@ -261,8 +275,10 @@ export function enhanceCharts(root: HTMLElement) {
       cross.setAttribute('x2', String(anchorPx))
       hover.style.display = ''
 
-      const year = nearest(cfg.series[0].pts, x)[0]
-      tip.innerHTML = `<strong>${Math.round(year)}</strong><br>${rows.join('<br>')}`
+      const xHead = cfg.xScale === 'doy'
+        ? doyLabel(nearest(cfg.series[0].pts, x)[0])
+        : String(Math.round(nearest(cfg.series[0].pts, x)[0]))
+      tip.innerHTML = `<strong>${xHead}</strong><br>${rows.join('<br>')}`
       tip.style.display = 'block'
       const wrapRect = wrap.getBoundingClientRect()
       const cssX = (anchorPx * scale) + (rect.left - wrapRect.left)
@@ -276,6 +292,11 @@ export function enhanceCharts(root: HTMLElement) {
       tip.style.display = 'none'
     })
   })
+}
+
+function doyLabel(doy: number): string {
+  const d = new Date(Date.UTC(2021, 0, Math.max(1, Math.min(365, Math.round(doy)))))
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })
 }
 
 function fmt(v: number): string {

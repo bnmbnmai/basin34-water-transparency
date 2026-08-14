@@ -3,6 +3,8 @@ import 'leaflet.markercluster'
 import type { DataStore } from '../data'
 import { resolvePodEmphasis } from '../emphasis'
 import { podVisible } from '../filters'
+import { shouldClusterPods } from './clusterPolicy'
+import { podKey } from './focusRight'
 import { state } from '../state'
 import { podBaseColor, podIconSpec, podStarIcon } from '../symbology'
 import type { PodRecord } from '../types'
@@ -29,14 +31,14 @@ function podPopupHtml(rec: PodRecord): string {
 }
 
 /**
- * Manages the clustered POD layer.
- * - `rebuild()` re-filters and re-creates markers (only on filter changes,
- *   including receipt Zoom isolation).
- * - `restyle(wrs)` updates icons in place for the given rights (plain map
- *   clicks restyle only; isolation rebuilds so other stars disappear).
+ * Manages the POD layer.
+ * Clusters only the unfiltered basin view. Owner search, analysis receipts,
+ * and isolation draw individual stars so a selected right is findable.
  */
 export class PodLayer {
   private cluster: L.MarkerClusterGroup
+  private plain: L.LayerGroup
+  private clustered = true
   private markersByWR = new Map<string, L.Marker[]>()
   private recordByMarker = new Map<L.Marker, PodRecord>()
   private lastVisibleWRs = new Set<string>()
@@ -57,11 +59,11 @@ export class PodLayer {
     this.store = store
     this.onPodClick = onPodClick
     this.lite = !!opts.lite
+    this.plain = L.layerGroup()
     this.cluster = L.markerClusterGroup({
-      // Keep clusters longer on phones; unclustering 7k DivIcons kills scroll FPS.
-      disableClusteringAtZoom: this.lite ? 14 : 11,
+      disableClusteringAtZoom: this.lite ? 12 : 10,
       spiderfyOnMaxZoom: true,
-      maxClusterRadius: this.lite ? 90 : 45,
+      maxClusterRadius: this.lite ? 70 : 40,
       chunkedLoading: true,
       chunkInterval: this.lite ? 100 : 200,
       chunkDelay: 20,
@@ -70,15 +72,8 @@ export class PodLayer {
     })
   }
 
-  /**
-   * While Guide is active, keep larger clusters so basin-scale steps stay
-   * scrollable (same idea as phone lite mode).
-   */
-  setGuideMode(on: boolean) {
-    const radius = on || this.lite ? 90 : 45
-    const disableAt = on || this.lite ? 14 : 11
-    ;(this.cluster as any).options.maxClusterRadius = radius
-    ;(this.cluster as any).options.disableClusteringAtZoom = disableAt
+  /** Guide highlight steps already drop clustering; rebuild is enough. */
+  setGuideMode(_on: boolean) {
     if (this.enabled) this.rebuild()
   }
 
@@ -93,11 +88,12 @@ export class PodLayer {
 
   rebuild() {
     this.cluster.clearLayers()
+    this.plain.clearLayers()
     this.markersByWR.clear()
     this.recordByMarker.clear()
     this.lastVisibleWRs = new Set()
     if (!this.enabled) {
-      if (this.map.hasLayer(this.cluster)) this.map.removeLayer(this.cluster)
+      this.detachHosts()
       return
     }
 
@@ -109,6 +105,18 @@ export class PodLayer {
         riseOnHover: true,
       })
       marker.bindPopup(podPopupHtml(rec))
+      if (state.focusPodKey && podKey(rec) === state.focusPodKey) {
+        const bits = [rec.wr]
+        if (rec.year != null) bits.push(String(rec.year))
+        if (rec.rate) bits.push(`${rec.rate} cfs`)
+        marker.bindTooltip(bits.join(' · '), {
+          permanent: true,
+          direction: 'top',
+          offset: [0, -14],
+          className: 'pod-focus-label',
+          opacity: 1,
+        })
+      }
       marker.on('click', (e: any) => {
         L.DomEvent.stop(e) // keep the map background-click from clearing the new selection
         this.onPodClick(rec)
@@ -123,20 +131,27 @@ export class PodLayer {
         this.lastVisibleWRs.add(rec.wr)
       }
     }
+
+    this.clustered = shouldClusterPods({
+      isolateSelection: state.isolateSelection,
+      ownerHighlight: state.ownerHighlight,
+      highlightMode: state.highlightMode,
+      visibleCount: markers.length,
+    })
+    if (this.clustered) {
       this.cluster.addLayers(markers)
-    if (!this.map.hasLayer(this.cluster)) this.map.addLayer(this.cluster)
+      this.attach(this.cluster, this.plain)
+    } else {
+      for (const m of markers) this.plain.addLayer(m)
+      this.attach(this.plain, this.cluster)
+    }
   }
 
-  /**
-   * Uncluster and raise the selected right so Zoom from a receipt table
-   * actually lands on that star instead of a 200-count cluster.
-   */
+  /** Raise the selected star; do not zoom-to-cluster (that pulls the map out). */
   reveal(wr: string) {
     const markers = this.markersByWR.get(wr)
     if (!markers?.length) return
-    const m = markers[0]
-    m.setZIndexOffset(2000)
-    ;(this.cluster as any).zoomToShowLayer(m)
+    for (const m of markers) m.setZIndexOffset(2000)
   }
 
   /** Restyle only the markers for the given rights (cheap selection updates). */
@@ -157,6 +172,16 @@ export class PodLayer {
   setEnabled(on: boolean) {
     this.enabled = on
     this.rebuild()
+  }
+
+  private attach(on: L.Layer, off: L.Layer) {
+    if (this.map.hasLayer(off)) this.map.removeLayer(off)
+    if (!this.map.hasLayer(on)) this.map.addLayer(on)
+  }
+
+  private detachHosts() {
+    if (this.map.hasLayer(this.cluster)) this.map.removeLayer(this.cluster)
+    if (this.map.hasLayer(this.plain)) this.map.removeLayer(this.plain)
   }
 
   private iconFor(rec: PodRecord): L.DivIcon {

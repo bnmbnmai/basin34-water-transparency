@@ -1,15 +1,20 @@
 import type { DataStore } from '../data'
-import { epochMsToYear } from '../data'
+import { listOwnerRights, type OwnerRightRow } from './ownerRights'
+
+const LIST_CAP = 40
 
 export interface OwnerSearchCallbacks {
   onSelect: (owner: string) => void
   onClear: () => void
+  onSelectRight: (wr: string) => void
+  onShowAll: () => void
 }
 
 export function setupOwnerSearch(store: DataStore, cb: OwnerSearchCallbacks) {
   const search = document.getElementById('search') as HTMLInputElement
   const resultsDiv = document.getElementById('owner-search-results')!
   const clearBtn = document.getElementById('clear-owner-highlight')!
+  const summaryDiv = document.getElementById('owner-summary')!
 
   let debounce: ReturnType<typeof setTimeout>
   search.addEventListener('input', () => {
@@ -28,7 +33,7 @@ export function setupOwnerSearch(store: DataStore, cb: OwnerSearchCallbacks) {
         return
       }
       resultsDiv.innerHTML = list
-        .map(o => `<div class="owner-result cursor-pointer hover:bg-[var(--border)] p-0.5 rounded" data-owner="${o.replace(/"/g, '&quot;')}">${o}</div>`)
+        .map(o => `<div class="owner-result cursor-pointer hover:bg-[var(--border)] p-0.5 rounded" data-owner="${escAttr(o)}">${esc(o)}</div>`)
         .join('')
       resultsDiv.classList.remove('hidden')
       resultsDiv.querySelectorAll<HTMLElement>('.owner-result').forEach(el => {
@@ -37,8 +42,9 @@ export function setupOwnerSearch(store: DataStore, cb: OwnerSearchCallbacks) {
           resultsDiv.innerHTML = ''
           resultsDiv.classList.add('hidden')
           search.value = owner
-          updateOwnerSummary(owner, store)
+          const rights = updateOwnerSummary(owner, store)
           cb.onSelect(owner)
+          if (rights.length === 1) cb.onSelectRight(rights[0].wr)
         })
       })
     }, 180)
@@ -48,8 +54,24 @@ export function setupOwnerSearch(store: DataStore, cb: OwnerSearchCallbacks) {
     search.value = ''
     resultsDiv.innerHTML = ''
     resultsDiv.classList.add('hidden')
-    document.getElementById('owner-summary')?.classList.add('hidden')
+    summaryDiv.classList.add('hidden')
     cb.onClear()
+  })
+
+  summaryDiv.addEventListener('click', e => {
+    const t = e.target as HTMLElement
+    if (t.closest('[data-owner-show-all]')) {
+      e.preventDefault()
+      syncOwnerRightsSelection(null)
+      cb.onShowAll()
+      return
+    }
+    const row = t.closest<HTMLElement>('[data-owner-wr]')
+    if (row?.dataset.ownerWr) {
+      e.preventDefault()
+      syncOwnerRightsSelection(row.dataset.ownerWr)
+      cb.onSelectRight(row.dataset.ownerWr)
+    }
   })
 }
 
@@ -61,38 +83,62 @@ export function clearOwnerSearchUI() {
   if (res) { res.innerHTML = ''; res.classList.add('hidden') }
 }
 
-function updateOwnerSummary(term: string, store: DataStore) {
+export function syncOwnerRightsSelection(wr: string | null) {
+  document.querySelectorAll<HTMLElement>('#owner-summary [data-owner-wr]').forEach(el => {
+    el.classList.toggle('is-selected', !!wr && el.dataset.ownerWr === wr)
+  })
+}
+
+function updateOwnerSummary(term: string, store: DataStore): OwnerRightRow[] {
   const summaryDiv = document.getElementById('owner-summary')!
   const nameEl = document.getElementById('owner-name')!
   const statsEl = document.getElementById('owner-stats')!
 
+  const rights = listOwnerRights(store, term)
   const matches = store.pods.filter(r => r.ownerLc.includes(term.toLowerCase()))
-  if (!matches.length) {
+  if (!rights.length) {
     summaryDiv.classList.add('hidden')
-    return
+    return []
   }
-  const totalRate = matches.reduce((s, r) => s + r.rate, 0)
-  const bySource: Record<string, { count: number; rate: number }> = {}
-  let minY = Infinity, maxY = -Infinity
-  for (const r of matches) {
-    const s = r.source || 'Unknown'
-    bySource[s] ??= { count: 0, rate: 0 }
-    bySource[s].count++
-    bySource[s].rate += r.rate
-    const y = r.year ?? epochMsToYear(r.feature.properties.PriorityDate)
-    if (y != null) { minY = Math.min(minY, y); maxY = Math.max(maxY, y) }
-  }
+  const totalRate = rights.reduce((s, r) => s + r.rate, 0)
+  const years = rights.map(r => r.year).filter((y): y is number => y != null)
+  const minY = years.length ? Math.min(...years) : null
+  const maxY = years.length ? Math.max(...years) : null
 
-  let html = `<div><strong>${matches.length}</strong> rights • <strong>${totalRate.toFixed(1)}</strong> cfs total max rate</div>`
-  if (minY < Infinity) html += `<div>Priority: ${minY}–${maxY}</div>`
-  html += `<div class="mt-1">By source:</div><div class="pl-1 text-[9px]">`
-  Object.entries(bySource)
-    .sort((a, b) => b[1].rate - a[1].rate)
-    .slice(0, 4)
-    .forEach(([s, v]) => { html += `${s.slice(0, 24)}: ${v.count} / ${v.rate.toFixed(0)} cfs<br>` })
+  const shown = rights.slice(0, LIST_CAP)
+  let html = `<div><strong>${rights.length}</strong> right${rights.length === 1 ? '' : 's'} · <strong>${totalRate.toFixed(1)}</strong> cfs`
+  if (matches.length > rights.length) html += ` · ${matches.length} PODs`
   html += `</div>`
+  if (minY != null && maxY != null) html += `<div>Priority: ${minY}–${maxY}</div>`
+  html += `<p class="owner-rights-hint">Click a right to paint its diversion and fields (cyan). Other rights for this owner stay amber.</p>`
+  if (rights.length > 1) {
+    html += `<button type="button" class="owner-show-all" data-owner-show-all>Show all this owner's stars</button>`
+  }
+  html += `<div class="owner-rights-list">`
+  for (const row of shown) {
+    const src = (row.source || 'Unknown').slice(0, 28)
+    const yr = row.year != null ? String(row.year) : '—'
+    const pods = row.podCount > 1 ? ` · ${row.podCount} PODs` : ''
+    html += `<button type="button" class="owner-right-row" data-owner-wr="${escAttr(row.wr)}">`
+    html += `<span class="owner-right-id">${esc(row.wr)}</span>`
+    html += `<span class="owner-right-meta">${yr} · ${row.rate.toFixed(1)} cfs · ${esc(src)}${pods}</span>`
+    html += `</button>`
+  }
+  html += `</div>`
+  if (rights.length > LIST_CAP) {
+    html += `<div class="owner-rights-more">Showing ${LIST_CAP} of ${rights.length}. Pick a more specific owner name to narrow the list.</div>`
+  }
 
   nameEl.textContent = term
   statsEl.innerHTML = html
   summaryDiv.classList.remove('hidden')
+  return rights
+}
+
+function esc(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+function escAttr(s: string): string {
+  return esc(s).replace(/"/g, '&quot;')
 }

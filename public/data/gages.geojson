@@ -10,6 +10,7 @@
     {
       "type": "Feature",
       "properties": {
+        "role": "context",
         "site_no": "13120000",
         "name": "NF Big Lost River at Wild Horse NR Chilly ID",
         "type": "USGS stream",
@@ -22,6 +23,7 @@
     {
       "type": "Feature",
       "properties": {
+        "role": "yield",
         "site_no": "13127000",
         "name": "Big Lost River BL Mackay Res NR Mackay ID",
         "type": "USGS stream",
@@ -34,6 +36,7 @@
     {
       "type": "Feature",
       "properties": {
+        "role": "context",
         "site_no": "13130500",
         "name": "Big Lost River at Leslie ID",
         "type": "USGS stream",
@@ -46,6 +49,7 @@
     {
       "type": "Feature",
       "properties": {
+        "role": "terminus",
         "site_no": "13132000",
         "name": "Big Lost River NR Moore ID",
         "type": "USGS stream",
@@ -58,6 +62,7 @@
     {
       "type": "Feature",
       "properties": {
+        "role": "terminus",
         "site_no": "13132100",
         "name": "Big Lost River Below Moore Div NR Moore ID",
         "type": "USGS stream",
@@ -70,6 +75,7 @@
     {
       "type": "Feature",
       "properties": {
+        "role": "remnant",
         "site_no": "13132500",
         "name": "Big Lost River NR Arco ID",
         "type": "USGS stream",
@@ -82,6 +88,7 @@
     {
       "type": "Feature",
       "properties": {
+        "role": "archive",
         "site_no": "13132535",
         "name": "Big Lost R at Lincoln Blvd Bridge NR Atomic City ID",
         "type": "USGS stream",
@@ -94,6 +101,7 @@
     {
       "type": "Feature",
       "properties": {
+        "role": "archive",
         "site_no": "13132565",
         "name": "Big Lost River AB Big Lost River Sinks NR Howe ID",
         "type": "USGS stream",
@@ -106,6 +114,7 @@
     {
       "type": "Feature",
       "properties": {
+        "role": "context",
         "site_no": "13132580",
         "name": "Big Lost River BL Playa No.1 NR Howe ID",
         "type": "USGS stream",

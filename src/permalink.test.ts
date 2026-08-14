@@ -31,18 +31,18 @@ afterEach(() => {
 describe('applyHashToState', () => {
   it('restores analysis mode, years, selection, and map view', () => {
     window.location.hash =
-      '#m=senior-downstream&y0=1880&y1=1950&sel=34-1,34-2&v=11/43.7907/-113.3689&fe=recent'
+      '#m=senior-downstream&y0=1880&y1=1950&sel=34-1,34-2&v=11/43.7907/-113.3689&fe=historical'
     const restored = applyHashToState()
     expect(state.highlightMode).toBe('senior-downstream')
     expect(state.yearMin).toBe(1880)
     expect(state.yearMax).toBe(1950)
     expect([...state.selectedWRs]).toEqual(['34-1', '34-2'])
-    expect(state.flowEra).toBe('recent')
+    expect(state.flowEra).toBe('historical')
     expect(restored.view).toEqual({ zoom: 11, lat: 43.7907, lng: -113.3689 })
   })
 
-  it('ignores unknown highlight modes instead of writing them into state', () => {
-    window.location.hash = '#m=not-a-real-lens'
+  it('ignores dropped highlight modes instead of writing them into state', () => {
+    window.location.hash = '#m=conflict'
     applyHashToState()
     expect(state.highlightMode).toBe('none')
   })

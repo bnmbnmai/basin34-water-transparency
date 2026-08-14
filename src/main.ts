@@ -4,7 +4,8 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import './style.css'
 import L from 'leaflet'
 
-import { DISTRICT_POU_KM2, loadDataStoreLight, enrichDataStoreWithPou, pouGeomKey, type DataStore } from './data'
+import { loadDataStoreLight, enrichDataStoreWithPou, pouGeomKey, type DataStore } from './data'
+import { podKey, focusViewForRight, primaryPodForRight } from './map/focusRight'
 import { applyHashToState, restoreImageryFromHash, schedulePermalinkUpdate, setStoryStepForHash } from './permalink'
 import { preferLiteMap } from './perf'
 import { state, resetState } from './state'
@@ -16,18 +17,17 @@ import { PouLayer } from './map/pouLayer'
 import { DiversionLayer } from './map/diversionLayer'
 import { loadStaticLayers, type StaticLayers } from './map/staticLayers'
 import { renderShell } from './ui/shell'
-import { wireSidebar, populateReachSelect, syncSidebarToState, syncReachSelect, loadDataAsOf, syncImageryControls } from './ui/sidebar'
+import { wireSidebar, syncSidebarToState, loadDataAsOf, syncImageryControls } from './ui/sidebar'
 import { updateLegend } from './ui/legend'
-import { setupTimeline, type TimelineControl } from './ui/timeline'
-import { setupOwnerSearch, clearOwnerSearchUI } from './ui/ownerSearch'
+import { setupOwnerSearch, clearOwnerSearchUI, syncOwnerRightsSelection } from './ui/ownerSearch'
 import {
-  closeDetails, FLOW_STEP_GAGES, getReceiptReopen, isDetailsOpen, isDetailsPinned,
-  showAppropriationPanel, showConjunctivePanel, showConflictsOverview, showDiversionDetails,
+  closeDetails, FLOW_STEP_GAGES, getReceiptReopen, highlightReceiptZoomRow, isDetailsOpen, isDetailsPinned,
+  showAppropriationPanel, showDiversionDetails,
   showDryReachSeniorsPanel, showGageDetails, showGenericDetails, showPodDetails, showPouGroupDetails,
   showReachLossPanel, showTransfersOverview, showWellDetails,
 } from './ui/details'
 import {
-  showAccountingPanel, showLowerValleyPanel, showOwnerConcentrationPanel,
+  showOwnerConcentrationPanel,
   showWatchlistPanel, showWellPressurePanel, wireExportButtons,
 } from './ui/observerPanels'
 import { loadLocalWatchlist } from './watchlist'
@@ -52,9 +52,9 @@ let pouLayer: PouLayer
 let diversionLayer: DiversionLayer
 let staticLayers: StaticLayers
 let basemap: BasemapControl
-let timeline: TimelineControl
 let currentBasemap: Basemap = 'satellite'
 let localWatchlist: string[] = []
+let ignoreMapClickUntil = 0
 
 function updatePermalink() {
   if (map) schedulePermalinkUpdate(() => currentBasemap, map)
@@ -77,6 +77,7 @@ function setSelection(wrs: Set<string>) {
   const affected = new Set([...state.selectedWRs, ...wrs])
   const isolateOff = state.isolateSelection && wrs.size === 0
   if (isolateOff) state.isolateSelection = false
+  if (wrs.size === 0) state.focusPodKey = null
   state.selectedWRs = wrs
 
   const visible = podLayer.visibleWRs()
@@ -94,6 +95,7 @@ function setSelection(wrs: Set<string>) {
     podLayer.restyle(affected)
     pouLayer.refreshSelection()
   }
+  syncOwnerRightsSelection(wrs.size === 1 ? [...wrs][0] : null)
   updateSelectionBanner()
   updateLegendNow()
   updatePermalink()
@@ -131,12 +133,12 @@ function updateSelectionBanner() {
   if (wrs.length === 1) {
     const owner = store.podsByWR.get(wrs[0])?.[0]?.owner
     text.textContent = state.isolateSelection
-      ? `Right ${wrs[0]}${owner ? ` — ${owner}` : ''} · only this right shown`
-      : `Right ${wrs[0]}${owner ? ` — ${owner}` : ''} · purple = diversion ↔ fields`
+      ? `Right ${wrs[0]}${owner ? ` — ${owner}` : ''} · this diversion only`
+      : `Right ${wrs[0]}${owner ? ` — ${owner}` : ''} · cyan = diversion ↔ fields`
   } else {
     text.textContent = state.isolateSelection
-      ? `${wrs.length} rights isolated · purple links diversions to fields`
-      : `${wrs.length} rights share this place of use · purple links diversions to fields`
+      ? `${wrs.length} rights isolated · cyan links diversions to fields`
+      : `${wrs.length} rights share this place of use · cyan links diversions to fields`
   }
   banner.classList.remove('hidden')
 }
@@ -156,28 +158,27 @@ function onPouClick(feature: GeoFeature) {
   showPouGroupDetails(wrs, feature, store)
 }
 
-function zoomToWR(wr: string, opts: { podsOnly?: boolean } = {}) {
-  const bounds = L.latLngBounds([])
-  for (const pod of store.podsByWR.get(wr) || []) bounds.extend([pod.lat, pod.lon])
-  if (!opts.podsOnly) {
-    for (const pou of store.pousByWR.get(wr) || []) {
-      if (pou.areaKm2 >= DISTRICT_POU_KM2) continue
-      try { bounds.extend(L.geoJSON(pou.feature as any).getBounds()) } catch { /* skip bad geometry */ }
-    }
-  }
-  if (bounds.isValid()) {
-    map.fitBounds(bounds.pad(opts.podsOnly ? 0.12 : 0.2), { maxZoom: opts.podsOnly ? 16 : 15 })
-  }
+/** Center on the highest-rate POD at field scale — never a basin-wide fit. */
+function zoomToWR(wr: string) {
+  const view = focusViewForRight(store.podsByWR.get(wr) || [], store.pouCenter.get(wr))
+  if (view) map.setView([view.lat, view.lon], view.zoom, { animate: true })
+}
+
+function focusRight(wr: string, opts: { isolate: boolean; fromReceipt?: boolean }) {
+  const rec = primaryPodForRight(store.podsByWR.get(wr) || [])
+  state.isolateSelection = opts.isolate
+  state.focusPodKey = opts.isolate && rec ? podKey(rec) : null
+  ignoreMapClickUntil = Date.now() + 500
+  setSelection(new Set([wr]))
+  zoomToWR(wr)
+  podLayer.reveal(wr)
+  highlightReceiptZoomRow(wr)
+  if (!opts.fromReceipt && rec) showPodDetails(rec, store)
 }
 
 /** Zoom + select + isolate when coming from a receipt table. */
 function focusWRFromReceipt(wr: string) {
-  state.isolateSelection = true
-  setSelection(new Set([wr]))
-  zoomToWR(wr, { podsOnly: true })
-  podLayer.reveal(wr)
-  const rec = store.podsByWR.get(wr)?.[0]
-  if (rec) showPodDetails(rec, store, { fromReceipt: !!getReceiptReopen() })
+  focusRight(wr, { isolate: true, fromReceipt: true })
 }
 
 const GAGE_COORDS: Record<string, [number, number]> = {
@@ -243,13 +244,6 @@ async function bootstrap() {
   staticLayers = await loadStaticLayers(map, store.reaches, {
     onFeatureClick: (feature, group) =>
       group === 'gages' ? showGageDetails(feature) : showGenericDetails(feature, group),
-    onReachSelect: reachId => {
-      state.reachFilter = reachId
-      state.selectedWRs = new Set()
-      state.isolateSelection = false
-      syncReachSelect()
-      refreshData()
-    },
   }, { deferHeavy: true })
   staticLayers.setFlowEra(state.flowEra)
 
@@ -258,7 +252,6 @@ async function bootstrap() {
     if (el) el.checked = on
   }
 
-  populateReachSelect(store)
   wireExportButtons(store)
 
   void loadLocalWatchlist().then(wrs => {
@@ -325,11 +318,8 @@ async function bootstrap() {
       pouLayer.setVisibleWRs(podLayer.visibleWRs())
     },
     setFlowEra: era => staticLayers.setFlowEra(era),
-    // Map emphasis — primary receipts open via Insight buttons only.
-    // Conflict is Advanced-only and its ranked list is the point of that lens.
     onHighlightMode: mode => {
       if (mode === 'transfers') ensureCanalsVisible()
-      if (mode === 'conflict') showConflictsOverview(store)
     },
     onSheetChange: () => {
       requestAnimationFrame(() => map.invalidateSize())
@@ -341,8 +331,6 @@ async function bootstrap() {
       ensureCanalsVisible()
       showTransfersOverview(store)
     },
-    showConjunctive: () => showConjunctivePanel(store),
-    showLowerValley: () => showLowerValleyPanel(store),
     showOwnerConcentration: () => showOwnerConcentrationPanel(store),
     showWellPressure: () => {
       showWellPressurePanel(store, {
@@ -356,16 +344,15 @@ async function bootstrap() {
         },
       })
     },
-    showAccounting: () => { void showAccountingPanel() },
     showWatchlist: () => showWatchlistPanel(store, localWatchlist),
     setOwnerHighlight: owner => {
       state.ownerHighlight = owner
       state.selectedWRs = new Set()
       state.isolateSelection = false
+      state.focusPodKey = null
       refreshData()
     },
     resetAll: () => {
-      if (timeline.isOpen()) timeline.close()
       dismissGuide()
       resetState()
       state.placeOfUseMode = false
@@ -428,26 +415,29 @@ async function bootstrap() {
       state.ownerHighlight = owner
       state.selectedWRs = new Set()
       state.isolateSelection = false
+      state.focusPodKey = null
       if (!podLayer.enabled) {
         podLayer.setEnabled(true)
         syncLayerCheckbox('layer-pods', true)
       }
       refreshData()
     },
+    onSelectRight: wr => {
+      focusRight(wr, { isolate: false })
+    },
+    onShowAll: () => {
+      state.isolateSelection = false
+      setSelection(new Set())
+      if (!isDetailsPinned()) closeDetails()
+    },
     onClear: () => {
       state.ownerHighlight = null
       state.selectedWRs = new Set()
       state.isolateSelection = false
+      state.focusPodKey = null
       refreshData()
     },
   })
-
-  timeline = setupTimeline(store, {
-    refreshData,
-    setPouSuspended: on => pouLayer.setSuspended(on),
-    syncSidebar: syncSidebarToState,
-  })
-  document.getElementById('timeline-btn')?.addEventListener('click', () => timeline.open())
 
   document.getElementById('selection-clear')?.addEventListener('click', clearSelection)
   document.addEventListener('keydown', e => {
@@ -458,7 +448,10 @@ async function bootstrap() {
     }
     clearSelection()
   })
-  map.on('click', clearSelection)
+  map.on('click', () => {
+    if (Date.now() < ignoreMapClickUntil) return
+    clearSelection()
+  })
 
   document.getElementById('close-details')?.addEventListener('click', closeDetails)
   document.getElementById('details-content')?.addEventListener('click', e => {
@@ -469,8 +462,7 @@ async function bootstrap() {
     }
     const btn = t.closest<HTMLElement>('[data-zoom-wr]')
     if (btn?.dataset.zoomWr) {
-      if (getReceiptReopen()) focusWRFromReceipt(btn.dataset.zoomWr)
-      else zoomToWR(btn.dataset.zoomWr)
+      focusWRFromReceipt(btn.dataset.zoomWr)
     }
   })
   document.addEventListener('click', e => {
@@ -483,7 +475,7 @@ async function bootstrap() {
   map.on('moveend', updatePermalink)
 
   refreshData()
-  setLoadStatus(lite ? 'Map ready — tap a ★ for purple field lines' : 'Map ready — loading fields in background…', 70)
+  setLoadStatus(lite ? 'Map ready — tap a ★ for cyan field lines' : 'Map ready — loading fields in background…', 70)
   hideLoadOverlay()
   requestAnimationFrame(() => map.invalidateSize())
 
@@ -499,7 +491,7 @@ async function bootstrap() {
       pouLayer.onPouDataReady()
       // Canals only — NWI waits for the riparian checkbox.
       if (!lite) await staticLayers.loadCanals()
-      setLoadStatus('Background data ready — click a ★ or a field for purple links', 100)
+      setLoadStatus('Background data ready — click a ★ or a field for cyan links', 100)
     } catch (err) {
       console.error('Background layer load failed', err)
       setLoadStatus('Some layers failed to load', 100)

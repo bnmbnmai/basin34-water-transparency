@@ -52,8 +52,6 @@ export function encodeHash(basemap: Basemap, map: L.Map): string {
   const p = new URLSearchParams()
 
   if (state.highlightMode !== d.highlightMode) p.set('m', state.highlightMode)
-  if (state.highRateThreshold !== d.highRateThreshold) p.set('t', String(state.highRateThreshold))
-  if (state.reachFilter) p.set('r', state.reachFilter)
   if (state.yearMin !== d.yearMin) p.set('y0', String(state.yearMin))
   if (state.yearMax !== d.yearMax) p.set('y1', String(state.yearMax))
   if (state.podColorMode !== d.podColorMode) p.set('cm', state.podColorMode)
@@ -96,9 +94,6 @@ export function applyHashToState(): RestoredView {
 
   const m = p.get('m')
   if (m && isHighlightMode(m)) state.highlightMode = m
-  const t = parseFloat(p.get('t') || '')
-  if (isFinite(t)) state.highRateThreshold = t
-  if (p.get('r')) state.reachFilter = p.get('r')!
   const y0 = parseInt(p.get('y0') || '', 10)
   if (isFinite(y0)) state.yearMin = y0
   const y1 = parseInt(p.get('y1') || '', 10)

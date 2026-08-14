@@ -25,7 +25,7 @@ export const GUIDE_STEPS: GuideStep[] = [
     kicker: 'Step 1 · Click a right',
     title: 'Every ★ is a point of diversion',
     body:
-      'Zoom in and tap a star. The inspector opens that water right, and purple dashed lines connect the diversion to its place-of-use fields. That link — where water is taken vs where it is used — is the heart of this map.',
+      'Zoom in and tap a star. The inspector opens that water right, and cyan dashed lines connect the diversion to its place-of-use fields. That link — where water is taken vs where it is used — is the heart of this map.',
     view: { lat: 43.70, lon: -113.32, zoom: 11 },
     flowEra: 'recent',
     highlightMode: 'none',
@@ -38,7 +38,7 @@ export const GUIDE_STEPS: GuideStep[] = [
     kicker: 'Step 2 · Channel',
     title: 'Then the river reached the sinks. Now it often stops near Moore.',
     body:
-      'Channel “Now” shows the mainstem dashed brown below Moore. USGS records show surface flow commonly ending long before Arco. Tap a gage for current CFS when the site still reports. Use Then vs now under Advanced to flip eras.',
+      'Channel “Now” shows the mainstem dashed brown below Moore. USGS records show surface flow commonly ending long before Arco. Tap a gage for live CFS; the chart that matters is river shrink. Flip Then vs now in the sidebar.',
     view: { lat: 43.72, lon: -113.28, zoom: 10 },
     flowEra: 'recent',
     highlightMode: 'none',
@@ -51,7 +51,7 @@ export const GUIDE_STEPS: GuideStep[] = [
     kicker: 'Step 3 · Gages',
     title: 'Mackay → Moore → Arco: where the water disappears',
     body:
-      'Annual flow at three mainstem gages shows the step-down. Most of the loss happens before Arco. Open the receipt in the inspector for the full chart — the map stays visible.',
+      'Days-with-flow at Mackay vs Arco shows the step-down. A two-week pulse is a few days, not year-round water. Open the receipt for the overlay and this season’s WD34 below-Moore delivery — the map stays visible.',
     view: { lat: 43.78, lon: -113.35, zoom: 10 },
     flowEra: 'recent',
     highlightMode: 'none',
@@ -64,7 +64,7 @@ export const GUIDE_STEPS: GuideStep[] = [
     kicker: 'Step 4 · Senior rights',
     title: 'Downstream seniors on a dry reach',
     body:
-      'Pre-1950 Big Lost / Ferris Slough rights on the NHD mainstem at or below Moore sit where the channel often goes dry. Tributaries such as Antelope Creek are excluded. Open the ranked table + CSV in the inspector. Zoom any row to isolate that right (purple star + diversion↔field lines).',
+      'Pre-1950 Big Lost / Ferris Slough rights on the NHD mainstem at or below Moore sit where the channel often goes dry. Tributaries such as Antelope Creek are excluded. Open the ranked table + CSV in the inspector. Zoom any row to isolate that right (cyan star + diversion↔field lines).',
     view: { lat: 43.65, lon: -113.30, zoom: 11 },
     flowEra: 'recent',
     highlightMode: 'senior-downstream',
@@ -77,7 +77,7 @@ export const GUIDE_STEPS: GuideStep[] = [
     kicker: 'Step 5 · Moved farther',
     title: 'Water moved farther from the river corridor',
     body:
-      'Some rights divert far from their authorized place of use — a geometric proxy, not a liner inventory. Open the ranked table + CSV, then Zoom a row for purple diversion↔field lines. On satellite, look for lined canals east or west of the river. (Turn on “Show all Place of Use fills” under Advanced if you want orange fills for every transfer.)',
+      'Some rights divert far from their authorized place of use — a geometric proxy, not a liner inventory. Open the ranked table + CSV, then Zoom a row for cyan diversion↔field lines. On satellite, look for lined canals east or west of the river.',
     view: { lat: 43.85, lon: -113.45, zoom: 9 },
     flowEra: 'historical',
     highlightMode: 'transfers',
@@ -223,7 +223,8 @@ export function goToGuideStep(index: number, options: { openReceipt?: boolean } 
   state.ownerHighlight = null
   state.selectedWRs = new Set()
   state.isolateSelection = false
-  // Guide always keeps dense POU fills off — selection Zoom still paints purple fields.
+  state.focusPodKey = null
+  // Guide always keeps dense POU fills off — selection Zoom still paints cyan fields.
   state.placeOfUseMode = false
 
   if (podsChanged || wellsChanged) {

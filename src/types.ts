@@ -13,20 +13,12 @@ export type FlowEra = 'historical' | 'recent'
 export type HighlightMode =
   | 'none'
   | 'senior-downstream'
-  | 'junior-dev'
   | 'transfers'
-  | 'conflict'
-  | 'conjunctive'
-  | 'high-rate'
 
 export const HIGHLIGHT_MODES: readonly HighlightMode[] = [
   'none',
   'senior-downstream',
-  'junior-dev',
   'transfers',
-  'conflict',
-  'conjunctive',
-  'high-rate',
 ]
 
 export function isHighlightMode(value: string): value is HighlightMode {
@@ -96,20 +88,18 @@ export interface AppState {
   /** Well marker color: use class, construction era, or drill-time static water level. */
   wellColorMode: WellColorMode
   focusIrrigation: boolean
-  highRateThreshold: number
   highlightMode: HighlightMode
   ownerHighlight: string | null
-  reachFilter: string
   placeOfUseMode: boolean
   /**
    * When Year or Archive imagery is on, basin-wide POU outlines stay off unless
    * this is true. IDWR geometry is today’s authorized fields, not historical.
-   * Selection (purple POD↔POU) still paints.
+   * Selection (cyan POD↔POU) still paints.
    */
   showPouOnImagery: boolean
   /**
-   * When an analysis view is active, hide non-matching PODs instead of drawing
-   * thousands of dimmed markers (critical on phones).
+   * When an analysis view or owner search is active, hide non-matching PODs
+   * instead of drawing thousands of dimmed markers (critical on phones).
    */
   hideNonMatches: boolean
   /**
@@ -117,6 +107,11 @@ export interface AppState {
    * Cleared with the selection. Not persisted in the URL hash.
    */
   isolateSelection: boolean
+  /**
+   * When isolating, show only this POD (wr|lat|lon|rate). District rights
+   * have many diversions; receipt Zoom should land on one star.
+   */
+  focusPodKey: string | null
   /** Rights selected by clicking a POD or POU polygon. */
   selectedWRs: Set<string>
   flowEra: FlowEra

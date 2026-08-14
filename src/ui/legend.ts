@@ -10,12 +10,8 @@ const fillSwatch = (stroke: string, fill: string) =>
 
 const MODE_LEGEND: Record<string, string> = {
   'senior-downstream': `${star(EMPHASIS_COLORS.senior.stroke)} Pre-1950 Big Lost / Ferris Slough rights on the NHD mainstem at/below Moore (emphasized). Antelope and other tributaries excluded. Others dimmed.`,
-  'junior-dev': `${star(EMPHASIS_COLORS.junior.stroke)} Post-1980 rights/wells above the rate threshold (orange). Others dimmed.`,
   transfers: `${star(EMPHASIS_COLORS.transfer.stroke)} Water moved farther: POD sits far (&gt;8 km) from place of use; dashed lines connect POD ↔ POU. ` +
     `${fillSwatch('#c2410c', 'rgba(249,115,22,0.45)')} solid orange POU = off the natural corridor (geometric — not “built since 2010”). Others dimmed.`,
-  conflict: `${star(EMPHASIS_COLORS['conflict-senior'].stroke)} senior (pre-1970) on river corridor, downstream &nbsp; ${star(EMPHASIS_COLORS['conflict-junior'].stroke)} newer (post-1980) on corridor, upstream. Mountain springs/tributaries off the channel are excluded. Others dimmed.`,
-  conjunctive: `${star(EMPHASIS_COLORS['conjunctive-gw'].stroke)} post-1950 groundwater rights &amp; irrigation wells &nbsp; ${star(EMPHASIS_COLORS.senior.stroke)} senior (pre-1950) surface rights downstream. Others dimmed.`,
-  'high-rate': `${star(EMPHASIS_COLORS['high-rate'].stroke)} Rights above the rate threshold (red). Others dimmed.`,
 }
 
 export interface LegendCounts {
@@ -37,13 +33,15 @@ export function updateLegend(counts: LegendCounts, layersOn: { pods: boolean; we
     }</div>`)
   }
   if (state.ownerHighlight) {
-    rows.push(`<div class="lg-row">${star(EMPHASIS_COLORS.owner.stroke)} Rights owned by “${state.ownerHighlight}”. Others dimmed.</div>`)
+    rows.push(`<div class="lg-row">${star(EMPHASIS_COLORS.owner.stroke)} Rights owned by “${state.ownerHighlight}”. ${
+      state.hideNonMatches ? 'Only this owner shown.' : 'Others dimmed.'
+    } Click a right in the list to select it (${star(EMPHASIS_COLORS.selected.stroke)} cyan).</div>`)
   }
   if (state.selectedWRs.size > 0) {
     rows.push(`<div class="lg-row">${star(EMPHASIS_COLORS.selected.stroke)} ${
       state.isolateSelection
-        ? 'Selected right isolated — other stars hidden. Clear selection to see neighbors.'
-        : 'Selected right(s) — purple POU outline + dashed POD lines.'
+        ? 'Selected diversion isolated — other stars hidden. Clear selection to see neighbors.'
+        : 'Selected right(s) — cyan POU outline + dashed POD lines.'
     }</div>`)
   }
 
@@ -89,29 +87,20 @@ export function updateLegend(counts: LegendCounts, layersOn: { pods: boolean; we
   }
   if (state.placeOfUseMode) {
     rows.push(
-      `<div class="lg-row">${swatch('#15803d', true)} place of use &nbsp; ${swatch('#f97316', true)} POU of moved-farther right &nbsp; ${swatch('#0f766e', true)} district service area (outline only) &nbsp; ${swatch('#a855f7')} selected</div>`,
+      `<div class="lg-row">${swatch('#15803d', true)} place of use &nbsp; ${swatch('#f97316', true)} POU of moved-farther right &nbsp; ${swatch('#0f766e', true)} district service area (outline only) &nbsp; ${swatch(EMPHASIS_COLORS.selected.stroke)} selected</div>`,
     )
   }
   rows.push(
-    `<div class="lg-row"><span class="lg-dot" style="background:#dc2626"></span> stream gages (click for flow history)</div>`,
+    `<div class="lg-row">` +
+    `${dot('#0ea5e9')} Mackay yield &nbsp; ${dot('#f97316')} Moore terminus &nbsp; ${dot('#dc2626')} Arco remnant<br>` +
+    `<span style="color:var(--text-muted)">Gages are waypoints — the chart is river shrink. Gray = archive / context.</span></div>`,
   )
   if (state.yearMin > 1800 || state.yearMax < 2026) {
     rows.push(`<div class="lg-row"><strong>Years:</strong> ${state.yearMin}–${state.yearMax} (POD priority / well construction)</div>`)
   }
   if (!rows.length) {
-    rows.push(`<div class="lg-row text-[var(--text-muted)]">Toggle layers or pick an analysis view.</div>`)
+    rows.push(`<div class="lg-row text-[var(--text-muted)]">Toggle layers or open an insight receipt.</div>`)
   }
   rows.push(`<div class="lg-row" style="font-size:0.85em;color:var(--text-muted)">Marker size = diversion / production rate.</div>`)
   el.innerHTML = rows.join('')
-}
-
-/** Hint text under the Analysis view selector. */
-export const MODE_HINTS: Record<string, string> = {
-  none: 'Pick a view to emphasize an investigative pattern. Non-matching points are dimmed, never hidden.',
-  'senior-downstream': 'Same lens as the dry-reach table: pre-1950 Big Lost / Ferris Slough rights on the NHD mainstem at or below Moore. Tributaries such as Antelope Creek are excluded.',
-  'junior-dev': 'Shows large post-1980 rights and wells — where significant new development occurred after senior rights were established.',
-  transfers: 'Geometric proxy: POD more than 8 km from current POU. Orange fills = POU more than 1.5 km outside the NHD+NWI corridor — not a lined-canal inventory or proof of recent breakout. Use satellite to look for lined canals east/west of the river. Opens ranked table + CSV.',
-  conflict: 'Contrasts senior (pre-1970) downstream rights with newer (post-1980) upstream development — but only for PODs within 3 km of the NHD mainstem / NWI riparian corridor (valley-floor river path). Opens a ranked overview panel.',
-  conjunctive: 'Contrasts the post-1950 groundwater development (rights + irrigation wells) with the senior surface rights downstream that depend on the same connected water — the core conjunctive-management pattern. Opens a chart pairing GW growth with measured flow at Arco.',
-  'high-rate': 'Emphasizes rights above the cfs threshold regardless of age.',
 }

@@ -3,11 +3,17 @@ import { DISTRICT_POU_KM2, type DataStore } from '../data'
 import { getImageryState, isYearOrArchiveActive } from './historicalImagery'
 import { basinPouOutlinesAllowed } from './pouVisibility'
 import { state } from '../state'
+import { EMPHASIS_COLORS } from '../symbology'
+import { podKey } from './focusRight'
 import type { GeoFeature, PouRecord } from '../types'
 
 const SELECTED_STYLE: L.PathOptions = {
-  color: '#a855f7', weight: 2.5, fillColor: '#e9d5ff', fillOpacity: 0.12,
+  color: EMPHASIS_COLORS.selected.stroke,
+  weight: 2.5,
+  fillColor: EMPHASIS_COLORS.selected.fill,
+  fillOpacity: 0.18,
 }
+const TRANSFER_LINE = EMPHASIS_COLORS.transfer.stroke
 
 /** Below this zoom, clickable field outlines stay off (basin overview stays light). */
 export const POU_CLICKABLE_MIN_ZOOM = 12
@@ -154,6 +160,7 @@ export class PouLayer {
       // Huge district/service areas stay out of the clickable field layer —
       // they would blanket the valley and steal clicks from real fields.
       if (rec.areaKm2 >= DISTRICT_POU_KM2) continue
+      if (state.isolateSelection && state.selectedWRs.size > 0 && !state.selectedWRs.has(rec.wr)) continue
       visible.push(rec)
       let h = 2166136261
       for (let i = 0; i < rec.wr.length; i++) h = (h ^ rec.wr.charCodeAt(i)) * 16777619 | 0
@@ -202,14 +209,21 @@ export class PouLayer {
       return
     }
 
-    // Purple POD↔field graphics always work when a right is selected — even if
-    // dense Place-of-Use fills are off.
+    // Selected POD↔field graphics always work when a right is chosen — even if
+    // dense Place-of-Use fills are off. Cyan is reserved for selection; purple is transfers.
     for (const wr of state.selectedWRs) {
       for (const pou of this.store.pousByWR.get(wr) || []) {
+        if (pou.areaKm2 >= DISTRICT_POU_KM2) continue
         this.overlay.addLayer(L.geoJSON(pou.feature as any, {
           pane: 'pouSelectedPane',
           interactive: false,
-          style: () => ({ color: '#a855f7', weight: 3, fillOpacity: 0.08, fillColor: '#e9d5ff', dashArray: undefined }),
+          style: () => ({
+            color: EMPHASIS_COLORS.selected.stroke,
+            weight: 3,
+            fillOpacity: 0.12,
+            fillColor: EMPHASIS_COLORS.selected.fill,
+            dashArray: undefined,
+          }),
         }))
       }
     }
@@ -223,13 +237,14 @@ export class PouLayer {
       if (!center) continue
       const isSelected = state.selectedWRs.has(wr)
       for (const pod of this.store.podsByWR.get(wr) || []) {
+        if (state.focusPodKey && podKey(pod) !== state.focusPodKey) continue
         this.lines.addLayer(L.polyline([[pod.lat, pod.lon], center], {
           pane: 'pouLinePane',
           interactive: false,
-          color: '#a855f7',
+          color: isSelected ? EMPHASIS_COLORS.selected.stroke : TRANSFER_LINE,
           weight: isSelected ? 2.5 : 1.5,
           dashArray: '4,3',
-          opacity: isSelected ? 0.9 : 0.55,
+          opacity: isSelected ? 0.95 : 0.55,
         }))
       }
     }
@@ -253,7 +268,7 @@ export class PouLayer {
     const selected = state.selectedWRs.has(wr)
 
     if ((feature.properties?.__areaKm2 ?? 0) >= DISTRICT_POU_KM2) {
-      if (selected) return { color: '#a855f7', weight: 2.5, fill: false, dashArray: '8,5' }
+      if (selected) return { color: EMPHASIS_COLORS.selected.stroke, weight: 2.5, fill: false, dashArray: '8,5' }
       return { color: '#0f766e', weight: 1.5, fill: false, dashArray: '8,5', opacity: 0.7 }
     }
     if (selected) return SELECTED_STYLE

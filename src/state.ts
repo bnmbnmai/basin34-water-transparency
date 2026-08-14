@@ -11,16 +11,15 @@ export function defaultState(): AppState {
     hideDomestic: true,
     wellColorMode: 'use',
     focusIrrigation: false,
-    highRateThreshold: 5,
     highlightMode: 'none',
     ownerHighlight: null,
-    reachFilter: '',
     placeOfUseMode: false,
     showPouOnImagery: false,
     hideNonMatches: false,
     isolateSelection: false,
+    focusPodKey: null,
     selectedWRs: new Set<string>(),
-    flowEra: 'historical',
+    flowEra: 'recent',
   }
 }
 

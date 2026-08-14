@@ -20,7 +20,6 @@ describe('podMatchesMode / podVisible', () => {
     })
     const state = defaultState()
     state.highlightMode = 'senior-downstream'
-    state.reachFilter = 'moore'
     const senior = pod({ year: 1940, lat: 43.70 })
     const junior = pod({ wr: '34-j', year: 1985, lat: 43.70 })
     const upstream = pod({ wr: '34-u', year: 1940, lat: 43.90 })
@@ -68,6 +67,15 @@ describe('podMatchesMode / podVisible', () => {
     expect(onRiverCorridor(pod({ corridorDistKm: 9, mainstemDistKm: 0.2 }))).toBe(true)
   })
 
+  it('hides non-matching PODs when owner search is on and hideNonMatches is set', () => {
+    const store = emptyStore()
+    const state = defaultState()
+    state.ownerHighlight = 'Jane Doe'
+    state.hideNonMatches = true
+    expect(podVisible(pod({ wr: '34-j', owner: 'Jane Doe' }), state, store)).toBe(true)
+    expect(podVisible(pod({ wr: '34-x', owner: 'Other Co' }), state, store)).toBe(false)
+  })
+
   it('hides non-selected rights when isolateSelection is on', () => {
     const store = emptyStore()
     const state = defaultState()
@@ -75,5 +83,17 @@ describe('podMatchesMode / podVisible', () => {
     state.selectedWRs = new Set(['34-sel'])
     expect(podVisible(pod({ wr: '34-sel' }), state, store)).toBe(true)
     expect(podVisible(pod({ wr: '34-other' }), state, store)).toBe(false)
+  })
+
+  it('when focusPodKey is set, only that diversion is visible', () => {
+    const primary = pod({ wr: '34-d', lat: 43.70, lon: -113.30, rate: 8 })
+    const sibling = pod({ wr: '34-d', lat: 43.90, lon: -113.50, rate: 1 })
+    const store = emptyStore()
+    const state = defaultState()
+    state.isolateSelection = true
+    state.selectedWRs = new Set(['34-d'])
+    state.focusPodKey = `${primary.wr}|${primary.lat.toFixed(6)}|${primary.lon.toFixed(6)}|${primary.rate}`
+    expect(podVisible(primary, state, store)).toBe(true)
+    expect(podVisible(sibling, state, store)).toBe(false)
   })
 })

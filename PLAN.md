@@ -35,8 +35,8 @@ A **public accountability / transparency tool** for Water District 34 (Big Lost 
 1. **One workspace:** Explore is always on. No Story | Explore mode toggle.
 2. **Thin Guide:** “Walk the receipts” is a dismissible coach that flies the map and opens inspector receipts — not a second control panel (no duplicate basemap / then-now / jump grid).
 3. **Map + inspector only:** Feature detail and receipts (tables, charts, gages) open in `#details`. **No full-screen lightbox** for product flows.
-4. **Three primary receipts:** Downstream seniors · Water moved farther · River shrink. Everything else is Advanced (below-Moore surface ranking, owner concentration, well logs, WD34 accounting).
-5. **Zoom completes the sacred path:** CSV/table Zoom selects the right, paints purple POD↔POU lines, keeps the map visible, offers **← Back to list**.
+4. **Three primary receipts:** Downstream seniors · Water moved farther · River shrink (days-with-flow + this-season WD34 accounting). Advanced: owner concentration, well logs, appropriation vs Mackay.
+5. **Zoom completes the sacred path:** CSV/table Zoom selects the right, paints cyan POD↔POU lines at field scale, keeps the map visible, offers **← Back to list**.
 6. **Close model:** Esc and ✕ always close the inspector. Map click clears selection but does not dismiss a pinned receipt.
 
 **Product rule:** at most **three primary insight receipts**. Do not add a seventh exclusive `HighlightMode`.
@@ -50,10 +50,7 @@ A **public accountability / transparency tool** for Water District 34 (Big Lost 
 - [x] Guide not dual-mode + inspector unification
 - [x] Map perf + Landsat/Wayback imagery (phone-usable paint, simplified GeoJSON)
 - [x] Receipt unit tests (`npm test`: epoch dates, dry-reach, moved-farther, USGS RDB, permalink, lower-valley, owners, well logs, side-of-channel)
-- [x] Advanced observer receipts: surface irrigation below Moore; authorized cfs by owner; lower-valley well logs; WD34 published accounting
-- [x] NHD canals vs pipelines styled east/west of the mainstem (geometric)
-- [x] General export of currently filtered PODs/wells (CSV/GeoJSON)
-- [x] Repo origin docs: `bnmbnmai/basin34-water-transparency`; public observer vs gitignored `private/` binder
+- [x] Condensed product: three receipts; gage roles (yield/terminus/remnant); days-with-flow + wet/recent overlay; WD34 accounting folded into river shrink; dropped conflict/junior/high-rate/conjunctive/timeline
 - [ ] Curtailment / “who shut off when” (accounting extract has daily delivery/loss columns as published — not a shutoff roster)
 
 ---
@@ -78,7 +75,7 @@ G1. Drop Story mode; thin Guide + inspector UX   ← DONE
 
 - Wide desktop rail for tables/charts; taller bottom sheet on mobile for receipts  
 - Sticky header with Close  
-- Live USGS CFS + annual chart for gages (inspector, not modal)  
+- Live USGS CFS + days-with-flow for yield/terminus/remnant gages (inspector, not modal)  
 
 ### F4 evidence note (unchanged)
 
@@ -94,4 +91,4 @@ No clean public east/west designation polygons — lined-canal claim stays Guide
 
 ## Success bar
 
-In &lt;5 minutes on a phone: Walk the receipts → tap ★ → purple links; see dry channel; open seniors CSV and moved-farther CSV in the inspector with the map still visible; Esc closes the inspector; see data-as-of chip.
+In &lt;5 minutes on a phone: Walk the receipts → Now channel is brown below Moore → river shrink shows Mackay days-with-flow vs Arco collapsing plus this season’s below-Moore delivery → seniors CSV and moved-farther CSV Zoom to one cyan-labeled diversion. Clicking Leslie or the playa does not look like a broken chart.

@@ -1,4 +1,3 @@
-import type { DataStore } from '../data'
 import {
   getAvailableLandsatYears,
   getImageryState,
@@ -11,7 +10,6 @@ import {
 } from '../map/historicalImagery'
 import { state } from '../state'
 import type { Basemap, FlowEra, HighlightMode } from '../types'
-import { MODE_HINTS } from './legend'
 
 export interface SidebarCallbacks {
   refreshData: () => void
@@ -19,21 +17,16 @@ export interface SidebarCallbacks {
   setBasemap: (b: Basemap) => void
   setFlowEra: (era: FlowEra) => void
   resetAll: () => void
-  /** Map emphasis changed — do not auto-open receipts. */
   onHighlightMode?: (mode: HighlightMode) => void
   showAppropriation?: () => void
   showRiverShrink?: () => void
   showDryReach?: () => void
   showMovedFarther?: () => void
-  showConjunctive?: () => void
-  showLowerValley?: () => void
   showOwnerConcentration?: () => void
   showWellPressure?: () => void
-  showAccounting?: () => void
   showWatchlist?: () => void
   onSheetChange?: () => void
   setOwnerHighlight?: (owner: string | null) => void
-  /** Called when Landsat/Wayback era changes (for permalink). */
   onImageryChange?: () => void
 }
 
@@ -82,29 +75,6 @@ function wireMobileSheet(cb: SidebarCallbacks) {
   })
 }
 
-export function populateReachSelect(store: DataStore) {
-  const sel = $<HTMLSelectElement>('reach-select')
-  if (!sel) return
-  while (sel.options.length > 1) sel.remove(1)
-  for (const f of store.reaches) {
-    const p = f.properties || {}
-    const opt = document.createElement('option')
-    opt.value = p.reach_id || ''
-    opt.textContent = p.name || p.reach_id || 'Reach'
-    sel.appendChild(opt)
-  }
-}
-
-export function syncReachSelect() {
-  const sel = $<HTMLSelectElement>('reach-select')
-  if (sel) sel.value = state.reachFilter
-}
-
-function updateModeHint() {
-  const hint = $('mode-hint')
-  if (hint) hint.innerHTML = MODE_HINTS[state.highlightMode] || ''
-}
-
 function syncEraButtons() {
   document.querySelectorAll<HTMLInputElement>('input[name="era"]').forEach(r => {
     r.checked = r.value === state.flowEra
@@ -116,11 +86,6 @@ export function syncSidebarToState() {
   const set = (id: string, checked: boolean) => { const el = input(id); if (el) el.checked = checked }
   const setVal = (id: string, v: string) => { const el = input(id); if (el) el.value = v }
 
-  const modeSel = $<HTMLSelectElement>('highlight-mode')
-  if (modeSel) modeSel.value = state.highlightMode
-  updateModeHint()
-  setVal('high-rate-threshold', String(state.highRateThreshold))
-  syncReachSelect()
   set('place-of-use-mode', state.placeOfUseMode)
   const pouOnImg = input('show-pou-on-imagery')
   if (pouOnImg) pouOnImg.checked = state.showPouOnImagery
@@ -142,9 +107,6 @@ export function syncSidebarToState() {
 
 function setHighlightMode(mode: HighlightMode, cb: SidebarCallbacks) {
   state.highlightMode = mode
-  const modeSel = $<HTMLSelectElement>('highlight-mode')
-  if (modeSel) modeSel.value = mode
-  updateModeHint()
   cb.refreshData()
   cb.onHighlightMode?.(mode)
 }
@@ -153,26 +115,12 @@ export function wireSidebar(cb: SidebarCallbacks) {
   wireMobileSheet(cb)
   document.body.dataset.uiMode = 'explore'
 
-  // Layer toggles
   for (const key of ['boundary', 'riparian', 'hydro', 'pods', 'wells', 'gages', 'flowExtent', 'reaches', 'diversions']) {
     input(`layer-${key}`)?.addEventListener('change', e => {
       cb.setLayerEnabled(key, (e.target as HTMLInputElement).checked)
     })
   }
 
-  // Map emphasis — map only; receipts open via Insight buttons
-  $<HTMLSelectElement>('highlight-mode')?.addEventListener('change', e => {
-    setHighlightMode((e.target as HTMLSelectElement).value as HighlightMode, cb)
-  })
-  input('high-rate-threshold')?.addEventListener('change', e => {
-    const v = parseFloat((e.target as HTMLInputElement).value)
-    if (isFinite(v)) state.highRateThreshold = v
-    cb.refreshData()
-  })
-  $<HTMLSelectElement>('reach-select')?.addEventListener('change', e => {
-    state.reachFilter = (e.target as HTMLSelectElement).value
-    cb.refreshData()
-  })
   input('place-of-use-mode')?.addEventListener('change', e => {
     state.placeOfUseMode = (e.target as HTMLInputElement).checked
     cb.refreshData()
@@ -184,11 +132,12 @@ export function wireSidebar(cb: SidebarCallbacks) {
 
   $('appropriation-btn')?.addEventListener('click', () => cb.showAppropriation?.())
   $('river-shrink-btn')?.addEventListener('click', () => cb.showRiverShrink?.())
-  $('dry-reach-btn')?.addEventListener('click', () => cb.showDryReach?.())
-  $('lower-valley-btn')?.addEventListener('click', () => cb.showLowerValley?.())
+  $('dry-reach-btn')?.addEventListener('click', () => {
+    setHighlightMode('senior-downstream', cb)
+    cb.showDryReach?.()
+  })
   $('owner-conc-btn')?.addEventListener('click', () => cb.showOwnerConcentration?.())
   $('well-pressure-btn')?.addEventListener('click', () => cb.showWellPressure?.())
-  $('accounting-btn')?.addEventListener('click', () => cb.showAccounting?.())
   $('watchlist-btn')?.addEventListener('click', () => cb.showWatchlist?.())
   $<HTMLSelectElement>('well-color-mode')?.addEventListener('change', e => {
     const v = (e.target as HTMLSelectElement).value
@@ -201,12 +150,7 @@ export function wireSidebar(cb: SidebarCallbacks) {
     setHighlightMode('transfers', cb)
     cb.showMovedFarther?.()
   })
-  $('conjunctive-btn')?.addEventListener('click', () => {
-    setHighlightMode('conjunctive', cb)
-    cb.showConjunctive?.()
-  })
 
-  // POD filters
   $<HTMLSelectElement>('pod-color-mode')?.addEventListener('change', e => {
     state.podColorMode = (e.target as HTMLSelectElement).value as 'source' | 'priority'
     cb.refreshData()
@@ -277,8 +221,6 @@ export function wireSidebar(cb: SidebarCallbacks) {
       'Share view copies a permalink to the current map.',
     )
   })
-
-  updateModeHint()
 }
 
 export function syncImageryControls(): void {

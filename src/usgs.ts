@@ -12,6 +12,9 @@ export interface YearFlowStats {
   calendarMeanCfs: number
   daysWithData: number
   daysWithFlow: number
+  irrigationMeanCfs: number
+  irrigationDaysWithData: number
+  irrigationDaysWithFlow: number
   /** USGS published annual mean when the statistics service reports that year. */
   publishedMeanCfs?: number
   /** Fewer than 300 daily values — annual mean may not represent a full water year. */
@@ -90,16 +93,28 @@ export function fetchGageFlowHistory(siteNo: string): Promise<GageFlowHistory> {
   return p
 }
 
-async function fetchDailyYearSummaries(siteNo: string): Promise<YearFlowStats[]> {
-  const url =
-    'https://waterservices.usgs.gov/nwis/dv/?format=rdb' +
-    `&sites=${encodeURIComponent(siteNo)}&parameterCd=00060&statCd=00003` +
-    '&startDT=1900-01-01&endDT=2026-12-31'
-  const res = await fetch(url)
-  if (!res.ok) return []
-  const text = await res.text()
+export interface DailyCfs {
+  date: string
+  year: number
+  month: number
+  dayOfYear: number
+  cfs: number
+}
 
-  const byYear = new Map<number, { sum: number; days: number; flowDays: number }>()
+/** Apr–Oct irrigation season (calendar months). */
+export function isIrrigationMonth(month: number): boolean {
+  return month >= 4 && month <= 10
+}
+
+function dayOfYear(year: number, month: number, day: number): number {
+  const start = Date.UTC(year, 0, 1)
+  const at = Date.UTC(year, month - 1, day)
+  return Math.floor((at - start) / 86400000) + 1
+}
+
+/** Parse NWIS daily-values RDB (00060) into dated CFS rows. Exported for tests. */
+export function parseDailyDischargeRdb(text: string): DailyCfs[] {
+  const out: DailyCfs[] = []
   let header: string[] | null = null
   for (const line of text.split('\n')) {
     if (!line || line.startsWith('#')) continue
@@ -113,8 +128,9 @@ async function fetchDailyYearSummaries(siteNo: string): Promise<YearFlowStats[]>
     if (dtIdx < 0 || cols.length < dtIdx + 2) continue
     const dt = cols[dtIdx]
     const year = parseInt(dt.slice(0, 4), 10)
-    if (!isFinite(year)) continue
-    // Value column name varies by site (e.g. 246362_00060_00003); first numeric after datetime.
+    const month = parseInt(dt.slice(5, 7), 10)
+    const day = parseInt(dt.slice(8, 10), 10)
+    if (!isFinite(year) || !isFinite(month) || !isFinite(day)) continue
     let cfs: number | null = null
     for (let i = dtIdx + 1; i < cols.length; i++) {
       if (cols[i].endsWith('_cd')) continue
@@ -122,16 +138,43 @@ async function fetchDailyYearSummaries(siteNo: string): Promise<YearFlowStats[]>
       if (isFinite(v)) { cfs = v; break }
     }
     if (cfs == null) continue
-    let bucket = byYear.get(year)
-    if (!bucket) byYear.set(year, (bucket = { sum: 0, days: 0, flowDays: 0 }))
-    bucket.sum += Math.max(0, cfs)
-    bucket.days++
-    if (cfs > 0.01) bucket.flowDays++
+    out.push({
+      date: dt.slice(0, 10),
+      year,
+      month,
+      dayOfYear: dayOfYear(year, month, day),
+      cfs: Math.max(0, cfs),
+    })
   }
+  return out
+}
 
-  const published = await fetchAnnualMeans(siteNo)
+export function summarizeDailyByYear(
+  days: DailyCfs[],
+  published: AnnualMean[] = [],
+): YearFlowStats[] {
+  const byYear = new Map<number, {
+    sum: number; days: number; flowDays: number
+    irrigSum: number; irrigDays: number; irrigFlowDays: number
+  }>()
+  for (const d of days) {
+    let bucket = byYear.get(d.year)
+    if (!bucket) {
+      byYear.set(d.year, (bucket = {
+        sum: 0, days: 0, flowDays: 0,
+        irrigSum: 0, irrigDays: 0, irrigFlowDays: 0,
+      }))
+    }
+    bucket.sum += d.cfs
+    bucket.days++
+    if (d.cfs > 0.01) bucket.flowDays++
+    if (isIrrigationMonth(d.month)) {
+      bucket.irrigSum += d.cfs
+      bucket.irrigDays++
+      if (d.cfs > 0.01) bucket.irrigFlowDays++
+    }
+  }
   const pubByYear = new Map(published.map(d => [d.year, d.cfs]))
-
   return [...byYear.entries()]
     .sort((a, b) => a[0] - b[0])
     .map(([year, b]) => ({
@@ -139,15 +182,57 @@ async function fetchDailyYearSummaries(siteNo: string): Promise<YearFlowStats[]>
       calendarMeanCfs: b.days ? b.sum / b.days : 0,
       daysWithData: b.days,
       daysWithFlow: b.flowDays,
+      irrigationMeanCfs: b.irrigDays ? b.irrigSum / b.irrigDays : 0,
+      irrigationDaysWithData: b.irrigDays,
+      irrigationDaysWithFlow: b.irrigFlowDays,
       publishedMeanCfs: pubByYear.get(year),
       partialCoverage: b.days < 300,
     }))
 }
 
-/** Merge published annual means with daily calendar means (prefer published when present). */
+async function fetchDailyYearSummaries(siteNo: string): Promise<YearFlowStats[]> {
+  const url =
+    'https://waterservices.usgs.gov/nwis/dv/?format=rdb' +
+    `&sites=${encodeURIComponent(siteNo)}&parameterCd=00060&statCd=00003` +
+    '&startDT=1900-01-01&endDT=2026-12-31'
+  const res = await fetch(url)
+  if (!res.ok) return []
+  const published = await fetchAnnualMeans(siteNo)
+  return summarizeDailyByYear(parseDailyDischargeRdb(await res.text()), published)
+}
+
+const dailyYearCache = new Map<string, Promise<DailyCfs[]>>()
+
+/** Daily mean CFS for one calendar year (NWIS startDT/endDT — not the full POR). */
+export function fetchDailyYear(siteNo: string, year: number): Promise<DailyCfs[]> {
+  const key = `${siteNo}:${year}`
+  let p = dailyYearCache.get(key)
+  if (!p) {
+    p = (async () => {
+      const url =
+        'https://waterservices.usgs.gov/nwis/dv/?format=rdb' +
+        `&sites=${encodeURIComponent(siteNo)}&parameterCd=00060&statCd=00003` +
+        `&startDT=${year}-01-01&endDT=${year}-12-31`
+      const res = await fetch(url)
+      if (!res.ok) return []
+      return parseDailyDischargeRdb(await res.text())
+    })()
+    dailyYearCache.set(key, p)
+  }
+  return p
+}
 export function mergedYearSeries(
   history: GageFlowHistory,
-): Array<{ year: number; cfs: number; daysWithFlow?: number; daysWithData?: number; partial?: boolean; source: 'published' | 'daily' }> {
+): Array<{
+  year: number
+  cfs: number
+  daysWithFlow?: number
+  daysWithData?: number
+  irrigationDaysWithFlow?: number
+  irrigationMeanCfs?: number
+  partial?: boolean
+  source: 'published' | 'daily'
+}> {
   const byYear = new Map<number, ReturnType<typeof mergedYearSeries>[0]>()
   for (const d of history.dailyByYear) {
     byYear.set(d.year, {
@@ -155,21 +240,43 @@ export function mergedYearSeries(
       cfs: d.calendarMeanCfs,
       daysWithFlow: d.daysWithFlow,
       daysWithData: d.daysWithData,
+      irrigationDaysWithFlow: d.irrigationDaysWithFlow,
+      irrigationMeanCfs: d.irrigationMeanCfs,
       partial: d.partialCoverage,
       source: 'daily',
     })
   }
   for (const p of history.published) {
+    const prev = byYear.get(p.year)
     byYear.set(p.year, {
       year: p.year,
       cfs: p.cfs,
-      daysWithFlow: byYear.get(p.year)?.daysWithFlow,
-      daysWithData: byYear.get(p.year)?.daysWithData,
-      partial: byYear.get(p.year)?.partial,
+      daysWithFlow: prev?.daysWithFlow,
+      daysWithData: prev?.daysWithData,
+      irrigationDaysWithFlow: prev?.irrigationDaysWithFlow,
+      irrigationMeanCfs: prev?.irrigationMeanCfs,
+      partial: prev?.partial,
       source: 'published',
     })
   }
   return [...byYear.values()].sort((a, b) => a.year - b.year)
+}
+
+/** Wet year = max Mackay (or yield) annual mean; recent = latest Arco-zero year since 2015. */
+export function pickOverlayYears(
+  yieldSeries: Array<{ year: number; cfs: number }>,
+  remnantSeries: Array<{ year: number; cfs: number }>,
+  zeroCfs = 0.5,
+): { wetYear: number; recentYear: number } | null {
+  if (!yieldSeries.length) return null
+  const wet = yieldSeries.reduce((best, d) => (d.cfs > best.cfs ? d : best), yieldSeries[0])
+  const remnantZeros = remnantSeries.filter(d => d.year >= 2015 && d.cfs <= zeroCfs)
+  const recent = remnantZeros.length
+    ? remnantZeros[remnantZeros.length - 1]
+    : remnantSeries.length
+      ? remnantSeries[remnantSeries.length - 1]
+      : yieldSeries[yieldSeries.length - 1]
+  return { wetYear: wet.year, recentYear: recent.year }
 }
 
 /** Convert a mean annual flow in cfs to acre-feet per year. */
