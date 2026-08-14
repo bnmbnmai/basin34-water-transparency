@@ -4,7 +4,7 @@ import { getImageryState, isYearOrArchiveActive } from './historicalImagery'
 import { basinPouOutlinesAllowed } from './pouVisibility'
 import { state } from '../state'
 import { EMPHASIS_COLORS } from '../symbology'
-import { uniqueSelectedPous } from './pouSelection'
+import { uniquePousByGeom, uniqueSelectedPous } from './pouSelection'
 import { podKey } from './focusRight'
 import type { GeoFeature, PouRecord } from '../types'
 
@@ -116,17 +116,19 @@ export class PouLayer {
       this.refreshSelection()
       return
     }
-    const visible: PouRecord[] = []
-    let hash = 0
+    const collected: PouRecord[] = []
     for (const rec of this.store.pous) {
-      if (wrs.has(rec.wr)) {
-        visible.push(rec)
-        let h = 2166136261
-        for (let i = 0; i < rec.wr.length; i++) h = (h ^ rec.wr.charCodeAt(i)) * 16777619 | 0
-        hash = (hash + h) | 0
-      }
+      if (wrs.has(rec.wr)) collected.push(rec)
     }
+    const visible = uniquePousByGeom(collected)
     visible.sort((a, b) => b.areaKm2 - a.areaKm2)
+    let hash = 0
+    for (const rec of visible) {
+      const s = rec.geomKey || rec.wr
+      let h = 2166136261
+      for (let i = 0; i < s.length; i++) h = (h ^ s.charCodeAt(i)) * 16777619 | 0
+      hash = (hash + h) | 0
+    }
     const key = `dense:${visible.length}:${hash}`
     if (key === this.lastKey && this.base) {
       this.refreshSelection()
@@ -155,20 +157,24 @@ export class PouLayer {
     }
 
     const bounds = this.map.getBounds().pad(0.08)
-    const visible: PouRecord[] = []
-    let hash = 0
+    const collected: PouRecord[] = []
     for (const rec of this.store.pous) {
       if (!featureIntersectsBounds(rec.feature, bounds)) continue
       // Huge district/service areas stay out of the clickable field layer —
       // they would blanket the valley and steal clicks from real fields.
       if (rec.areaKm2 >= DISTRICT_POU_KM2) continue
       if (state.isolateSelection && state.selectedWRs.size > 0 && !state.selectedWRs.has(rec.wr)) continue
-      visible.push(rec)
+      collected.push(rec)
+    }
+    const visible = uniquePousByGeom(collected)
+    visible.sort((a, b) => b.areaKm2 - a.areaKm2)
+    let hash = 0
+    for (const rec of visible) {
+      const s = rec.geomKey || rec.wr
       let h = 2166136261
-      for (let i = 0; i < rec.wr.length; i++) h = (h ^ rec.wr.charCodeAt(i)) * 16777619 | 0
+      for (let i = 0; i < s.length; i++) h = (h ^ s.charCodeAt(i)) * 16777619 | 0
       hash = (hash + h) | 0
     }
-    visible.sort((a, b) => b.areaKm2 - a.areaKm2)
     const z = Math.round(zoom * 10)
     const key = `click:${z}:${visible.length}:${hash}`
     if (key === this.lastKey && this.base) {

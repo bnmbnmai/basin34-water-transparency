@@ -24,6 +24,7 @@ import {
   listLowerValleySurface,
   lowerValleyToCsv,
 } from '../lowerValley'
+import { haversineKm, shouldIncludePouInFocus } from '../map/focusRight'
 import { TRANSFER_SEARCH_URL } from '../wrLinks'
 
 /** Chart width from the open inspector (map-adjacent, not a lightbox). */
@@ -138,6 +139,11 @@ export function showPodDetails(rec: PodRecord, store: DataStore, opts?: { fromRe
   const pouCount = (store.pousByWR.get(rec.wr) || []).length
   if (pouCount > 0) {
     html += `<div style="margin-top:4px;font-size:0.85em">${pouCount} Place of Use polygon${pouCount > 1 ? 's' : ''} — cyan outline + dashed line on map.</div>`
+    const pouCenter = store.pouCenter.get(rec.wr)
+    if (pouCenter && !shouldIncludePouInFocus(rec, pouCenter)) {
+      const km = Math.round(haversineKm(rec.lat, rec.lon, pouCenter[0], pouCenter[1]))
+      html += `<div style="margin-top:4px;font-size:0.85em">Place of use is ${km} km from this diversion (dashed line).</div>`
+    }
     html += `<button class="zoom-btn" data-zoom-wr="${rec.wr}">Zoom to right (POD + place of use)</button>`
   }
   if (p.WRReport) html += `<div style="margin-top:4px"><a href="${p.WRReport}" target="_blank" rel="noopener">Official Water Right Report →</a></div>`

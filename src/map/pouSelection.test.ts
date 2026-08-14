@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { uniqueSelectedPous } from './pouSelection'
+import { uniquePousByGeom, uniqueSelectedPous } from './pouSelection'
 import type { PouRecord } from '../types'
 
 function pou(over: Partial<PouRecord> & Pick<PouRecord, 'wr' | 'geomKey'>): PouRecord {
@@ -44,5 +44,28 @@ describe('uniqueSelectedPous', () => {
     ])
     const out = uniqueSelectedPous(['34-1'], pousByWR, 20, { geomKey: 'clicked' })
     expect(out.map(p => p.geomKey)).toEqual(['clicked'])
+  })
+})
+
+describe('uniquePousByGeom', () => {
+  it('collapses N copies of one shape to 1', () => {
+    const shared = 'Polygon:-113.35,43.59'
+    const copies = [
+      pou({ wr: '34-4015', geomKey: shared, areaKm2: 8.9 }),
+      pou({ wr: '34-a', geomKey: shared, areaKm2: 8.9 }),
+      pou({ wr: '34-b', geomKey: shared, areaKm2: 8.9 }),
+    ]
+    const out = uniquePousByGeom(copies)
+    expect(out).toHaveLength(1)
+    expect(out[0].wr).toBe('34-4015')
+  })
+
+  it('keeps distinct geomKeys', () => {
+    const out = uniquePousByGeom([
+      pou({ wr: '34-244C', geomKey: 'tiny' }),
+      pou({ wr: '34-4015', geomKey: 'big' }),
+      pou({ wr: '34-x', geomKey: 'tiny' }),
+    ])
+    expect(out.map(p => p.geomKey)).toEqual(['tiny', 'big'])
   })
 })
