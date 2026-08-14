@@ -18,6 +18,7 @@ export function defaultState(): AppState {
     hideNonMatches: false,
     isolateSelection: false,
     focusPodKey: null,
+    focusPouKey: null,
     selectedWRs: new Set<string>(),
     flowEra: 'recent',
   }

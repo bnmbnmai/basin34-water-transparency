@@ -34,4 +34,15 @@ describe('uniqueSelectedPous', () => {
     const out = uniqueSelectedPous(['34-a', '34-b'], pousByWR, 20)
     expect(out.map(p => p.geomKey).sort()).toEqual(['field-a', 'field-b'])
   })
+
+  it('when geomKey is set, only that field is returned', () => {
+    const pousByWR = new Map<string, PouRecord[]>([
+      ['34-1', [
+        pou({ wr: '34-1', geomKey: 'clicked' }),
+        pou({ wr: '34-1', geomKey: 'other-field' }),
+      ]],
+    ])
+    const out = uniqueSelectedPous(['34-1'], pousByWR, 20, { geomKey: 'clicked' })
+    expect(out.map(p => p.geomKey)).toEqual(['clicked'])
+  })
 })

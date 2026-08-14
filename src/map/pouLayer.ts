@@ -1,5 +1,5 @@
 import L from 'leaflet'
-import { DISTRICT_POU_KM2, type DataStore } from '../data'
+import { DISTRICT_POU_KM2, pouGeomKey, type DataStore } from '../data'
 import { getImageryState, isYearOrArchiveActive } from './historicalImagery'
 import { basinPouOutlinesAllowed } from './pouVisibility'
 import { state } from '../state'
@@ -11,8 +11,9 @@ import type { GeoFeature, PouRecord } from '../types'
 const SELECTED_STYLE: L.PathOptions = {
   color: EMPHASIS_COLORS.selected.stroke,
   weight: 2.5,
-  fill: false,
-  fillOpacity: 0,
+  fill: true,
+  fillColor: EMPHASIS_COLORS.selected.stroke,
+  fillOpacity: 0.08,
 }
 const TRANSFER_LINE = EMPHASIS_COLORS.transfer.stroke
 
@@ -212,7 +213,12 @@ export class PouLayer {
 
     // One cyan outline per unique field — never stack fills (13 shared rights
     // used to paint the same polygon opaque white).
-    for (const pou of uniqueSelectedPous(state.selectedWRs, this.store.pousByWR, DISTRICT_POU_KM2)) {
+    for (const pou of uniqueSelectedPous(
+      state.selectedWRs,
+      this.store.pousByWR,
+      DISTRICT_POU_KM2,
+      { geomKey: state.focusPouKey },
+    )) {
       this.overlay.addLayer(L.geoJSON(pou.feature as any, {
         pane: 'pouSelectedPane',
         interactive: false,
@@ -255,15 +261,20 @@ export class PouLayer {
     }
   }
 
-  private styleClickable(feature: GeoFeature): L.PathOptions {
+  private pouLooksSelected(feature: GeoFeature): boolean {
+    if (state.focusPouKey) return pouGeomKey(feature.geometry) === state.focusPouKey
     const wr = (feature.properties?.WaterRightNumber || '').trim()
-    if (state.selectedWRs.has(wr)) return SELECTED_STYLE
+    return !!wr && state.selectedWRs.has(wr)
+  }
+
+  private styleClickable(feature: GeoFeature): L.PathOptions {
+    if (this.pouLooksSelected(feature)) return SELECTED_STYLE
     return CLICKABLE_STYLE
   }
 
   private styleFor(feature: GeoFeature): L.PathOptions {
     const wr = (feature.properties?.WaterRightNumber || '').trim()
-    const selected = state.selectedWRs.has(wr)
+    const selected = this.pouLooksSelected(feature)
 
     if ((feature.properties?.__areaKm2 ?? 0) >= DISTRICT_POU_KM2) {
       if (selected) return { color: EMPHASIS_COLORS.selected.stroke, weight: 2.5, fill: false, dashArray: '8,5' }

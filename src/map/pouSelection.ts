@@ -8,12 +8,14 @@ export function uniqueSelectedPous(
   selectedWRs: Iterable<string>,
   pousByWR: Map<string, PouRecord[]>,
   districtKm2: number,
+  opts: { geomKey?: string | null } = {},
 ): PouRecord[] {
   const seen = new Set<string>()
   const out: PouRecord[] = []
   for (const wr of selectedWRs) {
     for (const pou of pousByWR.get(wr) || []) {
       if (pou.areaKm2 >= districtKm2) continue
+      if (opts.geomKey && pou.geomKey !== opts.geomKey) continue
       const key = pou.geomKey || `${pou.wr}:${pou.areaKm2}`
       if (seen.has(key)) continue
       seen.add(key)

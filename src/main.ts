@@ -77,7 +77,10 @@ function setSelection(wrs: Set<string>) {
   const affected = new Set([...state.selectedWRs, ...wrs])
   const isolateOff = state.isolateSelection && wrs.size === 0
   if (isolateOff) state.isolateSelection = false
-  if (wrs.size === 0) state.focusPodKey = null
+  if (wrs.size === 0) {
+    state.focusPodKey = null
+    state.focusPouKey = null
+  }
   state.selectedWRs = wrs
 
   const visible = podLayer.visibleWRs()
@@ -144,7 +147,11 @@ function updateSelectionBanner() {
 }
 
 function onPodClick(rec: PodRecord) {
+  state.isolateSelection = false
+  state.focusPodKey = null
+  state.focusPouKey = null
   setSelection(rec.wr ? new Set([rec.wr]) : new Set())
+  pouLayer.setVisibleWRs(podLayer.visibleWRs())
   showPodDetails(rec, store)
 }
 
@@ -152,9 +159,13 @@ function onPouClick(feature: GeoFeature) {
   const wr = (feature.properties?.WaterRightNumber || '').trim()
   if (!wr) return
   const key = pouGeomKey(feature.geometry)
+  state.isolateSelection = false
+  state.focusPodKey = null
+  state.focusPouKey = key || null
   const group = key && store.geomKeyToWRs.get(key)
   const wrs = group ? new Set(group) : new Set([wr])
   setSelection(wrs)
+  pouLayer.setVisibleWRs(podLayer.visibleWRs())
   showPouGroupDetails(wrs, feature, store)
 }
 
@@ -168,6 +179,7 @@ function focusRight(wr: string, opts: { isolate: boolean; fromReceipt?: boolean 
   const rec = primaryPodForRight(store.podsByWR.get(wr) || [])
   state.isolateSelection = opts.isolate
   state.focusPodKey = opts.isolate && rec ? podKey(rec) : null
+  state.focusPouKey = null
   ignoreMapClickUntil = Date.now() + 500
   setSelection(new Set([wr]))
   zoomToWR(wr)
@@ -350,6 +362,7 @@ async function bootstrap() {
       state.selectedWRs = new Set()
       state.isolateSelection = false
       state.focusPodKey = null
+      state.focusPouKey = null
       refreshData()
     },
     resetAll: () => {
@@ -416,6 +429,7 @@ async function bootstrap() {
       state.selectedWRs = new Set()
       state.isolateSelection = false
       state.focusPodKey = null
+      state.focusPouKey = null
       if (!podLayer.enabled) {
         podLayer.setEnabled(true)
         syncLayerCheckbox('layer-pods', true)
@@ -435,6 +449,7 @@ async function bootstrap() {
       state.selectedWRs = new Set()
       state.isolateSelection = false
       state.focusPodKey = null
+      state.focusPouKey = null
       refreshData()
     },
   })

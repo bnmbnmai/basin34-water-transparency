@@ -224,6 +224,7 @@ export function goToGuideStep(index: number, options: { openReceipt?: boolean } 
   state.selectedWRs = new Set()
   state.isolateSelection = false
   state.focusPodKey = null
+  state.focusPouKey = null
   // Guide always keeps dense POU fills off — selection Zoom still paints cyan fields.
   state.placeOfUseMode = false
 

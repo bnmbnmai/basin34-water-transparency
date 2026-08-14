@@ -112,6 +112,11 @@ export interface AppState {
    * have many diversions; receipt Zoom should land on one star.
    */
   focusPodKey: string | null
+  /**
+   * Geom key of the field the user clicked. When set, only that POU looks
+   * selected — not every field of every sharing right.
+   */
+  focusPouKey: string | null
   /** Rights selected by clicking a POD or POU polygon. */
   selectedWRs: Set<string>
   flowEra: FlowEra
