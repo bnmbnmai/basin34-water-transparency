@@ -1,4 +1,5 @@
 import L from 'leaflet'
+import bundledLandsatIndex from '../../public/data/landsat/index.json'
 import {
   availableImageryYears,
   imageryBanner,
@@ -59,8 +60,8 @@ let landsatRequestedYear = 2024
 let waybackReleases: WaybackRelease[] = []
 let waybackReleaseNum: number | null = null
 let waybackLoaded = false
-let landsatIndex: LandsatIndex | null = null
-let landsatIndexLoaded = false
+/** Bundled at build time so the Year slider cannot collapse to Sentinel-2-only. */
+const landsatIndex: LandsatIndex = bundledLandsatIndex as LandsatIndex
 let bannerEl: HTMLDivElement | null = null
 const listeners = new Set<Listener>()
 
@@ -71,7 +72,6 @@ function notify(): void {
 }
 
 function localYears(): number[] {
-  if (!landsatIndex) return []
   return Object.keys(landsatIndex.years).map(Number).filter(n => Number.isFinite(n)).sort((a, b) => a - b)
 }
 
@@ -79,8 +79,8 @@ function shownSource(): LandsatSource {
   return resolveLandsatSource(
     landsatRequestedYear,
     localYears(),
-    landsatIndex?.years ?? {},
-    { indexReady: landsatIndexLoaded },
+    landsatIndex.years,
+    { indexReady: true },
   )
 }
 
@@ -172,7 +172,7 @@ function addDarkCanvas(): void {
 }
 
 function addLocalLandsatOverlay(year: number): void {
-  if (!mapRef || !landsatIndex) return
+  if (!mapRef) return
   const rec = landsatIndex.years[String(year)]
   if (!rec) return
   addDarkCanvas()
@@ -193,18 +193,6 @@ function paintLandsat(): void {
   if (src.kind === 's2' && src.layer) addS2Cloudless(src.layer)
   else if (src.kind === 'local') addLocalLandsatOverlay(src.year)
   else addDarkCanvas()
-}
-
-async function loadLandsatIndex(): Promise<void> {
-  if (landsatIndexLoaded) return
-  landsatIndexLoaded = true
-  try {
-    const res = await fetch('/data/landsat/index.json', { cache: 'force-cache' })
-    if (!res.ok) return
-    landsatIndex = (await res.json()) as LandsatIndex
-  } catch {
-    landsatIndex = null
-  }
 }
 
 export function isYearOrArchiveActive(): boolean {
@@ -290,11 +278,8 @@ export function initHistoricalImagery(map: L.Map): void {
   mapRef = map
   ensureBanner()
   void loadWaybackCatalog().catch(err => console.warn('Wayback catalog failed', err))
-  void loadLandsatIndex().then(() => {
-    snapLandsatYear(landsatRequestedYear, landsatIndexLoaded)
-    if (active && mode === 'landsat') paintLandsat()
-    notify()
-  })
+  snapLandsatYear(landsatRequestedYear, true)
+  notify()
 }
 
 /** Show imagery plane (Current / Year / Archive). */
@@ -328,7 +313,6 @@ export async function setImageryMode(next: ImageryMode): Promise<void> {
       addWaybackImagery(num)
     }
   } else {
-    await loadLandsatIndex()
     snapLandsatYear(landsatRequestedYear, true)
     paintLandsat()
   }
@@ -348,7 +332,7 @@ function snapLandsatYear(year: number, allowSnap: boolean): void {
 }
 
 export function setLandsatYear(year: number): void {
-  snapLandsatYear(year, landsatIndexLoaded)
+  snapLandsatYear(year, true)
   notify()
   if (active && mode === 'landsat') paintLandsat()
 }
