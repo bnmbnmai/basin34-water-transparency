@@ -62,23 +62,25 @@ export function renderShell() {
           <div id="imagery-era" class="imagery-era">
             <div class="flex gap-1 mb-1 flex-wrap" role="group" aria-label="Satellite era">
               <button type="button" class="basemap-btn imagery-mode active" data-imagery="current">Current</button>
-              <button type="button" class="basemap-btn imagery-mode" data-imagery="landsat">Year</button>
-              <button type="button" class="basemap-btn imagery-mode" data-imagery="wayback">Archive</button>
+              <button type="button" class="basemap-btn imagery-mode" data-imagery="landsat" id="imagery-year-btn">Year 1972–now</button>
+              <button type="button" class="basemap-btn imagery-mode" data-imagery="wayback" id="imagery-archive-btn">Archive (hi-res, 2014–now)</button>
             </div>
             <div id="imagery-landsat-controls" class="imagery-controls" hidden>
               <label class="imagery-year-field">
                 <span><strong id="landsat-year-label">2020 Sentinel-2 · 10 m</strong></span>
                 <input type="range" id="landsat-year" min="0" max="8" step="1" value="3" list="landsat-year-ticks" />
+                <div class="imagery-year-ends"><span id="landsat-year-min">1972</span><span id="landsat-year-max">2025</span></div>
                 <datalist id="landsat-year-ticks"></datalist>
               </label>
-              <p class="imagery-hint" id="landsat-year-hint">Year-by-year mosaics that actually exist. Landsat 5/8 ~30 m before 2016; Sentinel-2 ~10 m after.</p>
+              <p class="imagery-hint" id="landsat-year-hint">Same valley, every summer we have — Landsat 1–3 ~60 m (from 1972), Landsat 5/8 ~30 m, Sentinel-2 ~10 m after 2016. Drag left for the 1970s.</p>
             </div>
             <div id="imagery-wayback-controls" class="imagery-controls" hidden>
               <label class="imagery-year-field">
                 <span>Archive year <strong id="wayback-year-label">—</strong></span>
                 <input type="range" id="wayback-year" min="2014" max="2026" step="1" value="2024" />
+                <div class="imagery-year-ends"><span id="wayback-year-min">2014</span><span id="wayback-year-max">now</span></div>
               </label>
-              <p class="imagery-hint" id="wayback-date-hint">High-res Esri World Imagery snapshots since ~2014. A different product from the Year slider.</p>
+              <p class="imagery-hint" id="wayback-date-hint">High-res Esri World Imagery snapshots. This product only exists since ~2014 — use Year for 1972–2015 Landsat.</p>
             </div>
             <label id="show-pou-on-imagery-wrap" class="imagery-pou-toggle" hidden>
               <input type="checkbox" id="show-pou-on-imagery" />

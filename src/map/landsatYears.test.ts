@@ -55,11 +55,9 @@ describe('resolveLandsatSource', () => {
 })
 
 describe('labels', () => {
-  it('names sensor and resolution', () => {
-    expect(imagerySensorLabel({ year: 1990, kind: 'local', platform: 'landsat-5' }))
-      .toBe('1990 Landsat 5 · 30 m')
-    expect(imagerySensorLabel({ year: 2020, kind: 's2', layer: S2_CLOUDLESS_LAYERS[2020] }))
-      .toBe('2020 Sentinel-2 · 10 m')
+  it('names MSS at 60 m', () => {
+    expect(imagerySensorLabel({ year: 1975, kind: 'local', platform: 'landsat-2', resolutionM: 60 }))
+      .toBe('1975 Landsat 1–3 · 60 m')
   })
 
   it('says today’s satellite is off', () => {

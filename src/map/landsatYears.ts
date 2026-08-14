@@ -18,8 +18,9 @@ export interface LandsatSource {
   year: number
   kind: LandsatKind
   layer?: string
-  /** Landsat-5 TM / Landsat-8 OLI when known from index.json. */
+  /** Landsat-1/2/3 MSS, Landsat-5 TM, Landsat-8 OLI when known from index.json. */
   platform?: string
+  resolutionM?: number
 }
 
 export interface LocalYearMeta {
@@ -58,7 +59,8 @@ export function resolveLandsatSource(
     return { year, kind: 's2', layer: S2_CLOUDLESS_LAYERS[year] }
   }
   if (localYears.includes(year)) {
-    return { year, kind: 'local', platform: localMeta[String(year)]?.platform }
+    const meta = localMeta[String(year)]
+    return { year, kind: 'local', platform: meta?.platform, resolutionM: meta?.resolutionM }
   }
   // Do not snap 1990 → 2016 S2 before index.json has loaded.
   if (year < 2016 && !localYears.length && opts.indexReady === false) {
@@ -72,9 +74,17 @@ export function resolveLandsatSource(
   return { year, kind: 'none' }
 }
 
+function isMss(shown: LandsatSource): boolean {
+  return shown.resolutionM === 60
+    || shown.platform === 'landsat-1'
+    || shown.platform === 'landsat-2'
+    || shown.platform === 'landsat-3'
+}
+
 export function imagerySensorLabel(shown: LandsatSource): string {
   if (shown.kind === 's2') return `${shown.year} Sentinel-2 · 10 m`
   if (shown.kind === 'local') {
+    if (isMss(shown)) return `${shown.year} Landsat 1–3 · 60 m`
     const n = shown.platform === 'landsat-8' ? '8' : shown.platform === 'landsat-5' ? '5' : ''
     const sat = n ? `Landsat ${n}` : 'Landsat'
     return `${shown.year} ${sat} · 30 m`
@@ -88,6 +98,9 @@ export function imageryBanner(requested: number, shown: LandsatSource): string {
     return `${snap}Showing ${shown.year} Sentinel-2 (10 m) — today’s satellite is off`
   }
   if (shown.kind === 'local') {
+    if (isMss(shown)) {
+      return `${snap}Showing ${shown.year} Landsat 1–3 MSS (60 m) — today’s satellite is off`
+    }
     return `${snap}Showing ${shown.year} Landsat (30 m) — today’s satellite is off`
   }
   return `No mosaic for ${requested}`
@@ -99,6 +112,9 @@ export function landsatHint(requested: number, shown: LandsatSource): string {
     return `${snap}Sentinel-2 cloudless mosaic (~10 m). Best for crop circles and new ground.`
   }
   if (shown.kind === 'local') {
+    if (isMss(shown)) {
+      return `${snap}Landsat 1–3 MSS summer mosaic (~60 m). Coarse, but the only public satellite years before 1984.`
+    }
     return `${snap}Landsat Collection 2 summer mosaic (~30 m). Dark map outside the valley — not today’s satellite.`
   }
   return `No summer mosaic for ${requested}. The Year slider only includes years that actually filled.`

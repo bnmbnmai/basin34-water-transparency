@@ -243,6 +243,8 @@ export function syncImageryControls(): void {
   const landsatLabel = $('landsat-year-label')
   const landsatHintEl = $('landsat-year-hint')
   const datalist = $('landsat-year-ticks')
+  const yearBtn = $('imagery-year-btn')
+  const archiveBtn = $('imagery-archive-btn')
   if (landsatRange && ticks.length) {
     landsatRange.min = '0'
     landsatRange.max = String(ticks.length - 1)
@@ -253,8 +255,19 @@ export function syncImageryControls(): void {
   if (datalist && ticks.length) {
     datalist.innerHTML = ticks.map((y, i) => `<option value="${i}" label="${y}"></option>`).join('')
   }
+  const yearMinEl = $('landsat-year-min')
+  const yearMaxEl = $('landsat-year-max')
+  if (ticks.length) {
+    if (yearMinEl) yearMinEl.textContent = String(ticks[0])
+    if (yearMaxEl) yearMaxEl.textContent = String(ticks[ticks.length - 1])
+    if (yearBtn) yearBtn.textContent = `Year ${ticks[0]}–now`
+  }
   if (landsatLabel) landsatLabel.textContent = s.landsatLabel
-  if (landsatHintEl) landsatHintEl.textContent = s.landsatHint
+  if (landsatHintEl) landsatHintEl.textContent = s.landsatHint || (
+    ticks.length
+      ? `Same valley, every summer we have — Landsat then Sentinel-2. Drag left to ${ticks[0]}.`
+      : 'Loading year mosaics…'
+  )
 
   const pouOnImg = input('show-pou-on-imagery')
   if (pouOnImg) pouOnImg.checked = state.showPouOnImagery
@@ -268,9 +281,14 @@ export function syncImageryControls(): void {
     const y = s.waybackDate ? Number(s.waybackDate.slice(0, 4)) : years[years.length - 1]
     waybackRange.value = String(y)
     if (waybackLabel) waybackLabel.textContent = String(y)
+    const wbMin = $('wayback-year-min')
+    const wbMax = $('wayback-year-max')
+    if (wbMin) wbMin.textContent = String(years[0])
+    if (wbMax) wbMax.textContent = String(years[years.length - 1])
+    if (archiveBtn) archiveBtn.textContent = `Archive (hi-res, ${years[0]}–now)`
   }
   if (waybackHint && s.waybackDate) {
-    waybackHint.textContent = `Esri Wayback ${s.waybackDate} (publish date). High-res where World Imagery had coverage — not a consistent sensor.`
+    waybackHint.textContent = `Esri Wayback ${s.waybackDate} (publish date). High-res only since ~${years[0] || 2014} — use Year for earlier summers.`
   }
 }
 

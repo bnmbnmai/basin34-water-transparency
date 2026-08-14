@@ -4,14 +4,15 @@ import { getImageryState, isYearOrArchiveActive } from './historicalImagery'
 import { basinPouOutlinesAllowed } from './pouVisibility'
 import { state } from '../state'
 import { EMPHASIS_COLORS } from '../symbology'
+import { uniqueSelectedPous } from './pouSelection'
 import { podKey } from './focusRight'
 import type { GeoFeature, PouRecord } from '../types'
 
 const SELECTED_STYLE: L.PathOptions = {
   color: EMPHASIS_COLORS.selected.stroke,
   weight: 2.5,
-  fillColor: EMPHASIS_COLORS.selected.fill,
-  fillOpacity: 0.18,
+  fill: false,
+  fillOpacity: 0,
 }
 const TRANSFER_LINE = EMPHASIS_COLORS.transfer.stroke
 
@@ -209,23 +210,20 @@ export class PouLayer {
       return
     }
 
-    // Selected POD↔field graphics always work when a right is chosen — even if
-    // dense Place-of-Use fills are off. Cyan is reserved for selection; purple is transfers.
-    for (const wr of state.selectedWRs) {
-      for (const pou of this.store.pousByWR.get(wr) || []) {
-        if (pou.areaKm2 >= DISTRICT_POU_KM2) continue
-        this.overlay.addLayer(L.geoJSON(pou.feature as any, {
-          pane: 'pouSelectedPane',
-          interactive: false,
-          style: () => ({
-            color: EMPHASIS_COLORS.selected.stroke,
-            weight: 3,
-            fillOpacity: 0.12,
-            fillColor: EMPHASIS_COLORS.selected.fill,
-            dashArray: undefined,
-          }),
-        }))
-      }
+    // One cyan outline per unique field — never stack fills (13 shared rights
+    // used to paint the same polygon opaque white).
+    for (const pou of uniqueSelectedPous(state.selectedWRs, this.store.pousByWR, DISTRICT_POU_KM2)) {
+      this.overlay.addLayer(L.geoJSON(pou.feature as any, {
+        pane: 'pouSelectedPane',
+        interactive: false,
+        style: () => ({
+          color: EMPHASIS_COLORS.selected.stroke,
+          weight: 3,
+          fill: false,
+          fillOpacity: 0,
+          dashArray: undefined,
+        }),
+      }))
     }
 
     const lineWRs = new Set<string>(state.selectedWRs)

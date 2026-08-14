@@ -7,6 +7,7 @@ so this script registers a STAC mosaic per year, downloads WebMercator tiles
 that cover the basin, and stitches them into public/data/landsat/{year}.jpg.
 
 Coverage:
+  1972–1983  Landsat 1–3 MSS (~60 m) via Collection 2 Level-1
   1984–2011  Landsat 5 TM
   2013–2015  Landsat 8 OLI
   Skip Landsat 7 (SLC-off stripes) and 2012 (L5 ended, L8 not yet).
@@ -51,13 +52,22 @@ CLOUD_COVER = 40
 CLOUD_COVER_RELAXED = 70
 TILE_ZOOM = 11
 # Raw Collection 2 surface reflectance stretch that keeps the valley readable.
-TILE_QUERY = [
+TILE_QUERY_L2 = [
     ("collection", "landsat-c2-l2"),
     ("assets", "red"),
     ("assets", "green"),
     ("assets", "blue"),
     ("rescale", "7000,18000"),
     ("color_formula", "Gamma RGB 1.7 Saturation 1.2"),
+]
+# MSS has no blue band — NIR/red/green false color, stretched as DN.
+TILE_QUERY_MSS = [
+    ("collection", "landsat-c2-l1"),
+    ("assets", "nir08"),
+    ("assets", "red"),
+    ("assets", "green"),
+    ("rescale", "10,120"),
+    ("color_formula", "Gamma RGB 1.4 Saturation 1.1"),
 ]
 MIN_ITEMS = 1
 # Skip a year if the stitched mosaic is mostly nodata black.
@@ -77,7 +87,23 @@ def platform_for_year(year: int) -> str | None:
     return None
 
 
+def mss_platforms_for_year(year: int) -> list[str]:
+    """Landsat 1–3 MSS overlap; later satellite first when two flew the same summer."""
+    if year < 1972 or year > 1983:
+        return []
+    out: list[str] = []
+    if 1978 <= year <= 1983:
+        out.append("landsat-3")
+    if 1975 <= year <= 1982:
+        out.append("landsat-2")
+    if 1972 <= year <= 1978:
+        out.append("landsat-1")
+    return out
+
+
 def sensor_for_platform(platform: str) -> str:
+    if platform in ("landsat-1", "landsat-2", "landsat-3"):
+        return "MSS"
     return "OLI" if platform == "landsat-8" else "TM"
 
 
@@ -141,9 +167,9 @@ def http_bytes(url: str, timeout: int = 90, retries: int = 3) -> bytes:
     raise last  # type: ignore[misc]
 
 
-def summer_search_body(year: int, platform: str, cloud: int) -> dict:
+def summer_search_body(year: int, platform: str, cloud: int, collection: str) -> dict:
     return {
-        "collections": ["landsat-c2-l2"],
+        "collections": [collection],
         "bbox": BBOX,
         "datetime": f"{year}-06-01T00:00:00Z/{year}-09-30T23:59:59Z",
         "limit": 40,
@@ -159,8 +185,8 @@ def summer_search_body(year: int, platform: str, cloud: int) -> dict:
     }
 
 
-def stac_count(year: int, platform: str, cloud: int) -> int:
-    body = summer_search_body(year, platform, cloud)
+def stac_count(year: int, platform: str, cloud: int, collection: str) -> int:
+    body = summer_search_body(year, platform, cloud, collection)
     body["limit"] = 1
     data = http_json(PC_STAC, body, timeout=45)
     # numberMatched is present on PC; fall back to returned features.
@@ -170,8 +196,8 @@ def stac_count(year: int, platform: str, cloud: int) -> int:
     return len(data.get("features") or [])
 
 
-def register_mosaic(year: int, platform: str, cloud: int) -> str:
-    body = summer_search_body(year, platform, cloud)
+def register_mosaic(year: int, platform: str, cloud: int, collection: str) -> str:
+    body = summer_search_body(year, platform, cloud, collection)
     data = http_json(PC_MOSAIC, body, timeout=60)
     sid = data.get("searchid") or data.get("id")
     if not sid:
@@ -179,8 +205,8 @@ def register_mosaic(year: int, platform: str, cloud: int) -> str:
     return str(sid)
 
 
-def fetch_tile(searchid: str, z: int, x: int, y: int) -> Image.Image | None:
-    q = urllib.parse.urlencode(TILE_QUERY)
+def fetch_tile(searchid: str, z: int, x: int, y: int, tile_query: list[tuple[str, str]]) -> Image.Image | None:
+    q = urllib.parse.urlencode(tile_query)
     url = f"{PC_TILES}/{searchid}/tiles/WebMercatorQuad/{z}/{x}/{y}.jpeg?{q}"
     data = http_bytes(url)
     if len(data) < 800 or not data.startswith(b"\xff\xd8"):
@@ -189,7 +215,9 @@ def fetch_tile(searchid: str, z: int, x: int, y: int) -> Image.Image | None:
     return img
 
 
-def stitch_tiles(searchid: str, z: int, x0: int, x1: int, y0: int, y1: int) -> Image.Image:
+def stitch_tiles(
+    searchid: str, z: int, x0: int, x1: int, y0: int, y1: int, tile_query: list[tuple[str, str]],
+) -> Image.Image:
     cols = x1 - x0 + 1
     rows = y1 - y0 + 1
     canvas = Image.new("RGB", (cols * 256, rows * 256), (0, 0, 0))
@@ -199,7 +227,7 @@ def stitch_tiles(searchid: str, z: int, x0: int, x1: int, y0: int, y1: int) -> I
     def one(xy: tuple[int, int]) -> tuple[int, int, Image.Image | None]:
         x, y = xy
         try:
-            return x, y, fetch_tile(searchid, z, x, y)
+            return x, y, fetch_tile(searchid, z, x, y, tile_query)
         except Exception as exc:
             print(f"    tile {z}/{x}/{y} failed: {exc}")
             return x, y, None
@@ -227,28 +255,62 @@ def fill_fraction(img: Image.Image) -> float:
     return 1.0 - (dark / total if total else 1.0)
 
 
-def fetch_year(year: int, x0: int, x1: int, y0: int, y1: int) -> dict | None:
-    platform = platform_for_year(year)
-    if not platform:
-        print(f"  skip {year}: no TM/OLI platform (L7 SLC-off / L5–L8 gap)")
-        return None
-
+def try_mosaic(
+    year: int,
+    platform: str,
+    collection: str,
+    tile_query: list[tuple[str, str]],
+    x0: int, x1: int, y0: int, y1: int,
+) -> tuple[Image.Image, int, int, str] | None:
     cloud = CLOUD_COVER
-    n = stac_count(year, platform, cloud)
+    n = stac_count(year, platform, cloud, collection)
     if n < MIN_ITEMS:
         cloud = CLOUD_COVER_RELAXED
-        n = stac_count(year, platform, cloud)
-    print(f"  {year} {platform}: {n} summer scenes (cloud < {cloud})")
+        n = stac_count(year, platform, cloud, collection)
+    print(f"  {year} {platform} ({collection}): {n} summer scenes (cloud < {cloud})")
     if n < MIN_ITEMS:
-        print(f"  skip {year}: no scenes")
         return None
-
-    sid = register_mosaic(year, platform, cloud)
-    mosaic = stitch_tiles(sid, TILE_ZOOM, x0, x1, y0, y1)
+    sid = register_mosaic(year, platform, cloud, collection)
+    mosaic = stitch_tiles(sid, TILE_ZOOM, x0, x1, y0, y1, tile_query)
     fill = fill_fraction(mosaic)
     print(f"    fill {fill:.0%}")
     if fill < MIN_FILL_FRAC:
-        print(f"  skip {year}: mosaic too empty")
+        return None
+    return mosaic, n, cloud, platform
+
+
+def fetch_year(year: int, x0: int, x1: int, y0: int, y1: int) -> dict | None:
+    tm = platform_for_year(year)
+    mosaic = None
+    n = 0
+    platform = ""
+    collection = ""
+    resolution = 30
+    source = ""
+
+    if tm:
+        got = try_mosaic(year, tm, "landsat-c2-l2", TILE_QUERY_L2, x0, x1, y0, y1)
+        if got:
+            mosaic, n, _cloud, platform = got
+            collection = "landsat-c2-l2"
+            resolution = 30
+            source = "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June–September)"
+
+    if mosaic is None:
+        for mss in mss_platforms_for_year(year):
+            got = try_mosaic(year, mss, "landsat-c2-l1", TILE_QUERY_MSS, x0, x1, y0, y1)
+            if got:
+                mosaic, n, _cloud, platform = got
+                collection = "landsat-c2-l1"
+                resolution = 60
+                source = "Microsoft Planetary Computer Landsat Collection 2 Level-1 MSS summer mosaic (June–September)"
+                break
+
+    if mosaic is None:
+        if not tm and not mss_platforms_for_year(year):
+            print(f"  skip {year}: no TM/OLI/MSS platform (L7 SLC-off / L5–L8 gap)")
+        else:
+            print(f"  skip {year}: no usable summer mosaic")
         return None
 
     buf = io.BytesIO()
@@ -263,16 +325,17 @@ def fetch_year(year: int, x0: int, x1: int, y0: int, y1: int) -> dict | None:
         "bytes": len(data),
         "platform": platform,
         "sensor": sensor_for_platform(platform),
-        "resolutionM": 30,
+        "resolutionM": resolution,
         "scenes": n,
-        "fill": round(fill, 3),
-        "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June–September)",
+        "fill": round(fill_fraction(mosaic), 3),
+        "source": source,
+        "collection": collection,
     }
 
 
 def parse_years(raw: str | None) -> list[int]:
     if not raw:
-        return [y for y in range(1984, 2016) if platform_for_year(y)]
+        return [y for y in range(1972, 2016) if platform_for_year(y) or mss_platforms_for_year(y)]
     out: list[int] = []
     for part in raw.split(","):
         part = part.strip()
@@ -284,7 +347,7 @@ def parse_years(raw: str | None) -> list[int]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Fetch Landsat C2 summer mosaics for Basin 34")
-    parser.add_argument("--years", help="Comma-separated years (default: 1984–2015, skipping 2012)")
+    parser.add_argument("--years", help="Comma-separated years (default: 1972–2015, skipping 2012)")
     args = parser.parse_args()
 
     os.makedirs(OUT_DIR, exist_ok=True)

@@ -14,6 +14,127 @@
   "attribution": "Landsat Collection 2 via Microsoft Planetary Computer. USGS / NASA.",
   "zoom": 11,
   "years": {
+    "1972": {
+      "file": "1972.jpg",
+      "bytes": 542324,
+      "platform": "landsat-1",
+      "sensor": "MSS",
+      "resolutionM": 60,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-1 MSS summer mosaic (June\u2013September)",
+      "collection": "landsat-c2-l1"
+    },
+    "1973": {
+      "file": "1973.jpg",
+      "bytes": 639610,
+      "platform": "landsat-1",
+      "sensor": "MSS",
+      "resolutionM": 60,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-1 MSS summer mosaic (June\u2013September)",
+      "collection": "landsat-c2-l1"
+    },
+    "1974": {
+      "file": "1974.jpg",
+      "bytes": 536493,
+      "platform": "landsat-1",
+      "sensor": "MSS",
+      "resolutionM": 60,
+      "scenes": 1,
+      "fill": 0.999,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-1 MSS summer mosaic (June\u2013September)",
+      "collection": "landsat-c2-l1"
+    },
+    "1975": {
+      "file": "1975.jpg",
+      "bytes": 526883,
+      "platform": "landsat-2",
+      "sensor": "MSS",
+      "resolutionM": 60,
+      "scenes": 1,
+      "fill": 0.999,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-1 MSS summer mosaic (June\u2013September)",
+      "collection": "landsat-c2-l1"
+    },
+    "1976": {
+      "file": "1976.jpg",
+      "bytes": 506251,
+      "platform": "landsat-2",
+      "sensor": "MSS",
+      "resolutionM": 60,
+      "scenes": 1,
+      "fill": 0.999,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-1 MSS summer mosaic (June\u2013September)",
+      "collection": "landsat-c2-l1"
+    },
+    "1977": {
+      "file": "1977.jpg",
+      "bytes": 589116,
+      "platform": "landsat-2",
+      "sensor": "MSS",
+      "resolutionM": 60,
+      "scenes": 1,
+      "fill": 0.99,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-1 MSS summer mosaic (June\u2013September)",
+      "collection": "landsat-c2-l1"
+    },
+    "1978": {
+      "file": "1978.jpg",
+      "bytes": 524243,
+      "platform": "landsat-3",
+      "sensor": "MSS",
+      "resolutionM": 60,
+      "scenes": 1,
+      "fill": 0.998,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-1 MSS summer mosaic (June\u2013September)",
+      "collection": "landsat-c2-l1"
+    },
+    "1979": {
+      "file": "1979.jpg",
+      "bytes": 491081,
+      "platform": "landsat-3",
+      "sensor": "MSS",
+      "resolutionM": 60,
+      "scenes": 1,
+      "fill": 0.995,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-1 MSS summer mosaic (June\u2013September)",
+      "collection": "landsat-c2-l1"
+    },
+    "1980": {
+      "file": "1980.jpg",
+      "bytes": 733901,
+      "platform": "landsat-2",
+      "sensor": "MSS",
+      "resolutionM": 60,
+      "scenes": 1,
+      "fill": 0.995,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-1 MSS summer mosaic (June\u2013September)",
+      "collection": "landsat-c2-l1"
+    },
+    "1981": {
+      "file": "1981.jpg",
+      "bytes": 533750,
+      "platform": "landsat-2",
+      "sensor": "MSS",
+      "resolutionM": 60,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-1 MSS summer mosaic (June\u2013September)",
+      "collection": "landsat-c2-l1"
+    },
+    "1982": {
+      "file": "1982.jpg",
+      "bytes": 582868,
+      "platform": "landsat-3",
+      "sensor": "MSS",
+      "resolutionM": 60,
+      "scenes": 1,
+      "fill": 1.0,
+      "source": "Microsoft Planetary Computer Landsat Collection 2 Level-1 MSS summer mosaic (June\u2013September)",
+      "collection": "landsat-c2-l1"
+    },
     "1984": {
       "file": "1984.jpg",
       "bytes": 397964,
@@ -325,5 +446,5 @@
       "source": "Microsoft Planetary Computer Landsat Collection 2 Level-2 summer mosaic (June\u2013September)"
     }
   },
-  "generated": "2026-08-13"
+  "generated": "2026-08-14"
 }
