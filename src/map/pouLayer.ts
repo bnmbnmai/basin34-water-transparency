@@ -13,7 +13,7 @@ const SELECTED_STYLE: L.PathOptions = {
   weight: 2.5,
   fill: true,
   fillColor: EMPHASIS_COLORS.selected.stroke,
-  fillOpacity: 0.08,
+  fillOpacity: 0.22,
 }
 const TRANSFER_LINE = EMPHASIS_COLORS.transfer.stroke
 
@@ -22,10 +22,10 @@ export const POU_CLICKABLE_MIN_ZOOM = 12
 
 const CLICKABLE_STYLE: L.PathOptions = {
   color: '#15803d',
-  weight: 1,
+  weight: 1.5,
   fillColor: '#4ade80',
-  fillOpacity: 0.06,
-  opacity: 0.55,
+  fillOpacity: 0.25,
+  opacity: 0.9,
   dashArray: '2,3',
 }
 
@@ -304,8 +304,8 @@ export class PouLayer {
       return { color: '#15803d', weight: 0.5, fillColor: '#4ade80', fillOpacity: 0.01, opacity: 0.3, dashArray: '2,3' }
     }
     return {
-      color: '#15803d', weight: 1, fillColor: '#4ade80',
-      fillOpacity: hasSelection ? 0.02 : 0.04, dashArray: '2,3',
+      color: '#15803d', weight: 1.5, fillColor: '#4ade80',
+      fillOpacity: hasSelection ? 0.08 : 0.22, dashArray: '2,3',
     }
   }
 }
