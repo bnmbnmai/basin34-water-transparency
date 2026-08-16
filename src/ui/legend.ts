@@ -1,5 +1,7 @@
+import { TRANSFER_DIST_KM } from '../data'
 import { state } from '../state'
 import { EMPHASIS_COLORS, POD_COLORS, PRIORITY_COLORS, WELL_USE_COLORS } from '../symbology'
+import { formatDistanceKm } from '../units'
 
 const star = (color: string) => `<span class="lg-star" style="color:${color}">★</span>`
 const dot = (color: string) => `<span class="lg-dot" style="background:${color}"></span>`
@@ -10,7 +12,7 @@ const fillSwatch = (stroke: string, fill: string) =>
 
 const MODE_LEGEND: Record<string, string> = {
   'senior-downstream': `${star(EMPHASIS_COLORS.senior.stroke)} Pre-1950 Big Lost / Ferris Slough rights on the NHD mainstem at/below Moore (emphasized). Antelope and other tributaries excluded. Others dimmed.`,
-  transfers: `${star(EMPHASIS_COLORS.transfer.stroke)} Water moved farther: POD sits far (&gt;8 km) from place of use; dashed lines connect POD ↔ POU. ` +
+  transfers: `${star(EMPHASIS_COLORS.transfer.stroke)} Water moved farther: POD sits far (&gt;${formatDistanceKm(TRANSFER_DIST_KM)}) from place of use; dashed lines connect POD ↔ POU. ` +
     `${fillSwatch('#c2410c', 'rgba(249,115,22,0.45)')} solid orange POU = off the natural corridor (geometric — not “built since 2010”). Others dimmed.`,
 }
 
@@ -101,6 +103,6 @@ export function updateLegend(counts: LegendCounts, layersOn: { pods: boolean; we
   if (!rows.length) {
     rows.push(`<div class="lg-row text-[var(--text-muted)]">Toggle layers or open an insight receipt.</div>`)
   }
-  rows.push(`<div class="lg-row" style="font-size:0.85em;color:var(--text-muted)">Marker size = diversion / production rate.</div>`)
+  rows.push(`<div class="lg-row" style="font-size:0.85em;color:var(--text-muted)">Marker size = diversion / production rate. Distances in miles (feet when short); areas in acres.</div>`)
   el.innerHTML = rows.join('')
 }
