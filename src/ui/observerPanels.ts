@@ -18,6 +18,7 @@ import {
   ownerSizeBands,
 } from '../ownerConcentration'
 import { state } from '../state'
+import { formatMilesNumber } from '../units'
 import {
   WELL_PRESSURE_METHODOLOGY,
   lowerValleyWells,
@@ -66,7 +67,7 @@ export function showLowerValleyPanel(store: DataStore) {
         `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${r.year ?? '—'}</td>` +
         `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${r.rate.toFixed(2)}</td>` +
         `<td style="padding:4px;border-bottom:1px solid var(--border)">${r.diversion || '—'}</td>` +
-        `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${r.arcoKm.toFixed(1)}</td>` +
+        `<td style="padding:4px;border-bottom:1px solid var(--border);text-align:right">${formatMilesNumber(r.arcoKm)}</td>` +
         `<td style="padding:4px;border-bottom:1px solid var(--border)">${r.onDryChannel ? 'yes' : '—'}</td>` +
         `<td style="padding:4px;border-bottom:1px solid var(--border)"><button type="button" class="zoom-btn" data-zoom-wr="${r.wr}">Zoom</button></td>` +
         `</tr>`
@@ -85,7 +86,7 @@ export function showLowerValleyPanel(store: DataStore) {
     `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">Year</th>` +
     `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">cfs</th>` +
     `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Diversion</th>` +
-    `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">km to Arco</th>` +
+    `<th style="text-align:right;padding:4px;border-bottom:1px solid var(--border)">mi to Arco</th>` +
     `<th style="text-align:left;padding:4px;border-bottom:1px solid var(--border)">Dry-styled</th>` +
     `<th></th></tr></thead><tbody id="lower-valley-tbody">`
 
