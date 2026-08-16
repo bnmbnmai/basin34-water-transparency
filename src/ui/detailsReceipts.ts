@@ -18,8 +18,7 @@ import {
   lowerValleyToCsv,
 } from '../lowerValley'
 import { formatDistanceKm, formatMilesNumber } from '../units'
-import { TRANSFER_SEARCH_URL } from '../wrLinks'
-import { FOOT, open, priorityBadge, transferBadge } from './details'
+import { FOOT, open, priorityBadge } from './details'
 
 export function showTransfersOverview(store: DataStore) {
   const rows = listMovedFarther(store)
