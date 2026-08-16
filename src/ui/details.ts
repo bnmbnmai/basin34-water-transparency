@@ -1,35 +1,16 @@
-import { DISTRICT_POU_KM2, NEW_GROUND_KM, CONFLICT_CORRIDOR_KM, TRANSFER_DIST_KM, type DataStore } from '../data'
+import { DISTRICT_POU_KM2, CONFLICT_CORRIDOR_KM, type DataStore } from '../data'
 import type { GeoFeature, PodRecord, WellRecord } from '../types'
-import { ACCOUNTING_METHODOLOGY, loadAccounting, type AccountingExtract } from '../accounting'
 import { gageChartsStory, gageRoleFromProps, gageRoleLabel } from '../map/gageRoles'
 import {
-  fetchDailyYear, fetchGageFlowHistory, fetchInstantaneousCfs,
-  mergedYearSeries, pickOverlayYears, type GageFlowHistory,
+  fetchGageFlowHistory, fetchInstantaneousCfs,
+  mergedYearSeries, type GageFlowHistory,
 } from '../usgs'
 import { enhanceCharts, seriesFromPointsWithGaps, svgChart } from './chart'
-import {
-  DRY_REACH_METHODOLOGY,
-  DRY_REACH_SENIOR_YEAR,
-  dryReachSeniorsToCsv,
-  downloadCsv,
-  listDryReachSeniors,
-} from '../dryReach'
-import {
-  MOVED_FARTHER_METHODOLOGY,
-  listMovedFarther,
-  movedFartherToCsv,
-} from '../movedFarther'
-import {
-  LOWER_VALLEY_METHODOLOGY,
-  listLowerValleySurface,
-  lowerValleyToCsv,
-} from '../lowerValley'
 import { haversineKm, shouldIncludePouInFocus } from '../map/focusRight'
-import { formatAcresFromKm2, formatDistanceKm, formatMilesNumber } from '../units'
+import { formatAcresFromKm2, formatDistanceKm } from '../units'
 import { TRANSFER_SEARCH_URL } from '../wrLinks'
 
-/** Chart width from the open inspector (map-adjacent, not a lightbox). */
-function inspectorChartW(): number {
+export function inspectorChartW(): number {
   const panel = document.getElementById('details')
   const w = panel?.clientWidth || 360
   return Math.max(240, Math.min(560, w - 28))
@@ -74,7 +55,7 @@ export const FLOW_STEP_GAGES = {
   sinks: { site: '13132565', name: 'Above Big Lost River Sinks', lat: 43.7233333, lon: -112.875 },
 } as const
 
-const ZERO_CFS = 0.5
+export const ZERO_CFS = 0.5
 
 export interface OpenInspectorOpts {
   wide?: boolean
@@ -84,7 +65,7 @@ export interface OpenInspectorOpts {
   heading?: string
 }
 
-function open(html: string, opts: OpenInspectorOpts = {}) {
+export function open(html: string, opts: OpenInspectorOpts = {}) {
   const panel = document.getElementById('details')!
   const content = document.getElementById('details-content')!
   const heading = document.getElementById('details-heading')
@@ -111,7 +92,7 @@ export function closeDetails() {
   if (heading) heading.textContent = 'Inspector'
 }
 
-const FOOT = `<div style="margin-top:6px;font-size:0.7em;color:var(--text-muted)">`
+export const FOOT = `<div style="margin-top:6px;font-size:0.7em;color:var(--text-muted)">`
 
 export function showPodDetails(rec: PodRecord, store: DataStore, opts?: { fromReceipt?: boolean }) {
   const keepReceipt = !!opts?.fromReceipt && !!receiptReopen
@@ -221,7 +202,7 @@ export function showPouGroupDetails(wrs: Set<string>, clicked: GeoFeature, store
   open(html)
 }
 
-/** Gage details: live CFS + role-based chart (or redirect to river shrink). */
+
 export function showGageDetails(feature: GeoFeature) {
   const p = feature.properties || {}
   const role = gageRoleFromProps(p.site_no, p)
@@ -283,4 +264,105 @@ export function showGageDetails(feature: GeoFeature) {
       const el = document.getElementById('gage-chart')
       if (el) el.innerHTML = `Could not load NWIS statistics right now — <a href="${p.url || `https://waterdata.usgs.gov/nwis/uv?site_no=${p.site_no}`}" target="_blank" rel="noopener">view on USGS</a>.`
     })
+}
+
+function renderGageChart(
+  role: ReturnType<typeof gageRoleFromProps>,
+  history: GageFlowHistory,
+) {
+  const el = document.getElementById('gage-chart')
+  if (!el) return
+  const series = mergedYearSeries(history)
+  const currentYear = new Date().getFullYear()
+
+  if (series.length === 0) {
+    el.style.color = 'inherit'
+    el.innerHTML =
+      `<div style="font-size:0.85rem;padding:6px 10px;border-left:3px solid #d97706;background:rgba(217,119,6,0.08)">` +
+      `<strong style="color:#b45309">No daily or annual discharge in USGS NWIS for this site.</strong> ` +
+      `Open river shrink for the Mackay → Moore → Arco record.` +
+      `</div>`
+    return
+  }
+
+  const firstY = series[0].year
+  const lastY = series[series.length - 1].year
+  const discontinued = lastY < currentYear - 2
+  const sparse = series.length < 5
+  const zeroYears = series.filter(d => d.cfs <= ZERO_CFS)
+  const daysSeries = series.filter(d => d.daysWithFlow != null)
+  const irrigSeries = series.filter(d => d.irrigationDaysWithFlow != null)
+
+  let html = ''
+  if (role === 'remnant') {
+    const zeroPct = Math.round((zeroYears.length / series.length) * 100)
+    html += `<div style="font-size:0.85rem;margin-bottom:6px;padding:4px 8px;border-left:3px solid #dc2626;background:rgba(220,38,38,0.08)">` +
+      `<strong style="color:#dc2626">${zeroYears.length} of ${series.length} years (${zeroPct}%) had a near-zero annual mean</strong> ` +
+      `(${firstY}–${lastY}). Days-with-flow below is the honest series — a brief pulse still plots as a few days, not “a little water all year.”` +
+      `</div>`
+  } else if (role === 'terminus' || sparse) {
+    html += `<div style="font-size:0.85rem;margin-bottom:4px;color:var(--text-muted)">` +
+      `${sparse ? `Short record — ${series.length} year${series.length === 1 ? '' : 's'} (${firstY}–${lastY}). ` : ''}` +
+      `This is the terminus gage: days-with-flow shows when surface water still passed Moore, not a long annual-mean story.` +
+      `</div>`
+  } else {
+    html += `<div style="font-size:0.85rem;margin-bottom:4px;color:var(--text-muted)">` +
+      `Mackay is basin yield. Days-with-flow and irrigation-season (Apr–Oct) days sit above calendar-year mean so wet pulses are not mistaken for sustained flow.` +
+      `</div>`
+  }
+  if (discontinued) {
+    html += `<div style="font-size:0.85rem;margin:4px 0;padding:4px 8px;border-left:3px solid #d97706;background:rgba(217,119,6,0.08)">` +
+      `<strong style="color:#b45309">Record ends ${lastY} — gage discontinued.</strong></div>`
+  }
+
+  if (daysSeries.length) {
+    html += svgChart({
+      width: inspectorChartW(),
+      height: role === 'remnant' ? 260 : 220,
+      series: [
+        ...seriesFromPointsWithGaps(
+          daysSeries.map(d => ({ x: d.year, y: d.daysWithFlow! })),
+          { color: '#0ea5e9', label: 'days with flow', kind: 'line', width: 2 },
+        ),
+        ...(irrigSeries.length
+          ? seriesFromPointsWithGaps(
+            irrigSeries.map(d => ({ x: d.year, y: d.irrigationDaysWithFlow! })),
+            { color: '#c2410c', label: 'Apr–Oct days with flow', kind: 'line' },
+          )
+          : []),
+      ],
+      yLabel: 'days',
+      yMax: 366,
+    })
+  }
+
+  html += `<p style="font-size:0.75em;color:var(--text-muted);margin:8px 0 4px">Calendar-year mean (secondary — a two-week pulse still averages near zero).</p>`
+  html += svgChart({
+    width: inspectorChartW(),
+    height: 160,
+    series: seriesFromPointsWithGaps(
+      series.map(d => ({ x: d.year, y: d.cfs })),
+      { color: '#64748b', label: `annual mean ${firstY}–${lastY}`, kind: 'area' },
+    ),
+    markers: zeroYears.map(d => ({
+      x: d.year,
+      y: d.cfs,
+      color: '#dc2626',
+      title: `${d.year}: ${d.cfs} cfs${d.daysWithFlow != null ? ` — flow on ${d.daysWithFlow}/${d.daysWithData} days` : ''}`,
+    })),
+    yLabel: 'cfs (calendar-year mean)',
+  })
+  el.innerHTML = html
+  el.style.color = 'inherit'
+  enhanceCharts(el)
+}
+
+export function priorityBadge(year: number): string {
+  const cls = year < 1950 ? 'badge-senior' : year < 2000 ? 'badge-mid' : 'badge-junior'
+  const label = year < 1950 ? 'senior' : year < 2000 ? 'mid' : 'junior'
+  return ` <span class="badge ${cls}">${year} · ${label}</span>`
+}
+
+export function transferBadge(distKm: number): string {
+  return ` <span class="badge badge-transfer">POD ${formatDistanceKm(distKm)} from POU — moved farther</span>`
 }
