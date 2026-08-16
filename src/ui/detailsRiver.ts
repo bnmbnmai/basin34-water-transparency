@@ -5,7 +5,7 @@ import {
   mergedYearSeries, pickOverlayYears,
 } from '../usgs'
 import { enhanceCharts, seriesFromPointsWithGaps, svgChart } from './chart'
-import { FLOW_STEP_GAGES, FOOT, inspectorChartW, open } from './details'
+import { FLOW_STEP_GAGES, FOOT, ZERO_CFS, inspectorChartW, open } from './details'
 
 export async function showAppropriationPanel(store: DataStore) {
   // One rate per right (multiple PODs share the right's authorized rate)
