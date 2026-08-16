@@ -3,6 +3,7 @@ import { toCsv, downloadText } from './csv'
 import { podVisible, wellVisible } from './filters'
 import { MOORE_LAT } from './dryReach'
 import { state } from './state'
+import { formatMilesNumber, kmToMiles } from './units'
 
 export function visiblePodsToCsv(store: DataStore): string {
   const seen = new Set<string>()
@@ -15,14 +16,14 @@ export function visiblePodsToCsv(store: DataStore): string {
     rows.push([
       rec.wr, rec.owner, rec.year ?? '', rec.rate, rec.source, rec.uses, rec.diversionName,
       rec.lat.toFixed(5), rec.lon.toFixed(5),
-      isFinite(rec.corridorDistKm) ? rec.corridorDistKm.toFixed(2) : '',
+      isFinite(rec.corridorDistKm) ? formatMilesNumber(rec.corridorDistKm, 2) : '',
       rec.lat <= MOORE_LAT ? 'yes' : 'no',
     ])
   }
   return toCsv(
     [
       'water_right', 'owner', 'priority_year', 'max_diversion_cfs', 'source', 'uses', 'diversion',
-      'lat', 'lon', 'corridor_km', 'below_moore',
+      'lat', 'lon', 'corridor_mi', 'below_moore',
     ],
     rows,
   )
@@ -56,7 +57,7 @@ export function visiblePodsToGeoJson(store: DataStore): string {
         Source: rec.source,
         Uses: rec.uses,
         DiversionName: rec.diversionName,
-        corridorKm: isFinite(rec.corridorDistKm) ? Number(rec.corridorDistKm.toFixed(2)) : null,
+        corridorMi: isFinite(rec.corridorDistKm) ? Number(kmToMiles(rec.corridorDistKm).toFixed(2)) : null,
         belowMoore: rec.lat <= MOORE_LAT,
       },
     }))

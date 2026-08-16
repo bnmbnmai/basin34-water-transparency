@@ -1,6 +1,7 @@
 import { CONFLICT_CORRIDOR_KM, type DataStore } from './data'
 import { toCsv } from './csv'
 import type { PodRecord } from './types'
+import { formatDistanceKm, formatMilesNumber } from './units'
 
 /** Moore diversion — surface flow often ends near here in recent years (USGS 13132100). */
 export const MOORE_LAT = 43.7843611
@@ -31,7 +32,7 @@ export interface DryReachSeniorRow {
 export const DRY_REACH_METHODOLOGY =
   'Proxy only (not a legal determination): rights whose IDWR source is the Big Lost River ' +
   'or Ferris Slough (a connected lower-valley channel), with priority before 1950, ' +
-  'a POD within 3 km of the NHD Big Lost mainstem, and at or below the Moore diversion ' +
+  `a POD within ${formatDistanceKm(CONFLICT_CORRIDOR_KM, { long: true })} of the NHD Big Lost mainstem, and at or below the Moore diversion ` +
   '(USGS 13132100). Tributaries such as Antelope Creek are excluded even when they sit ' +
   'near NWI riparian wetlands. Distance is to the NHD mainstem, not to tributary wetlands. ' +
   'Authorized max cfs is not actual delivery. Sources: IDWR PODs + NHD mainstem. Sorted by diversion rate (cfs).'
@@ -73,10 +74,10 @@ export function listDryReachSeniors(store: DataStore): DryReachSeniorRow[] {
 
 export function dryReachSeniorsToCsv(rows: DryReachSeniorRow[]): string {
   return toCsv(
-    ['water_right', 'owner', 'priority_year', 'max_diversion_cfs', 'source', 'uses', 'lat', 'lon', 'mainstem_km'],
+    ['water_right', 'owner', 'priority_year', 'max_diversion_cfs', 'source', 'uses', 'lat', 'lon', 'mainstem_mi'],
     rows.map(r => [
       r.wr, r.owner, r.year, r.rate, r.source, r.uses,
-      r.lat.toFixed(5), r.lon.toFixed(5), r.mainstemKm.toFixed(2),
+      r.lat.toFixed(5), r.lon.toFixed(5), formatMilesNumber(r.mainstemKm, 2),
     ]),
   )
 }
