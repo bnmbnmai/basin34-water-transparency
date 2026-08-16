@@ -376,6 +376,19 @@ main {
   background: #e0f2fe; /* light water tint while loading */
 }
 
+.leaflet-control-scale {
+  margin-left: 0.65rem !important;
+  margin-bottom: 0.65rem !important;
+}
+.leaflet-control-scale-line {
+  background: color-mix(in srgb, var(--panel) 88%, transparent) !important;
+  color: var(--text) !important;
+  border-color: var(--border-strong) !important;
+  font-size: 0.72rem !important;
+  line-height: 1.2 !important;
+  padding: 0.12rem 0.35rem 0 !important;
+}
+
 /* Selection banner (floating over the map) */
 .map-hint {
   position: absolute;
