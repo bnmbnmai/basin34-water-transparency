@@ -2,6 +2,7 @@ import { CONFLICT_CORRIDOR_KM, type DataStore } from './data'
 import { toCsv } from './csv'
 import { MOORE_LAT } from './dryReach'
 import type { PodRecord } from './types'
+import { formatDistanceKm, formatMilesNumber } from './units'
 
 /** USGS 13132500 near Arco — lower-basin extent gage. */
 export const ARCO_LAT = 43.5822222
@@ -9,7 +10,7 @@ export const ARCO_LON = -113.2705556
 
 export const LOWER_VALLEY_METHODOLOGY =
   'Proxy only (not a determination): surface irrigation rights with a POD at or below the Moore diversion ' +
-  '(USGS 13132100), ranked by priority year. “On dry-styled channel” means the POD is also within 3 km of the ' +
+  `(USGS 13132100), ranked by priority year. “On dry-styled channel” means the POD is also within ${formatDistanceKm(CONFLICT_CORRIDOR_KM, { long: true })} of the ` +
   'NHD Big Lost mainstem (the reach the map draws dashed brown in the recent-era view) — not tributary ' +
   'wetlands such as Antelope Creek. Distance is to the Arco gage (USGS 13132500). Authorized max cfs is not ' +
   'actual delivery. Sources: IDWR PODs + NHD mainstem.'
@@ -76,12 +77,12 @@ export function lowerValleyToCsv(rows: LowerValleyRow[]): string {
   return toCsv(
     [
       'water_right', 'owner', 'priority_year', 'max_diversion_cfs', 'source', 'diversion',
-      'lat', 'lon', 'arco_gage_km', 'mainstem_km', 'on_dry_styled_channel',
+      'lat', 'lon', 'arco_gage_mi', 'mainstem_mi', 'on_dry_styled_channel',
     ],
     rows.map(r => [
       r.wr, r.owner, r.year ?? '', r.rate, r.source, r.diversion,
-      r.lat.toFixed(5), r.lon.toFixed(5), r.arcoKm.toFixed(2),
-      isFinite(r.mainstemKm) ? r.mainstemKm.toFixed(2) : '',
+      r.lat.toFixed(5), r.lon.toFixed(5), formatMilesNumber(r.arcoKm, 2),
+      isFinite(r.mainstemKm) ? formatMilesNumber(r.mainstemKm, 2) : '',
       r.onDryChannel ? 'yes' : 'no',
     ]),
   )

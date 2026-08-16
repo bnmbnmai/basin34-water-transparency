@@ -27,6 +27,12 @@ const BASIN_ZOOM = 9
  */
 export function createMap(): L.Map {
   const map = L.map('map', { zoomControl: true }).setView(BASIN_CENTER, BASIN_ZOOM)
+  L.control.scale({
+    position: 'bottomleft',
+    imperial: true,
+    metric: false,
+    maxWidth: 160,
+  }).addTo(map)
   const landsatPane = map.createPane('landsatPane')
   landsatPane.style.zIndex = '250'
   landsatPane.style.pointerEvents = 'none'

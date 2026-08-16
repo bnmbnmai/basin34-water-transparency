@@ -101,6 +101,6 @@ describe('dryReachSeniorsToCsv', () => {
     ])
     expect(csv).toContain('"Smith, ""Ranch"""')
     expect(csv.split('\n')[0]).toContain('water_right')
-    expect(csv.split('\n')[0]).toContain('mainstem_km')
+    expect(csv.split('\n')[0]).toContain('mainstem_mi')
   })
 })

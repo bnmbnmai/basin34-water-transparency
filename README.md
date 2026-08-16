@@ -24,7 +24,7 @@ npm run preview  # serve the production build locally
 Three primary receipts. Opening seniors or moved-farther also emphasizes matching ★ on the map (Reset clears that). There is no six-way analysis dropdown.
 
 - **Downstream seniors + CSV** — pre-1950 Big Lost / Ferris Slough rights on the NHD mainstem at or below Moore (Antelope Creek excluded). Toggle **Include later surface irrigation below Moore** for the post-1950 paper on the same reach. Zoom a row to isolate that right at field scale (cyan diversion↔field lines).
-- **Water moved farther + CSV** — POD more than 8 km from current POU (size-adjusted). Off-corridor orange fills are a geometric flag, not a liner inventory. Selecting this receipt turns canals on.
+- **Water moved farther + CSV** — POD more than 5 miles from current POU (size-adjusted). Off-corridor orange fills are a geometric flag, not a liner inventory. Selecting this receipt turns canals on.
 - **River shrink** — Mackay yield → Moore terminus → Arco remnant. Lead series is **days with flow**, plus a wet-year vs recent-year daily overlay and this season’s WD34 below-Moore delivery (as published). Calendar-year mean is secondary so a two-week pulse does not look like year-round water.
 
 Gages are waypoints, not equal charts. Mackay (blue) = yield; Moore (orange) = terminus; Arco (red) = remnant. Archive/context pins (Leslie, playa, discontinued sinks) redirect into river shrink instead of drawing a one-year annual-mean line.
@@ -44,7 +44,7 @@ Optional local pins: copy [`watchlist.example.json`](watchlist.example.json) to 
 ### Exploring rights and places of use
 
 - **Click a field (POU polygon)** → details panel lists every water right sharing that polygon (sorted senior-first, with priority badges and transfer distance), the polygon gets a cyan outline, and dashed lines connect it to each POD. A selection banner appears at the top of the map.
-- **District / service-area POUs** — a handful of rights (e.g. nine Big Lost River Irrigation District storage rights, ~234 km²; federal NPS rights, ~215 km²) have an authorized place of use covering most of the valley. These render as teal dashed **outlines only** (≥ 20 km², `DISTRICT_POU_KM2`): no fill means no valley-wide tint and no stolen clicks, so the individual fields inside stay visible and clickable. Polygons are painted largest-first, so smaller fields always win the click. Click the outline itself to see the district's rights.
+- **District / service-area POUs** — a handful of rights (e.g. nine Big Lost River Irrigation District storage rights, ~58,000 acres; federal NPS rights, ~53,000 acres) have an authorized place of use covering most of the valley. These render as teal dashed **outlines only** (≥ ~4,900 acres, `DISTRICT_POU_KM2`): no fill means no valley-wide tint and no stolen clicks, so the individual fields inside stay visible and clickable. Polygons are painted largest-first, so smaller fields always win the click. Click the outline itself to see the district's rights.
 - **Click a POD ★** → see the right's priority year, owner, rate, transfer badge, and its place of use highlighted with connector lines. "Zoom to right" centers on the highest-rate diversion at field scale.
 - Clear the selection via the banner's ✕, the Esc key, or clicking the map background.
 
@@ -60,6 +60,7 @@ Optional local pins: copy [`watchlist.example.json`](watchlist.example.json) to 
 - **Basemap & layer toggles** — Map / Satellite / Hybrid basemaps; per-layer checkboxes for PODs, wells, basin boundary, canals & pipelines, named diversions, gages, flow extent, and admin reaches.
 - **🔗 Share view (permalinks)** — the URL hash mirrors the full app state (analysis view, filters, owner, selection, flow era, basemap, map position; only non-default values, so URLs stay short). The header button copies the link; opening it restores the exact view, including any auto-opened analysis panel.
 - **Legend** — always visible, swatch-based, and generated from the same color tables the map uses, so it always matches what is drawn.
+- **Units** — map scale, distances, and areas default to US customary (miles, feet when short, acres). Flow is cfs; WD34 workbook storage is acre-feet. Geometry thresholds stay in km in code; only labels convert.
 
 ## Architecture (src/)
 
@@ -88,6 +89,7 @@ src/
   sideOfChannel.ts  Geometric east/west of NHD mainstem
   exportVisible.ts  Filtered POD/well CSV + GeoJSON
   csv.ts            Shared CSV download helpers
+  units.ts          Display conversions (km → mi/ft, km² → acres)
   wrLinks.ts        IDWR report / transfer-search URLs
   watchlist.ts      Dev-only local pin list (never in dist/)
   map/

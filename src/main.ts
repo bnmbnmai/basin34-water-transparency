@@ -22,10 +22,12 @@ import { updateLegend } from './ui/legend'
 import { setupOwnerSearch, clearOwnerSearchUI, syncOwnerRightsSelection } from './ui/ownerSearch'
 import {
   closeDetails, FLOW_STEP_GAGES, getReceiptReopen, highlightReceiptZoomRow, isDetailsOpen, isDetailsPinned,
-  showAppropriationPanel, showDiversionDetails,
-  showDryReachSeniorsPanel, showGageDetails, showGenericDetails, showPodDetails, showPouGroupDetails,
-  showReachLossPanel, showTransfersOverview, showWellDetails,
+  showGageDetails, showPodDetails, showPouGroupDetails, showWellDetails,
 } from './ui/details'
+import {
+  showDiversionDetails, showDryReachSeniorsPanel, showGenericDetails, showTransfersOverview,
+} from './ui/detailsReceipts'
+import { showAppropriationPanel, showReachLossPanel } from './ui/detailsRiver'
 import {
   showOwnerConcentrationPanel,
   showWatchlistPanel, showWellPressurePanel, wireExportButtons,

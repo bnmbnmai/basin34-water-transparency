@@ -1,6 +1,7 @@
 import { toCsv } from './csv'
 import { NEW_GROUND_KM, TRANSFER_DIST_KM, type DataStore } from './data'
 import { sideOfMainstem, type ChannelSide } from './sideOfChannel'
+import { formatDistanceKm, formatMilesNumber } from './units'
 
 /**
  * Water moved farther — geometric proxy (not a transfer filing or liner inventory).
@@ -25,9 +26,9 @@ export interface MovedFartherRow {
 
 export const MOVED_FARTHER_METHODOLOGY =
   'Proxy only (not a legal determination or transfer filing): rights whose point of diversion ' +
-  `is more than ${TRANSFER_DIST_KM} km from the current authorized place of use (size-adjusted), ` +
+  `is more than ${formatDistanceKm(TRANSFER_DIST_KM, { long: true })} from the current authorized place of use (size-adjusted), ` +
   'from IDWR POD + POU geometry. “Off corridor” means the POU center sits more than ' +
-  `${NEW_GROUND_KM} km from both the NHD Big Lost mainstem and any NWI riparian polygon — ` +
+  `${formatDistanceKm(NEW_GROUND_KM, { long: true })} from both the NHD Big Lost mainstem and any NWI riparian polygon — ` +
   'a geometric signal that water is authorized away from the natural river corridor, not proof ' +
   'of a lined canal or of recent breakout. East/west of channel is longitude vs the nearest NHD ' +
   'mainstem vertex (the river generally flows south). Lined canals are visible on satellite; NHD does not mark liners. ' +
@@ -62,12 +63,12 @@ export function movedFartherToCsv(rows: MovedFartherRow[]): string {
   return toCsv(
     [
       'water_right', 'owner', 'priority_year', 'max_diversion_cfs', 'source',
-      'pod_pou_km', 'corridor_km', 'off_corridor', 'pou_side_of_channel',
+      'pod_pou_mi', 'corridor_mi', 'off_corridor', 'pou_side_of_channel',
     ],
     rows.map(r => [
       r.wr, r.owner, r.year ?? '', r.rate, r.source,
-      r.podPouKm.toFixed(2),
-      r.corridorKm != null ? r.corridorKm.toFixed(2) : '',
+      formatMilesNumber(r.podPouKm, 2),
+      r.corridorKm != null ? formatMilesNumber(r.corridorKm, 2) : '',
       r.offCorridor ? 'yes' : 'no',
       r.pouSide,
     ]),
