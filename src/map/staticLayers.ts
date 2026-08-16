@@ -2,6 +2,7 @@ import L from 'leaflet'
 import type { FlowEra, GeoFeature } from '../types'
 import { fetchJsonCached } from '../fetchCache'
 import { collectMainstemPts, lineMidpoint, sideOfMainstem } from '../sideOfChannel'
+import { formatAcresFromKm2, formatDistanceKm } from '../units'
 import { gageMarkerStyle, gageRoleFromProps, gageRoleLabel } from './gageRoles'
 
 export interface StaticLayers {
@@ -128,7 +129,7 @@ export async function loadStaticLayers(
         lyr.bindPopup(
           `<strong>${p.gnis_name || `Unnamed ${kind.toLowerCase()}`}</strong><br>` +
           `${kind} · ${sideLabel}` +
-          `${p.lengthkm ? ` · ${Number(p.lengthkm).toFixed(1)} km segment` : ''}<br>` +
+          `${p.lengthkm ? ` · ${formatDistanceKm(Number(p.lengthkm))} segment` : ''}<br>` +
           `<small>USGS National Hydrography Dataset (high resolution). East/west is longitude vs the nearest Big Lost mainstem vertex — not a liner inventory. Authorized rates come from the Diversions layer.</small>`,
         )
         lyr.on('click', () => callbacks.onFeatureClick(feature as GeoFeature, 'hydro'))
@@ -199,7 +200,7 @@ export async function loadStaticLayers(
             `<strong>Big Lost River sinks (${kind})</strong><br>` +
             `The river historically ended here, in playa/marsh sinks near Howe.<br>` +
             `<small>USGS National Hydrography Dataset waterbody polygon` +
-            `${p.AREASQKM ? ` · ${Number(p.AREASQKM).toFixed(2)} km²` : ''}.</small>`,
+            `${p.AREASQKM ? ` · ${formatAcresFromKm2(Number(p.AREASQKM))}` : ''}.</small>`,
           )
           lyr.on('click', () => callbacks.onFeatureClick(feature as GeoFeature, 'flowExtent'))
         },
